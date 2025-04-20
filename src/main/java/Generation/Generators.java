@@ -7,16 +7,16 @@ import Generators.*;
 
 public class Generators {
     private final Exponential orderArrivalDist;
-    private final EmpiricDiscrete typeOfOrderDist;
+    private final EmpiricDiscrete typeOfFurnitureDist;
     private final EmpiricContinuous cuttingTableDist;
     private final UniformContinuous cuttingChairDist;
     private final UniformContinuous cuttingWardrobeDist;
     private final EmpiricContinuous paintingTableDist;
     private final UniformContinuous paintingChairDist;
     private final UniformContinuous paintingWardrobeDist;
-    private final UniformContinuous pickilingTableDist;
-    private final UniformContinuous pickilingChairDist;
-    private final UniformContinuous pickilingWardrobeDist;
+    private final UniformContinuous stainingTableDist;
+    private final UniformContinuous stainingChairDist;
+    private final UniformContinuous stainingWardrobeDist;
 
 
     private final UniformContinuous assemblyTableDist;
@@ -44,7 +44,7 @@ public class Generators {
         typeList.add(new EmpiricData<>(1, 2, 0.5, rand.nextInt()));
         typeList.add(new EmpiricData<>(2, 3, 0.15, rand.nextInt()));
         typeList.add(new EmpiricData<>(3, 4, 0.35, rand.nextInt()));
-        typeOfOrderDist = new EmpiricDiscrete(typeList, rand.nextInt());
+        typeOfFurnitureDist = new EmpiricDiscrete(typeList, rand.nextInt());
 
 
         ArrayList<EmpiricData<Double>> typeOneCuttingList = new ArrayList<>();
@@ -59,18 +59,18 @@ public class Generators {
         //first
         cuttingTableDist = new EmpiricContinuous(typeOneCuttingList, rand.nextInt());
         paintingTableDist = new EmpiricContinuous(typeOnePaintingList, rand.nextInt());
-        pickilingTableDist = new UniformContinuous(200.0 * 60, 610.0 * 60, rand.nextInt());
+        stainingTableDist = new UniformContinuous(200.0 * 60, 610.0 * 60, rand.nextInt());
         assemblyTableDist = new UniformContinuous(30.0 * 60, 60.0 * 60, rand.nextInt());
 
         // second
         cuttingChairDist = new UniformContinuous(12.0 * 60, 16.0 * 60, rand.nextInt());
-        pickilingChairDist = new UniformContinuous(90.0 * 60, 400.0 * 60, rand.nextInt());
+        stainingChairDist = new UniformContinuous(90.0 * 60, 400.0 * 60, rand.nextInt());
         paintingChairDist = new UniformContinuous(40.0 * 60, 200.0 * 60, rand.nextInt());
         assemblyChairDist = new UniformContinuous(14.0 * 60, 24.0 * 60, rand.nextInt());
 
         // third
         cuttingWardrobeDist = new UniformContinuous(15.0 * 60, 80.0 * 60, rand.nextInt());
-        pickilingWardrobeDist = new UniformContinuous(300.0 * 60, 600.0 * 60, rand.nextInt());
+        stainingWardrobeDist = new UniformContinuous(300.0 * 60, 600.0 * 60, rand.nextInt());
         paintingWardrobeDist = new UniformContinuous(250.0 * 60, 560.0 * 60, rand.nextInt());
         assemblyWardrobeDist = new UniformContinuous(35.0 * 60, 75.0 * 60, rand.nextInt());
         montageWardrobeDist = new UniformContinuous(15.0 * 60, 25.0 * 60, rand.nextInt());
@@ -89,8 +89,8 @@ public class Generators {
         return orderArrivalDist;
     }
 
-    public EmpiricDiscrete getTypeOfOrderDist() {
-        return typeOfOrderDist;
+    public EmpiricDiscrete getTypeOfFurnitureDist() {
+        return typeOfFurnitureDist;
     }
 
     public EmpiricContinuous getCuttingTableDist() {
@@ -150,16 +150,16 @@ public class Generators {
         return paintingTableDist;
     }
 
-    public UniformContinuous getPickilingTableDist() {
-        return pickilingTableDist;
+    public UniformContinuous getStainingTableDist() {
+        return stainingTableDist;
     }
 
-    public UniformContinuous getPickilingChairDist() {
-        return pickilingChairDist;
+    public UniformContinuous getStainingChairDist() {
+        return stainingChairDist;
     }
 
-    public UniformContinuous getPickilingWardrobeDist() {
-        return pickilingWardrobeDist;
+    public UniformContinuous getStainingWardrobeDist() {
+        return stainingWardrobeDist;
     }
 
     public UniformDiscrete getCountOfFurnitureDist() {

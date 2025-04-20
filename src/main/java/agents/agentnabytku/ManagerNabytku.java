@@ -1,15 +1,22 @@
 package agents.agentnabytku;
 
 import OSPABA.*;
+import entities.Furniture;
 import simulation.*;
+
+import java.util.LinkedList;
 
 //meta! id="9"
 public class ManagerNabytku extends OSPABA.Manager
 {
+	private LinkedList<Furniture> furnitureQueue;
+
 	public ManagerNabytku(int id, Simulation mySim, Agent myAgent)
 	{
 		super(id, mySim, myAgent);
 		init();
+		furnitureQueue = new LinkedList<>();
+
 	}
 
 	@Override
@@ -72,6 +79,7 @@ public class ManagerNabytku extends OSPABA.Manager
 	//meta! sender="AgentModelu", id="81", type="Notice"
 	public void processNoticeSpracujObjednavku(MessageForm message)
 	{
+
 	}
 
 	//meta! sender="AgentCinnosti", id="284", type="Request"

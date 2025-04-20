@@ -2,6 +2,7 @@ package entities;
 
 
 import Enums.OrderStateValues;
+import IDGenerator.IDGenerator;
 import Statistics.Average;
 
 import java.util.ArrayList;
@@ -18,9 +19,10 @@ public class Order {
 
 
 
-    public Order(int id, double arrivalTime, Average timeOfWorkAverage) {
-        this.id = id;
+    public Order(double arrivalTime, Average timeOfWorkAverage) {
+        this.id = IDGenerator.getInstance().getNextOrderId();
         this.arrivalTime = arrivalTime;
+        furnitureList = new ArrayList<>();
         this.state = OrderStateValues.ORDER_NEW.getValue();
         this.endTime = 0.0;
         this.timeOfWorkAverage = timeOfWorkAverage;
@@ -48,7 +50,9 @@ public class Order {
         return id == order.id;
     }
 
-
+    public void addFurniture(Furniture furniture) {
+        furnitureList.add(furniture);
+    }
     public double getArrivalTime() {
         return arrivalTime;
     }

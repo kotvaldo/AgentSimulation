@@ -1,12 +1,21 @@
 package Enums;
-public enum OrderStateValues {
-    ORDER_NEW(0),
-    PROCESSING_ORDER(1),
-    ORDER_DONE(2);
+
+public enum FurnitureStateValues {
+    WAITING_IN_QUEUE_NEW(0),
+    PROCESSING_CUTTING(1),
+    WAITING_IN_QUEUE_2(2),
+    PROCESSING_STAINING(3),
+    PROCESSING_PAINTING(4),
+    WAITING_IN_QUEUE_3(5),
+    PROCESSING_ASSEMBLY(6),
+    PROCESSING_MONTAGE(7),
+    WAITING_IN_QUEUE_4(8),
+    FURNITURE_DONE(9);
+
 
     private final Integer value;
 
-    OrderStateValues(Integer value) {
+    FurnitureStateValues(Integer value) {
         this.value = value;
     }
 
@@ -15,7 +24,7 @@ public enum OrderStateValues {
     }
 
     public static String getNameByValue(int value) {
-        for (OrderStateValues state : values()) {
+        for (FurnitureStateValues state : values()) {
             if (state.getValue() == value) {
                 return state.name();
             }

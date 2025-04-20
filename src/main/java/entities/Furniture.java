@@ -6,8 +6,16 @@ public class Furniture {
     private final int id;
     private final Order order;
     private final int type;
+    private int state;
 
     private double startTimeCuttingQueue;
+    private double endTimeCuttingQueue;
+    private double startTimeColoringQueue;
+    private double endTimeColoringQueue;
+    private double startTimeAssemblyQueue;
+    private double endTimeAssemblyQueue;
+    private double startTimeMontageQueue;
+    private double endTimeMontageQueue;
 
     public Furniture(int type, Order order) {
         this.id = IDGenerator.getInstance().getNextFurnitureId();
@@ -25,5 +33,77 @@ public class Furniture {
 
     public int getId() {
         return id;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public double getStartTimeCuttingQueue() {
+        return startTimeCuttingQueue;
+    }
+
+    public void setStartTimeCuttingQueue(double startTimeCuttingQueue) {
+        this.startTimeCuttingQueue = startTimeCuttingQueue;
+    }
+
+    public double getEndTimeCuttingQueue() {
+        return endTimeCuttingQueue;
+    }
+
+    public void setEndTimeCuttingQueue(double endTimeCuttingQueue) {
+        this.endTimeCuttingQueue = endTimeCuttingQueue;
+    }
+
+    public double getStartTimeColoringQueue() {
+        return startTimeColoringQueue;
+    }
+
+    public void setStartTimeColoringQueue(double startTimeColoringQueue) {
+        this.startTimeColoringQueue = startTimeColoringQueue;
+    }
+
+    public double getEndTimeColoringQueue() {
+        return endTimeColoringQueue;
+    }
+
+    public void setEndTimeColoringQueue(double endTimeColoringQueue) {
+        this.endTimeColoringQueue = endTimeColoringQueue;
+    }
+
+    public double getStartTimeAssemblyQueue() {
+        return startTimeAssemblyQueue;
+    }
+
+    public void setStartTimeAssemblyQueue(double startTimeAssemblyQueue) {
+        this.startTimeAssemblyQueue = startTimeAssemblyQueue;
+    }
+
+    public double getEndTimeAssemblyQueue() {
+        return endTimeAssemblyQueue;
+    }
+
+    public void setEndTimeAssemblyQueue(double endTimeAssemblyQueue) {
+        this.endTimeAssemblyQueue = endTimeAssemblyQueue;
+    }
+
+    public double getStartTimeMontageQueue() {
+        return startTimeMontageQueue;
+    }
+
+    public void setStartTimeMontageQueue(double startTimeMontageQueue) {
+        this.startTimeMontageQueue = startTimeMontageQueue;
+    }
+
+    public double getEndTimeMontageQueue() {
+        return endTimeMontageQueue;
+    }
+
+    public void setEndTimeMontageQueue(double endTimeMontageQueue) {
+        this.endTimeMontageQueue = endTimeMontageQueue;
     }
 }

@@ -1,5 +1,6 @@
 package agents.agentokolia.continualassistants;
 
+import Enums.PresetSimulationValues;
 import OSPABA.*;
 import agents.agentokolia.*;
 import simulation.*;
@@ -22,11 +23,22 @@ public class PlanovacPrichodObjednavky extends OSPABA.Scheduler
 	//meta! sender="AgentOkolia", id="302", type="Start"
 	public void processStart(MessageForm message)
 	{
+		MySimulation simulationCore = (MySimulation)mySim();
+		MyMessage msg = (MyMessage)message.createCopy();
+		msg.setCode(Mc.noticeNovaObjednavka);
+		var newTime = simulationCore.getGenerators().getOrderArrivalDist().sample();
+		if (newTime + _mySim.currentTime() < PresetSimulationValues.END_OF_SIMULATION.getValue())
+		{
+			hold(newTime, msg);
+		}
 	}
 
 	//meta! sender="AgentOkolia", id="338", type="Notice"
 	public void processNoticeNovaObjednavka(MessageForm message)
 	{
+		MyMessage msg = (MyMessage)message.createCopy();
+		msg.setAddressee(myAgent());
+		notice(msg);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -43,17 +55,17 @@ public class PlanovacPrichodObjednavky extends OSPABA.Scheduler
 	{
 		switch (message.code())
 		{
-		case Mc.start:
-			processStart(message);
-		break;
+			case Mc.noticeNovaObjednavka:
+				processNoticeNovaObjednavka(message);
+				break;
 
-		case Mc.noticeNovaObjednavka:
-			processNoticeNovaObjednavka(message);
-		break;
+			case Mc.start:
+				processStart(message);
+				break;
 
-		default:
-			processDefault(message);
-		break;
+			default:
+				processDefault(message);
+				break;
 		}
 	}
 	//meta! tag="end"

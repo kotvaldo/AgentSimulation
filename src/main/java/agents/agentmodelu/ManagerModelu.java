@@ -27,11 +27,17 @@ public class ManagerModelu extends OSPABA.Manager
 	//meta! sender="AgentNabytku", id="153", type="Notice"
 	public void processNoticeHotovaObjednavka(MessageForm message)
 	{
+
+
 	}
 
 	//meta! sender="AgentOkolia", id="328", type="Notice"
 	public void processNoticePrichodObjednavky(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+		myMessage.setCode(Mc.noticeSpracujObjednavku);
+		notice(myMessage);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

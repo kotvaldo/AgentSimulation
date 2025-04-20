@@ -1,6 +1,8 @@
 package simulation;
 
+import Generation.Generators;
 import OSPABA.*;
+import Statistics.Average;
 import agents.agentokolia.*;
 import agents.agentnabytku.*;
 import agents.agentskladu.*;
@@ -12,12 +14,25 @@ import agents.agentmodelu.*;
 import agents.agentpracovnikov.*;
 import agents.agentpracovisk.*;
 import agents.agentpracovnikovc.*;
+import entities.Furniture;
+import entities.Order;
+
+import java.util.ArrayList;
 
 public class MySimulation extends OSPABA.Simulation
 {
+	private final Generators generators;
+	private final ArrayList<Order> orderArrayList;
+	private final ArrayList<Furniture> furnitureArrayList;
+	private final Average partialTimeOfWork;
+
 	public MySimulation()
 	{
 		init();
+		this.generators = new Generators();
+		orderArrayList = new ArrayList<>();
+		furnitureArrayList = new ArrayList<>();
+		partialTimeOfWork = new Average();
 	}
 
 	@Override
@@ -151,5 +166,21 @@ public AgentPracovnikovA agentPracovnikovA()
 
 	public void setAgentPracovnikovA(AgentPracovnikovA agentPracovnikovA)
 	{_agentPracovnikovA = agentPracovnikovA; }
-	//meta! tag="end"
+
+    public Generators getGenerators() {
+        return generators;
+    }
+
+    public Average getPartialTimeOfWork() {
+        return partialTimeOfWork;
+    }
+
+    public ArrayList<Furniture> getFurnitureArrayList() {
+        return furnitureArrayList;
+    }
+
+    public ArrayList<Order> getOrderArrayList() {
+        return orderArrayList;
+    }
+    //meta! tag="end"
 }
