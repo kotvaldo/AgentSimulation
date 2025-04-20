@@ -22,8 +22,16 @@ public class PrichodObjednavky extends OSPABA.Scheduler
 	//meta! sender="AgentOkolia", id="302", type="Start"
 	public void processStart(MessageForm message)
 	{
+		MyMessage msg = (MyMessage)message.createCopy();
+		msg.setCode(Mc.novaObjednavka);
+
+
 	}
 
+	public void ProcessNova(MessageForm message) {
+
+
+	}
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)
 	{
@@ -41,7 +49,7 @@ public class PrichodObjednavky extends OSPABA.Scheduler
 		case Mc.start:
 			processStart(message);
 		break;
-
+		case process
 		default:
 			processDefault(message);
 		break;

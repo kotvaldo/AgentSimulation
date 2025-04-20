@@ -1,5 +1,6 @@
 package simulation;
 
+import Generation.Generators;
 import OSPABA.*;
 import agents.agentokolia.*;
 import agents.agentnabytku.*;
@@ -15,9 +16,13 @@ import agents.agentpracovnikovc.*;
 
 public class MySimulation extends OSPABA.Simulation
 {
+	private final Generators generators;
+
+
 	public MySimulation()
 	{
 		init();
+		generators = new Generators();
 	}
 
 	@Override
@@ -151,5 +156,9 @@ public AgentPracovnikovA agentPracovnikovA()
 
 	public void setAgentPracovnikovA(AgentPracovnikovA agentPracovnikovA)
 	{_agentPracovnikovA = agentPracovnikovA; }
-	//meta! tag="end"
+
+    public Generators getGenerators() {
+        return generators;
+    }
+    //meta! tag="end"
 }
