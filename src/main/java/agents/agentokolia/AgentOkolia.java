@@ -24,7 +24,7 @@ public class AgentOkolia extends OSPABA.Agent
 	private void init()
 	{
 		new ManagerOkolia(Id.managerOkolia, mySim(), this);
-		new PrichodObjednavky(Id.prichodObjednavky, mySim(), this);
+		new PlanovacPrichodObjednavky(Id.planovacPrichodObjednavky, mySim(), this);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.noticeNovaObjednavka);
 	}

@@ -5,9 +5,9 @@ import agents.agentokolia.*;
 import simulation.*;
 
 //meta! id="301"
-public class PrichodObjednavky extends OSPABA.Scheduler
+public class PlanovacPrichodObjednavky extends OSPABA.Scheduler
 {
-	public PrichodObjednavky(int id, Simulation mySim, CommonAgent myAgent)
+	public PlanovacPrichodObjednavky(int id, Simulation mySim, CommonAgent myAgent)
 	{
 		super(id, mySim, myAgent);
 	}
@@ -43,12 +43,12 @@ public class PrichodObjednavky extends OSPABA.Scheduler
 	{
 		switch (message.code())
 		{
-		case Mc.noticeNovaObjednavka:
-			processNoticeNovaObjednavka(message);
-		break;
-
 		case Mc.start:
 			processStart(message);
+		break;
+
+		case Mc.noticeNovaObjednavka:
+			processNoticeNovaObjednavka(message);
 		break;
 
 		default:

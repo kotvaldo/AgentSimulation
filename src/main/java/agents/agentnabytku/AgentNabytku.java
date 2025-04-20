@@ -28,8 +28,8 @@ public class AgentNabytku extends OSPABA.Agent
 		addOwnMessage(Mc.rVyberPracovnikaLakovanie);
 		addOwnMessage(Mc.rPresunNaPracovisko);
 		addOwnMessage(Mc.rVyberPracovnikaSkladanie);
-		addOwnMessage(Mc.rVyberPracovnikaMontaz);
 		addOwnMessage(Mc.rUrobMorenie);
+		addOwnMessage(Mc.rVyberPracovnikaMontaz);
 		addOwnMessage(Mc.rDajVolnePracovneMiesto);
 		addOwnMessage(Mc.rUrobMontaz);
 		addOwnMessage(Mc.noticeSpracujObjednavku);

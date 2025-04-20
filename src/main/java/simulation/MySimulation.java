@@ -59,9 +59,9 @@ public class MySimulation extends OSPABA.Simulation
 		setAgentPracovisk(new AgentPracovisk(Id.agentPracovisk, this, agentNabytku()));
 		setAgentPohybu(new AgentPohybu(Id.agentPohybu, this, agentNabytku()));
 		setAgentPracovnikov(new AgentPracovnikov(Id.agentPracovnikov, this, agentNabytku()));
+		setAgentPracovnikovB(new AgentPracovnikovB(Id.agentPracovnikovB, this, agentPracovnikov()));
 		setAgentPracovnikovC(new AgentPracovnikovC(Id.agentPracovnikovC, this, agentPracovnikov()));
 		setAgentPracovnikovA(new AgentPracovnikovA(Id.agentPracovnikovA, this, agentPracovnikov()));
-		setAgentPracovnikovB(new AgentPracovnikovB(Id.agentPracovnikovB, this, agentPracovnikov()));
 	}
 
 	private AgentModelu _agentModelu;
@@ -128,6 +128,14 @@ public AgentPracovnikov agentPracovnikov()
 	public void setAgentPracovnikov(AgentPracovnikov agentPracovnikov)
 	{_agentPracovnikov = agentPracovnikov; }
 
+	private AgentPracovnikovB _agentPracovnikovB;
+
+public AgentPracovnikovB agentPracovnikovB()
+	{ return _agentPracovnikovB; }
+
+	public void setAgentPracovnikovB(AgentPracovnikovB agentPracovnikovB)
+	{_agentPracovnikovB = agentPracovnikovB; }
+
 	private AgentPracovnikovC _agentPracovnikovC;
 
 public AgentPracovnikovC agentPracovnikovC()
@@ -143,13 +151,5 @@ public AgentPracovnikovA agentPracovnikovA()
 
 	public void setAgentPracovnikovA(AgentPracovnikovA agentPracovnikovA)
 	{_agentPracovnikovA = agentPracovnikovA; }
-
-	private AgentPracovnikovB _agentPracovnikovB;
-
-public AgentPracovnikovB agentPracovnikovB()
-	{ return _agentPracovnikovB; }
-
-	public void setAgentPracovnikovB(AgentPracovnikovB agentPracovnikovB)
-	{_agentPracovnikovB = agentPracovnikovB; }
 	//meta! tag="end"
 }

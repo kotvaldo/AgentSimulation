@@ -39,8 +39,18 @@ public class ManagerCinnosti extends OSPABA.Manager
 	{
 	}
 
+	//meta! sender="ProcesSkladania", id="283", type="Finish"
+	public void processFinishProcesSkladania(MessageForm message)
+	{
+	}
+
 	//meta! sender="ProcesMorenia", id="279", type="Finish"
 	public void processFinishProcesMorenia(MessageForm message)
+	{
+	}
+
+	//meta! sender="ProcesLakovania", id="277", type="Finish"
+	public void processFinishProcesLakovania(MessageForm message)
 	{
 	}
 
@@ -54,16 +64,6 @@ public class ManagerCinnosti extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="ProcesLakovania", id="277", type="Finish"
-	public void processFinishProcesLakovania(MessageForm message)
-	{
-	}
-
-	//meta! sender="ProcesSkladania", id="283", type="Finish"
-	public void processFinishProcesSkladania(MessageForm message)
-	{
-	}
-
 	//meta! sender="AgentNabytku", id="286", type="Response"
 	public void processRUrobMorenie(MessageForm message)
 	{
@@ -74,13 +74,13 @@ public class ManagerCinnosti extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="AgentNabytku", id="285", type="Response"
-	public void processRUrobPripravuVSklade(MessageForm message)
+	//meta! sender="AgentNabytku", id="287", type="Response"
+	public void processRUrobLakovanie(MessageForm message)
 	{
 	}
 
-	//meta! sender="AgentNabytku", id="287", type="Response"
-	public void processRUrobLakovanie(MessageForm message)
+	//meta! sender="AgentNabytku", id="285", type="Response"
+	public void processRUrobPripravuVSklade(MessageForm message)
 	{
 	}
 
@@ -105,8 +105,16 @@ public class ManagerCinnosti extends OSPABA.Manager
 		case Mc.finish:
 			switch (message.sender().id())
 			{
+			case Id.procesSkladania:
+				processFinishProcesSkladania(message);
+			break;
+
 			case Id.procesMorenia:
 				processFinishProcesMorenia(message);
+			break;
+
+			case Id.procesLakovania:
+				processFinishProcesLakovania(message);
 			break;
 
 			case Id.procesMontaze:
@@ -116,19 +124,7 @@ public class ManagerCinnosti extends OSPABA.Manager
 			case Id.procesRezania:
 				processFinishProcesRezania(message);
 			break;
-
-			case Id.procesLakovania:
-				processFinishProcesLakovania(message);
-			break;
-
-			case Id.procesSkladania:
-				processFinishProcesSkladania(message);
-			break;
 			}
-		break;
-
-		case Mc.rUrobPripravuVSklade:
-			processRUrobPripravuVSklade(message);
 		break;
 
 		case Mc.rUrobSkladanie:
@@ -139,20 +135,24 @@ public class ManagerCinnosti extends OSPABA.Manager
 			processRUrobRezanie(message);
 		break;
 
-		case Mc.init:
-			processInit(message);
-		break;
-
-		case Mc.rUrobMontaz:
-			processRUrobMontaz(message);
-		break;
-
 		case Mc.rUrobLakovanie:
 			processRUrobLakovanie(message);
 		break;
 
 		case Mc.rUrobMorenie:
 			processRUrobMorenie(message);
+		break;
+
+		case Mc.rUrobPripravuVSklade:
+			processRUrobPripravuVSklade(message);
+		break;
+
+		case Mc.rUrobMontaz:
+			processRUrobMontaz(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
 		break;
 
 		default:

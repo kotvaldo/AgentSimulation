@@ -52,12 +52,12 @@ public class ManagerModelu extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.noticePrichodObjednavky:
-			processNoticePrichodObjednavky(message);
-		break;
-
 		case Mc.noticeHotovaObjednavka:
 			processNoticeHotovaObjednavka(message);
+		break;
+
+		case Mc.noticePrichodObjednavky:
+			processNoticePrichodObjednavky(message);
 		break;
 
 		default:

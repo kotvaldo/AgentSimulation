@@ -57,12 +57,12 @@ public class ManagerPracovisk extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.rDajVolnePracovneMiesto:
-			processRDajVolnePracovneMiesto(message);
-		break;
-
 		case Mc.init:
 			processInit(message);
+		break;
+
+		case Mc.rDajVolnePracovneMiesto:
+			processRDajVolnePracovneMiesto(message);
 		break;
 
 		case Mc.noticeUvolniPracovneMiesto:

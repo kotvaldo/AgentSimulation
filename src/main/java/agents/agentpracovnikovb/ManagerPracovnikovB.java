@@ -52,12 +52,12 @@ public class ManagerPracovnikovB extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.rVyberPracovnikaB:
-			processRVyberPracovnikaB(message);
-		break;
-
 		case Mc.noticeUvolniB:
 			processNoticeUvolniB(message);
+		break;
+
+		case Mc.rVyberPracovnikaB:
+			processRVyberPracovnikaB(message);
 		break;
 
 		default:

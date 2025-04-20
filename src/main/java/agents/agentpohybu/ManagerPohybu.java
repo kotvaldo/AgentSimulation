@@ -34,13 +34,13 @@ public class ManagerPohybu extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="PresunDoSkladu", id="117", type="Finish"
-	public void processFinishPresunDoSkladu(MessageForm message)
+	//meta! sender="ProcesPresunDoSkladu", id="117", type="Finish"
+	public void processFinishProcesPresunDoSkladu(MessageForm message)
 	{
 	}
 
-	//meta! sender="PresunNaPracovisko", id="115", type="Finish"
-	public void processFinishPresunNaPracovisko(MessageForm message)
+	//meta! sender="ProcesPresunNaPracovisko", id="115", type="Finish"
+	public void processFinishProcesPresunNaPracovisko(MessageForm message)
 	{
 	}
 
@@ -67,29 +67,29 @@ public class ManagerPohybu extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
+		case Mc.rPresunNaPracovisko:
+			processRPresunNaPracovisko(message);
+		break;
+
 		case Mc.finish:
 			switch (message.sender().id())
 			{
-			case Id.presunDoSkladu:
-				processFinishPresunDoSkladu(message);
+			case Id.procesPresunDoSkladu:
+				processFinishProcesPresunDoSkladu(message);
 			break;
 
-			case Id.presunNaPracovisko:
-				processFinishPresunNaPracovisko(message);
+			case Id.procesPresunNaPracovisko:
+				processFinishProcesPresunNaPracovisko(message);
 			break;
 			}
-		break;
-
-		case Mc.init:
-			processInit(message);
 		break;
 
 		case Mc.rPresunDoSkladu:
 			processRPresunDoSkladu(message);
 		break;
 
-		case Mc.rPresunNaPracovisko:
-			processRPresunNaPracovisko(message);
+		case Mc.init:
+			processInit(message);
 		break;
 
 		default:

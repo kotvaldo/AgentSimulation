@@ -29,7 +29,7 @@ public class ManagerOkolia extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="PrichodObjednavky", id="302", type="Finish"
+	//meta! sender="PlanovacPrichodObjednavky", id="302", type="Finish"
 	public void processFinish(MessageForm message)
 	{
 	}
@@ -52,12 +52,12 @@ public class ManagerOkolia extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.finish:
-			processFinish(message);
-		break;
-
 		case Mc.init:
 			processInit(message);
+		break;
+
+		case Mc.finish:
+			processFinish(message);
 		break;
 
 		default:

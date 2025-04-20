@@ -29,13 +29,13 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="AgentNabytku", id="65", type="Notice"
-	public void processInit(MessageForm message)
+	//meta! sender="AgentPracovnikovC", id="248", type="Request"
+	public void processRVyberPracovnikaC(MessageForm message)
 	{
 	}
 
-	//meta! sender="AgentPracovnikovC", id="248", type="Request"
-	public void processRVyberPracovnikaC(MessageForm message)
+	//meta! sender="AgentNabytku", id="65", type="Notice"
+	public void processInit(MessageForm message)
 	{
 	}
 
@@ -54,23 +54,23 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="AgentNabytku", id="204", type="Notice"
-	public void processNoticeUvolniPracovnikaB(MessageForm message)
-	{
-	}
-
 	//meta! sender="AgentNabytku", id="90", type="Response"
 	public void processRVyberPracovnikaSkladanie(MessageForm message)
 	{
 	}
 
-	//meta! sender="AgentNabytku", id="167", type="Response"
-	public void processRVyberPracovnikaMontaz(MessageForm message)
+	//meta! sender="AgentNabytku", id="204", type="Notice"
+	public void processNoticeUvolniPracovnikaB(MessageForm message)
 	{
 	}
 
 	//meta! sender="AgentNabytku", id="126", type="Notice"
 	public void processNoticeUvolniPracovnikaA(MessageForm message)
+	{
+	}
+
+	//meta! sender="AgentNabytku", id="167", type="Response"
+	public void processRVyberPracovnikaMontaz(MessageForm message)
 	{
 	}
 
@@ -102,16 +102,40 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
+		case Mc.rVyberPracovnikaRezanie:
+			processRVyberPracovnikaRezanie(message);
+		break;
+
+		case Mc.rVyberPracovnikaSkladanie:
+			processRVyberPracovnikaSkladanie(message);
+		break;
+
+		case Mc.rVyberPracovnikaB:
+			processRVyberPracovnikaB(message);
+		break;
+
+		case Mc.rVyberPracovnikaC:
+			processRVyberPracovnikaC(message);
+		break;
+
 		case Mc.init:
 			processInit(message);
+		break;
+
+		case Mc.noticeUvolniPracovnikaC:
+			processNoticeUvolniPracovnikaC(message);
 		break;
 
 		case Mc.rVyberPracovnikaMorenie:
 			processRVyberPracovnikaMorenie(message);
 		break;
 
-		case Mc.rVyberPracovnikaB:
-			processRVyberPracovnikaB(message);
+		case Mc.noticeUvolniPracovnikaA:
+			processNoticeUvolniPracovnikaA(message);
+		break;
+
+		case Mc.noticeUvolniPracovnikaB:
+			processNoticeUvolniPracovnikaB(message);
 		break;
 
 		case Mc.rVyberPracovnikaLakovanie:
@@ -124,30 +148,6 @@ public class ManagerPracovnikov extends OSPABA.Manager
 
 		case Mc.rVyberPracovnikaMontaz:
 			processRVyberPracovnikaMontaz(message);
-		break;
-
-		case Mc.noticeUvolniPracovnikaB:
-			processNoticeUvolniPracovnikaB(message);
-		break;
-
-		case Mc.rVyberPracovnikaRezanie:
-			processRVyberPracovnikaRezanie(message);
-		break;
-
-		case Mc.rVyberPracovnikaC:
-			processRVyberPracovnikaC(message);
-		break;
-
-		case Mc.noticeUvolniPracovnikaC:
-			processNoticeUvolniPracovnikaC(message);
-		break;
-
-		case Mc.rVyberPracovnikaSkladanie:
-			processRVyberPracovnikaSkladanie(message);
-		break;
-
-		case Mc.noticeUvolniPracovnikaA:
-			processNoticeUvolniPracovnikaA(message);
 		break;
 
 		default:

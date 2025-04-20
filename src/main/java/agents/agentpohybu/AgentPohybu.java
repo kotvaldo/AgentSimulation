@@ -24,8 +24,8 @@ public class AgentPohybu extends OSPABA.Agent
 	private void init()
 	{
 		new ManagerPohybu(Id.managerPohybu, mySim(), this);
-		new PresunDoSkladu(Id.presunDoSkladu, mySim(), this);
-		new PresunNaPracovisko(Id.presunNaPracovisko, mySim(), this);
+		new ProcesPresunNaPracovisko(Id.procesPresunNaPracovisko, mySim(), this);
+		new ProcesPresunDoSkladu(Id.procesPresunDoSkladu, mySim(), this);
 		addOwnMessage(Mc.rPresunDoSkladu);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.rPresunNaPracovisko);

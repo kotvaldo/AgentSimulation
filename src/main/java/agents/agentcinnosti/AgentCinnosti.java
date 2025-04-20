@@ -25,17 +25,17 @@ public class AgentCinnosti extends OSPABA.Agent
 	{
 		new ManagerCinnosti(Id.managerCinnosti, mySim(), this);
 		new ProcesLakovania(Id.procesLakovania, mySim(), this);
-		new ProcesSkladania(Id.procesSkladania, mySim(), this);
 		new ProcesMontaze(Id.procesMontaze, mySim(), this);
 		new ProcesMorenia(Id.procesMorenia, mySim(), this);
+		new ProcesSkladania(Id.procesSkladania, mySim(), this);
 		new ProcesRezania(Id.procesRezania, mySim(), this);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.rUrobRezanie);
 		addOwnMessage(Mc.rUrobSkladanie);
 		addOwnMessage(Mc.rUrobMorenie);
 		addOwnMessage(Mc.rUrobMontaz);
-		addOwnMessage(Mc.rUrobPripravuVSklade);
 		addOwnMessage(Mc.rUrobLakovanie);
+		addOwnMessage(Mc.rUrobPripravuVSklade);
 	}
 	//meta! tag="end"
 }

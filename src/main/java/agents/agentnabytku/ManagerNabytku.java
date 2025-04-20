@@ -49,13 +49,13 @@ public class ManagerNabytku extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="AgentPracovnikov", id="167", type="Request"
-	public void processRVyberPracovnikaMontaz(MessageForm message)
+	//meta! sender="AgentCinnosti", id="286", type="Request"
+	public void processRUrobMorenie(MessageForm message)
 	{
 	}
 
-	//meta! sender="AgentCinnosti", id="286", type="Request"
-	public void processRUrobMorenie(MessageForm message)
+	//meta! sender="AgentPracovnikov", id="167", type="Request"
+	public void processRVyberPracovnikaMontaz(MessageForm message)
 	{
 	}
 
@@ -127,72 +127,72 @@ public class ManagerNabytku extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.rDajVolnePracovneMiesto:
-			processRDajVolnePracovneMiesto(message);
+		case Mc.rUrobRezanie:
+			processRUrobRezanie(message);
 		break;
 
 		case Mc.rVyberPracovnikaMorenie:
 			processRVyberPracovnikaMorenie(message);
 		break;
 
-		case Mc.rVyberPracovnikaLakovanie:
-			processRVyberPracovnikaLakovanie(message);
-		break;
-
-		case Mc.rVyberPracovnikaMontaz:
-			processRVyberPracovnikaMontaz(message);
-		break;
-
-		case Mc.rVyberPracovnikaRezanie:
-			processRVyberPracovnikaRezanie(message);
-		break;
-
-		case Mc.init:
-			processInit(message);
-		break;
-
-		case Mc.rUrobRezanie:
-			processRUrobRezanie(message);
-		break;
-
-		case Mc.rUrobMontaz:
-			processRUrobMontaz(message);
-		break;
-
 		case Mc.rUrobLakovanie:
 			processRUrobLakovanie(message);
 		break;
 
-		case Mc.rPripravVSklade:
-			processRPripravVSklade(message);
-		break;
-
-		case Mc.rVyberPracovnikaSkladanie:
-			processRVyberPracovnikaSkladanie(message);
-		break;
-
-		case Mc.rPresunDoSkladu:
-			processRPresunDoSkladu(message);
-		break;
-
-		case Mc.rUrobPripravuVSklade:
-			processRUrobPripravuVSklade(message);
+		case Mc.rVyberPracovnikaLakovanie:
+			processRVyberPracovnikaLakovanie(message);
 		break;
 
 		case Mc.noticeSpracujObjednavku:
 			processNoticeSpracujObjednavku(message);
 		break;
 
-		case Mc.rUrobSkladanie:
-			processRUrobSkladanie(message);
+		case Mc.rDajVolnePracovneMiesto:
+			processRDajVolnePracovneMiesto(message);
+		break;
+
+		case Mc.rPripravVSklade:
+			processRPripravVSklade(message);
+		break;
+
+		case Mc.rUrobMontaz:
+			processRUrobMontaz(message);
+		break;
+
+		case Mc.rPresunDoSkladu:
+			processRPresunDoSkladu(message);
 		break;
 
 		case Mc.rPresunNaPracovisko:
 			processRPresunNaPracovisko(message);
 		break;
 
+		case Mc.rVyberPracovnikaRezanie:
+			processRVyberPracovnikaRezanie(message);
+		break;
+
+		case Mc.rVyberPracovnikaSkladanie:
+			processRVyberPracovnikaSkladanie(message);
+		break;
+
+		case Mc.rUrobSkladanie:
+			processRUrobSkladanie(message);
+		break;
+
 		case Mc.rUrobMorenie:
 			processRUrobMorenie(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
+		break;
+
+		case Mc.rVyberPracovnikaMontaz:
+			processRVyberPracovnikaMontaz(message);
+		break;
+
+		case Mc.rUrobPripravuVSklade:
+			processRUrobPripravuVSklade(message);
 		break;
 
 		default:
