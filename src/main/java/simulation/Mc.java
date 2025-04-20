@@ -1,0 +1,41 @@
+package simulation;
+
+import OSPABA.*;
+
+public class Mc extends OSPABA.IdList
+{
+	//meta! userInfo="Generated code: do not modify", tag="begin"
+	public static final int init = 1028;
+	public static final int rPresunDoSkladu = 1036;
+	public static final int noticeHotovaObjednavka = 1042;
+	public static final int rUrobRezanie = 1091;
+	public static final int rPresunNaPracovisko = 1043;
+	public static final int rUrobPripravuVSklade = 1092;
+	public static final int rUrobMorenie = 1093;
+	public static final int rUrobLakovanie = 1094;
+	public static final int rUrobSkladanie = 1095;
+	public static final int rUrobMontaz = 1096;
+	public static final int rVyberPracovnikaMorenie = 1045;
+	public static final int rVyberPracovnikaLakovanie = 1046;
+	public static final int rVyberPracovnikaMontaz = 1049;
+	public static final int rVyberPracovnikaRezanie = 1050;
+	public static final int rDajVolnePracovneMiesto = 1056;
+	public static final int rPripravVSklade = 1097;
+	public static final int noticePrichodObjednavky = 1099;
+	public static final int noticeUvolniPracovnikaB = 1070;
+	public static final int noticeUvolniPracovnikaC = 1071;
+	public static final int noticeUvolniPracovneMiesto = 1073;
+	public static final int noticeSpracujObjednavku = 1012;
+	public static final int noticeNovaObjednavka = 1100;
+	public static final int rVyberPracovnikaSkladanie = 1016;
+	public static final int noticeUvolniA = 1079;
+	public static final int noticeUvolniB = 1080;
+	public static final int noticeUvolniC = 1081;
+	public static final int rVyberPracovnikaA = 1082;
+	public static final int rVyberPracovnikaB = 1085;
+	public static final int rVyberPracovnikaC = 1087;
+	public static final int noticeUvolniPracovnikaA = 1027;
+	//meta! tag="end"
+
+	// 1..1000 range reserved for user
+}
