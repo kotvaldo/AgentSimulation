@@ -1,7 +1,6 @@
 package agents.agentpracovnikovc;
 
 import OSPABA.*;
-import entities.WorkerA;
 import entities.WorkerB;
 import entities.WorkerC;
 import simulation.*;
@@ -11,15 +10,13 @@ import java.util.LinkedList;
 //meta! id="230"
 public class ManagerPracovnikovC extends OSPABA.Manager
 {
-	private LinkedList<WorkerC> workersC = new LinkedList<>();
+	private LinkedList<WorkerC> freeWorkersC = new LinkedList<>();
 	public ManagerPracovnikovC(int id, Simulation mySim, Agent myAgent)
 	{
 		super(id, mySim, myAgent);
 		init();
-		MySimulation mySimulation = (MySimulation) mySim;
-		for (int i = 0; i < mySimulation.getCountWorkerC(); i++) {
-			this.workersC.add(new WorkerC());
-		}
+		MySimulation mySimulation = (MySimulation) _mySim;
+		freeWorkersC = new LinkedList<>(mySimulation.getWorkersCArrayList());
 	}
 
 	@Override
@@ -32,22 +29,35 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 		{
 			petriNet().clear();
 		}
-		workersC.clear();
-		MySimulation mySimulation = (MySimulation) mySim();
-		for (int i = 0; i < mySimulation.getCountWorkerC(); i++) {
-			this.workersC.add(new WorkerC());
-		}
+		freeWorkersC.clear();
+		MySimulation mySimulation = (MySimulation) _mySim;
+		freeWorkersC = new LinkedList<>(mySimulation.getWorkersCArrayList());
 
 	}
 
 	//meta! sender="AgentPracovnikov", id="248", type="Request"
 	public void processRVyberPracovnikaC(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message;
+
+		if (!freeWorkersC.isEmpty()) {
+			WorkerC workerC = freeWorkersC.removeFirst();
+			msg.setWorkerC(workerC);
+		} else {
+			msg.setWorkerA(null);
+		}
+
+		response(msg);
 	}
 
 	//meta! sender="AgentPracovnikov", id="241", type="Notice"
 	public void processNoticeUvolniC(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message;
+		msg.getWorkerC().setIsBusy(false);
+		this.freeWorkersC.addLast(msg.getWorkerC());
+		msg.setWorkerC(null);
+
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

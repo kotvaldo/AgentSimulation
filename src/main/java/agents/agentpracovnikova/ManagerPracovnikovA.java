@@ -2,7 +2,6 @@ package agents.agentpracovnikova;
 
 import OSPABA.*;
 import entities.WorkerA;
-import entities.WorkerB;
 import simulation.*;
 
 import java.util.LinkedList;
@@ -10,7 +9,6 @@ import java.util.LinkedList;
 //meta! id="228"
 public class ManagerPracovnikovA extends OSPABA.Manager
 {
-	private LinkedList<WorkerA> workersA = new LinkedList<>();
 	private LinkedList<WorkerA> freeWorkersA = new LinkedList<>();
 
 	public ManagerPracovnikovA(int id, Simulation mySim, Agent myAgent)
@@ -18,9 +16,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		super(id, mySim, myAgent);
 		init();
 		MySimulation mySimulation = (MySimulation) mySim;
-		for (int i = 0; i < mySimulation.getCountWorkerA(); i++) {
-			this.workersA.add(new WorkerA());
-		}
+		freeWorkersA = new LinkedList<>(mySimulation.getWorkersAArrayList());
 	}
 
 	@Override
@@ -32,26 +28,36 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		{
 			petriNet().clear();
 		}
-		workersA.clear();
+		freeWorkersA.clear();
 		MySimulation mySimulation = (MySimulation) _mySim;
-		for (int i = 0; i < mySimulation.getCountWorkerA(); i++) {
-			this.workersA.add(new WorkerA());
-		}
+		freeWorkersA = new LinkedList<>(mySimulation.getWorkersAArrayList());
 	}
 
 	//meta! sender="AgentPracovnikov", id="242", type="Request"
 	public void processRVyberPracovnikaA(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message.createCopy();
+		MyMessage msg = (MyMessage) message;
 
-		msg.setCode(Mc.rVyberPracovnikaA);
-		msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+		if (!freeWorkersA.isEmpty()) {
+			WorkerA workerA = freeWorkersA.removeFirst();
+			msg.setWorkerA(workerA);
+		} else {
+			msg.setWorkerA(null);
+		}
+
 		response(msg);
 	}
+
 
 	//meta! sender="AgentPracovnikov", id="239", type="Notice"
 	public void processNoticeUvolniA(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message;
+		msg.getWorkerA().setIsBusy(false);
+		this.freeWorkersA.addLast(msg.getWorkerA());
+		msg.setWorkerA(null);
+
+
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

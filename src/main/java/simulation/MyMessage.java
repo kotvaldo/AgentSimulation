@@ -1,17 +1,16 @@
 package simulation;
 
 import OSPABA.*;
-import entities.Furniture;
-import entities.Order;
-import entities.WorkPlace;
-import entities.Worker;
+import entities.*;
 
 public class MyMessage extends OSPABA.MessageForm
 {
-	protected Order order;
-	protected Furniture furniture;
-	protected WorkPlace workPlace;
-	protected Worker worker;
+	private Order order;
+	private Furniture furniture;
+	private WorkPlace workPlace;
+	private WorkerA workerA;
+	private WorkerB workerB;
+	private WorkerC workerC;
 
 	public MyMessage(Simulation mySim)
 	{
@@ -36,7 +35,9 @@ public class MyMessage extends OSPABA.MessageForm
 		super.copy(message);
 		MyMessage original = (MyMessage)message;
 		workPlace = original.getWorkPlace();
-		worker = original.getWorker();
+		workerA = original.getWorkerA();
+		workerB = original.getWorkerB();
+		workerC = original.getWorkerC();
 		order = original.getOrder();
 		furniture = original.getFurniture();
 
@@ -66,12 +67,12 @@ public class MyMessage extends OSPABA.MessageForm
 		this.workPlace = workPlace;
 	}
 
-	public Worker getWorker() {
-		return worker;
+	public WorkerA getWorkerA() {
+		return workerA;
 	}
 
-	public void setWorker(Worker worker) {
-		this.worker = worker;
+	public void setWorkerA(WorkerA workerA) {
+		this.workerA = workerA;
 	}
 
 	@Override
@@ -87,4 +88,19 @@ public class MyMessage extends OSPABA.MessageForm
 		return this.getFurniture().getId() == other.getFurniture().getId();
 	}
 
+    public WorkerB getWorkerB() {
+        return workerB;
+    }
+
+    public void setWorkerB(WorkerB workerB) {
+        this.workerB = workerB;
+    }
+
+    public WorkerC getWorkerC() {
+        return workerC;
+    }
+
+    public void setWorkerC(WorkerC workerC) {
+        this.workerC = workerC;
+    }
 }

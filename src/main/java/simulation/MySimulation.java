@@ -15,8 +15,7 @@ import agents.agentmodelu.*;
 import agents.agentpracovnikov.*;
 import agents.agentpracovisk.*;
 import agents.agentpracovnikovc.*;
-import entities.Furniture;
-import entities.Order;
+import entities.*;
 
 import java.util.ArrayList;
 
@@ -34,6 +33,12 @@ public class MySimulation extends OSPABA.Simulation
 	private boolean slowMode = false;
 	private int workPlacesCount;
 
+	private ArrayList<WorkerA> workersAArrayList;
+	private ArrayList<WorkerB> workersBArrayList;
+	private ArrayList<WorkerC> workersCArrayList;
+	private ArrayList<WorkPlace> workPlacesArrayList;
+
+
 	public MySimulation()
 	{
 		init();
@@ -43,6 +48,11 @@ public class MySimulation extends OSPABA.Simulation
 		partialTimeOfWork = new Average();
 		timeOfWorkAverage = new Average();
 		queueLength = new QueueLength();
+		workersAArrayList = new ArrayList<>();
+		workersBArrayList = new ArrayList<>();
+		workersCArrayList = new ArrayList<>();
+		workPlacesArrayList = new ArrayList<>();
+
 
 	}
 	@Override
@@ -50,12 +60,37 @@ public class MySimulation extends OSPABA.Simulation
 	{
 		super.prepareSimulation();
 		// Create global statistcis
+
 	}
 
 	@Override
 	public void prepareReplication()
 	{
 		super.prepareReplication();
+		orderArrayList.clear();
+		furnitureArrayList.clear();
+		partialTimeOfWork.clear();
+		timeOfWorkAverage.clear();
+		queueLength.clear();
+		workersAArrayList.clear();
+		workersBArrayList.clear();
+		workersCArrayList.clear();
+		workPlacesArrayList.clear();
+
+		for (int i = 0; i < countWorkerA; i++) {
+			workersAArrayList.add(new WorkerA());
+		}
+		for (int i = 0; i < countWorkerB; i++) {
+			workersBArrayList.add(new WorkerB());
+		}
+		for (int i = 0; i < countWorkerC; i++) {
+			workersCArrayList.add(new WorkerC());
+		}
+		for (int i = 0; i < workPlacesCount; i++) {
+			workPlacesArrayList.add(new WorkPlace());
+		}
+
+
 		// Reset entities, queues, local statistics, etc...
 	}
 
@@ -239,6 +274,22 @@ public AgentPracovnikovB agentPracovnikovB()
 
     public void setWorkPlacesCount(int workPlacesCount) {
         this.workPlacesCount = workPlacesCount;
+    }
+
+    public ArrayList<WorkPlace> getWorkPlacesArrayList() {
+        return workPlacesArrayList;
+    }
+
+    public ArrayList<WorkerC> getWorkersCArrayList() {
+        return workersCArrayList;
+    }
+
+    public ArrayList<WorkerB> getWorkersBArrayList() {
+        return workersBArrayList;
+    }
+
+    public ArrayList<WorkerA> getWorkersAArrayList() {
+        return workersAArrayList;
     }
 
 

@@ -9,16 +9,13 @@ import java.util.LinkedList;
 //meta! id="62"
 public class ManagerPracovisk extends OSPABA.Manager
 {
-	private LinkedList<WorkPlace> workplaces = new LinkedList<>();
+	private LinkedList<WorkPlace> freeWorkPlaces = new LinkedList<>();
 	public ManagerPracovisk(int id, Simulation mySim, Agent myAgent)
 	{
 		super(id, mySim, myAgent);
 		init();
 		MySimulation mySimulation = (MySimulation) _mySim;
-		for (int i = 0; i < mySimulation.getWorkPlacesCount(); i++) {
-			workplaces.add(new WorkPlace());
-
-		}
+		freeWorkPlaces = new LinkedList<>(mySimulation.getWorkPlacesArrayList());
 	}
 
 	@Override
@@ -32,12 +29,9 @@ public class ManagerPracovisk extends OSPABA.Manager
 			petriNet().clear();
 		}
 
-		workplaces.clear();
+		freeWorkPlaces.clear();
 		MySimulation mySimulation = (MySimulation) _mySim;
-		for (int i = 0; i < mySimulation.getWorkPlacesCount(); i++) {
-			workplaces.add(new WorkPlace());
-
-		}
+		freeWorkPlaces = new LinkedList<>(mySimulation.getWorkPlacesArrayList());
 	}
 
 	//meta! sender="AgentNabytku", id="72", type="Notice"
