@@ -1,15 +1,24 @@
 package agents.agentpracovisk;
 
 import OSPABA.*;
+import entities.WorkPlace;
 import simulation.*;
+
+import java.util.LinkedList;
 
 //meta! id="62"
 public class ManagerPracovisk extends OSPABA.Manager
 {
+	private LinkedList<WorkPlace> workplaces = new LinkedList<>();
 	public ManagerPracovisk(int id, Simulation mySim, Agent myAgent)
 	{
 		super(id, mySim, myAgent);
 		init();
+		MySimulation mySimulation = (MySimulation) _mySim;
+		for (int i = 0; i < mySimulation.getWorkPlacesCount(); i++) {
+			workplaces.add(new WorkPlace());
+
+		}
 	}
 
 	@Override
@@ -21,6 +30,13 @@ public class ManagerPracovisk extends OSPABA.Manager
 		if (petriNet() != null)
 		{
 			petriNet().clear();
+		}
+
+		workplaces.clear();
+		MySimulation mySimulation = (MySimulation) _mySim;
+		for (int i = 0; i < mySimulation.getWorkPlacesCount(); i++) {
+			workplaces.add(new WorkPlace());
+
 		}
 	}
 

@@ -1,15 +1,22 @@
 package agents.agentpracovnikov;
 
 import OSPABA.*;
+import entities.WorkerA;
+import entities.WorkerB;
+import entities.WorkerC;
 import simulation.*;
+
+import java.util.LinkedList;
 
 //meta! id="5"
 public class ManagerPracovnikov extends OSPABA.Manager
 {
+
 	public ManagerPracovnikov(int id, Simulation mySim, Agent myAgent)
 	{
 		super(id, mySim, myAgent);
 		init();
+
 	}
 
 	@Override
@@ -27,6 +34,7 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	//meta! sender="AgentPracovnikovB", id="246", type="Response"
 	public void processRVyberPracovnikaB(MessageForm message)
 	{
+
 	}
 
 	//meta! sender="AgentNabytku", id="65", type="Notice"
@@ -77,6 +85,12 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	//meta! sender="AgentNabytku", id="168", type="Request"
 	public void processRVyberPracovnikaRezanie(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message.createCopy();
+
+		msg.setCode(Mc.rVyberPracovnikaA);
+		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovA));
+		request(msg);
+
 	}
 
 	//meta! sender="AgentNabytku", id="205", type="Notice"
@@ -147,6 +161,7 @@ public class ManagerPracovnikov extends OSPABA.Manager
 		break;
 
 		case Mc.rVyberPracovnikaRezanie:
+
 			processRVyberPracovnikaRezanie(message);
 		break;
 

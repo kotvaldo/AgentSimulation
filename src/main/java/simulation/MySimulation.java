@@ -28,6 +28,12 @@ public class MySimulation extends OSPABA.Simulation
 	private final Average partialTimeOfWork;
 	private final Average timeOfWorkAverage;
 	private final QueueLength queueLength;
+	private int countWorkerA;
+	private int countWorkerB;
+	private int countWorkerC;
+	private boolean slowMode = false;
+	private int workPlacesCount;
+
 	public MySimulation()
 	{
 		init();
@@ -193,6 +199,46 @@ public AgentPracovnikovB agentPracovnikovB()
 
     public QueueLength getQueueLength() {
         return queueLength;
+    }
+
+    public int getCountWorkerA() {
+        return countWorkerA;
+    }
+
+    public void setCountWorkerA(int countWorkerA) {
+        this.countWorkerA = countWorkerA;
+    }
+
+    public int getCountWorkerB() {
+        return countWorkerB;
+    }
+
+    public void setCountWorkerB(int countWorkerB) {
+        this.countWorkerB = countWorkerB;
+    }
+
+    public int getCountWorkerC() {
+        return countWorkerC;
+    }
+
+    public void setCountWorkerC(int countWorkerC) {
+        this.countWorkerC = countWorkerC;
+    }
+
+    public boolean isSlowMode() {
+        return slowMode;
+    }
+
+    public void setSlowMode(boolean slowMode) {
+        this.slowMode = slowMode;
+    }
+
+    public int getWorkPlacesCount() {
+        return workPlacesCount;
+    }
+
+    public void setWorkPlacesCount(int workPlacesCount) {
+        this.workPlacesCount = workPlacesCount;
     }
 
 

@@ -1,11 +1,15 @@
 package agents.agentpracovisk;
 
 import OSPABA.*;
+import entities.WorkPlace;
 import simulation.*;
+
+import java.util.LinkedList;
 
 //meta! id="62"
 public class AgentPracovisk extends OSPABA.Agent
 {
+
 	public AgentPracovisk(int id, Simulation mySim, Agent parent)
 	{
 		super(id, mySim, parent);

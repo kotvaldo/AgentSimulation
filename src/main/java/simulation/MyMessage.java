@@ -73,4 +73,18 @@ public class MyMessage extends OSPABA.MessageForm
 	public void setWorker(Worker worker) {
 		this.worker = worker;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null || getClass() != obj.getClass()) return false;
+
+		MyMessage other = (MyMessage) obj;
+
+		if (this.getFurniture() == null || other.getFurniture() == null)
+			return false;
+
+		return this.getFurniture().getId() == other.getFurniture().getId();
+	}
+
 }
