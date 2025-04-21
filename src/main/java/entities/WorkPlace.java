@@ -4,7 +4,7 @@ import IDGenerator.IDGenerator;
 
 public class WorkPlace {
     private final int id;
-    private Order order;
+    private Furniture furniture;
     private boolean isBusy;
     private Worker worker;
     private String activity = "Nothing";
@@ -12,19 +12,19 @@ public class WorkPlace {
     public WorkPlace() {
         this.id = IDGenerator.getInstance().getNextWorkplaceId();
         isBusy = false;
-        order = null;
+        furniture = null;
         worker = null;
     }
 
 
-    public Order getOrder() {
-        return order;
+    public Furniture getFurniture() {
+        return furniture;
 
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
-        this.isBusy = order != null;
+    public void setFurniture(Furniture furniture) {
+        this.furniture = furniture;
+        this.isBusy = furniture != null;
     }
 
     public boolean isBusy() {
@@ -41,7 +41,7 @@ public class WorkPlace {
 
     public void setBusy(boolean busy) {
         if(!busy) {
-            this.order = null;
+            this.furniture = null;
         }
         isBusy = busy;
     }

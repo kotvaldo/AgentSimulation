@@ -1,19 +1,23 @@
 package agents.agentnabytku;
 
 import OSPABA.*;
-import entities.Furniture;
-import entities.Queue;
-import entities.QueueNonProcessed;
+import entities.*;
 import simulation.*;
 
 //meta! id="9"
 public class ManagerNabytku extends OSPABA.Manager {
-    private QueueNonProcessed nonStartedFurniture;
-
+    private QueueNonProcessed queueNonProcessed;
+    private QueueColoring queueColoring;
+    private QueueAssembly queueAssembly;
+    private QueueMontage queueMontage;
     public ManagerNabytku(int id, Simulation mySim, Agent myAgent) {
         super(id, mySim, myAgent);
         init();
-        nonStartedFurniture = new QueueNonProcessed(null);
+        queueNonProcessed = new QueueNonProcessed(null);
+        queueColoring = new QueueColoring(null);
+        queueAssembly = new QueueAssembly(null);
+        queueMontage = new QueueMontage(null);
+
     }
 
     @Override
@@ -24,16 +28,22 @@ public class ManagerNabytku extends OSPABA.Manager {
         if (petriNet() != null) {
             petriNet().clear();
         }
-        nonStartedFurniture.getQueue().clear();
+        queueNonProcessed.getQueue().clear();
+        queueColoring.getQueue().clear();
+        queueAssembly.getQueue().clear();
+        queueMontage.getQueue().clear();
     }
+
+
+    //meta! sender="AgentModelu", id="24", type="Notice"
+    public void processInit(MessageForm message) {
+    }
+
 
     //meta! sender="AgentPohybu", id="138", type="Response"
     public void processRPresunDoSkladu(MessageForm message) {
     }
 
-    //meta! sender="AgentModelu", id="24", type="Notice"
-    public void processInit(MessageForm message) {
-    }
 
     //meta! sender="AgentPracovnikov", id="164", type="Response"
     public void processRVyberPracovnikaLakovanie(MessageForm message) {
@@ -70,10 +80,10 @@ public class ManagerNabytku extends OSPABA.Manager {
         for (Furniture furniture : msg.getOrder().getFurnitureList()) {
             MyMessage furnitureMsg = new MyMessage(mySimulation);
             furnitureMsg.setFurniture(furniture);
-            this.nonStartedFurniture.getQueue().addLast(furnitureMsg);
+            this.queueNonProcessed.getQueue().addLast(furnitureMsg);
         }
 
-        for (MyMessage furnitureMsg : this.nonStartedFurniture.getQueue()) {
+        for (MyMessage furnitureMsg : this.queueNonProcessed.getQueue()) {
             MyMessage workerRequest = new MyMessage(furnitureMsg);
             workerRequest.setCode(Mc.rVyberPracovnikaRezanie);
             workerRequest.setAddressee(mySim().findAgent(Id.agentPracovnikov));

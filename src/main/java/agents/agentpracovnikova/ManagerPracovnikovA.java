@@ -57,7 +57,6 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		this.freeWorkersA.addLast(msg.getWorkerA());
 		msg.setWorkerA(null);
 
-
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

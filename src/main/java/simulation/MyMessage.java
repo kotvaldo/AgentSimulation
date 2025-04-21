@@ -11,6 +11,7 @@ public class MyMessage extends OSPABA.MessageForm
 	private WorkerA workerA;
 	private WorkerB workerB;
 	private WorkerC workerC;
+	private Integer type = null;
 
 	public MyMessage(Simulation mySim)
 	{
@@ -40,6 +41,7 @@ public class MyMessage extends OSPABA.MessageForm
 		workerC = original.getWorkerC();
 		order = original.getOrder();
 		furniture = original.getFurniture();
+		type = original.getType();
 
 	}
 
@@ -102,5 +104,13 @@ public class MyMessage extends OSPABA.MessageForm
 
     public void setWorkerC(WorkerC workerC) {
         this.workerC = workerC;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

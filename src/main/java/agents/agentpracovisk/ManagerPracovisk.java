@@ -15,7 +15,6 @@ public class ManagerPracovisk extends OSPABA.Manager
 		super(id, mySim, myAgent);
 		init();
 		MySimulation mySimulation = (MySimulation) _mySim;
-		freeWorkPlaces = new LinkedList<>(mySimulation.getWorkPlacesArrayList());
 	}
 
 	@Override
@@ -29,11 +28,16 @@ public class ManagerPracovisk extends OSPABA.Manager
 			petriNet().clear();
 		}
 
-		freeWorkPlaces.clear();
-		MySimulation mySimulation = (MySimulation) _mySim;
-		freeWorkPlaces = new LinkedList<>(mySimulation.getWorkPlacesArrayList());
 	}
 
+	public WorkPlace dajPrveVolneMiestoPodlaId() {
+		MySimulation mySimulation = (MySimulation) _mySim;
+
+        return mySimulation.getWorkPlacesArrayList().stream()
+                .filter(p -> !p.isBusy())
+                .findFirst()
+                .orElse(null);
+	}
 	//meta! sender="AgentNabytku", id="72", type="Notice"
 	public void processInit(MessageForm message)
 	{
@@ -42,11 +46,18 @@ public class ManagerPracovisk extends OSPABA.Manager
 	//meta! sender="AgentNabytku", id="207", type="Notice"
 	public void processNoticeUvolniPracovneMiesto(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.getWorkPlace().setBusy(false);
 	}
 
 	//meta! sender="AgentNabytku", id="182", type="Response"
 	public void processRDajVolnePracovneMiesto(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message;
+		WorkPlace workPlace = dajPrveVolneMiestoPodlaId();
+		myMessage.setWorkPlace(workPlace);
+		myMessage.getWorkPlace().setBusy(true);
+
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

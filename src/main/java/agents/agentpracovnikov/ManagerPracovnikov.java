@@ -31,6 +31,7 @@ public class ManagerPracovnikov extends OSPABA.Manager
 		}
 	}
 
+
 	//meta! sender="AgentPracovnikovB", id="246", type="Response"
 	public void processRVyberPracovnikaB(MessageForm message)
 	{
@@ -68,30 +69,15 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="AgentNabytku", id="204", type="Notice"
-	public void processNoticeUvolniPracovnikaB(MessageForm message)
-	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.noticeUvolniB);
-		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovB));
-		request(msg);
-	}
-
 	//meta! sender="AgentNabytku", id="167", type="Request"
 	public void processRVyberPracovnikaMontaz(MessageForm message)
 	{
-
-	}
-
-	//meta! sender="AgentNabytku", id="126", type="Notice"
-	public void processNoticeUvolniPracovnikaA(MessageForm message)
-	{
 		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.noticeUvolniA);
-		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovA));
+
+		msg.setCode(Mc.rVyberPracovnikaC);
+		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
 		request(msg);
 	}
-
 	//meta! sender="AgentNabytku", id="168", type="Request"
 	public void processRVyberPracovnikaRezanie(MessageForm message)
 	{
@@ -102,14 +88,33 @@ public class ManagerPracovnikov extends OSPABA.Manager
 		request(msg);
 
 	}
+	//meta! sender="AgentNabytku", id="204", type="Notice"
+	public void processNoticeUvolniPracovnikaB(MessageForm message)
+	{
+		MyMessage msg = (MyMessage) message;
+		msg.setCode(Mc.noticeUvolniB);
+		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovB));
+		notice(msg);
+	}
+
+	//meta! sender="AgentNabytku", id="126", type="Notice"
+	public void processNoticeUvolniPracovnikaA(MessageForm message)
+	{
+		MyMessage msg = (MyMessage) message;
+		msg.setCode(Mc.noticeUvolniA);
+		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovA));
+		notice(msg);
+	}
+
+
 
 	//meta! sender="AgentNabytku", id="205", type="Notice"
 	public void processNoticeUvolniPracovnikaC(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
+		MyMessage msg = (MyMessage) message.createCopy();
 		msg.setCode(Mc.noticeUvolniC);
 		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
-		request(msg);
+		notice(msg);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
