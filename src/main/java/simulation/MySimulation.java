@@ -37,7 +37,7 @@ public class MySimulation extends OSPABA.Simulation
 	private final ArrayList<WorkerB> workersBArrayList;
 	private final ArrayList<WorkerC> workersCArrayList;
 	private final ArrayList<WorkPlace> workPlacesArrayList;
-
+	private int BurnInCount;
 	private int replicationsCount;
 
 
@@ -326,6 +326,14 @@ public AgentPracovnikovB agentPracovnikovB()
 
     public void setReplicationsCount(int replicationsCount) {
         this.replicationsCount = replicationsCount;
+    }
+
+    public int getBurnInCount() {
+        return BurnInCount;
+    }
+
+    public void setBurnInCount(int burnInCount) {
+        BurnInCount = burnInCount;
     }
 
 

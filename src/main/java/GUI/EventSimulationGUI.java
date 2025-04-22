@@ -36,6 +36,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private JSpinner workerASpinner;
     private JSpinner workerBSpinner;
     private JSpinner workerCSpinner;
+    private JSpinner workPlaceSpinner;
     private JLabel countALabel;
     private JLabel countBLabel;
     private JLabel countCLabel;
@@ -302,6 +303,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         workerASpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
         workerBSpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
         workerCSpinner = new JSpinner(new SpinnerNumberModel(18, 0, 1000, 1));
+        workPlaceSpinner = new JSpinner(new SpinnerNumberModel(50,0,1000,1));
 
         countALabel = new JLabel("Count A: ");
         countBLabel = new JLabel("Count B: ");
@@ -359,32 +361,32 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         gbc.gridx = 1;
         customPanel.add(workerCSpinner, gbc);
 
-
         gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        customPanel.add(Box.createVerticalStrut(15), gbc);
-        gbc.gridwidth = 1;
+        JLabel countWorkPlaceLabel = new JLabel("Count WorkPlaces: ");
+        customPanel.add(countWorkPlaceLabel, gbc);
+        gbc.gridx = 1;
+        customPanel.add(workPlaceSpinner, gbc);
 
 // ---------- STATS ----------
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         customPanel.add(queueLengthLabel1, gbc);
 
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         customPanel.add(queueLengthLabel2, gbc);
 
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         customPanel.add(queueLengthLabel3, gbc);
 
-        gbc.gridy = 7;
+        gbc.gridy = 8;
         customPanel.add(queueLengthLabel4, gbc);
 
-        gbc.gridy = 8;
+        gbc.gridy = 9;
         customPanel.add(countOfAllOrdersLabel, gbc);
 
-        gbc.gridy = 9;
+        gbc.gridy = 10;
         customPanel.add(countOfFinishedOrdersLabel, gbc);
 
 // ---------- UTILISATIONS ----------
@@ -451,8 +453,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                 core.setCountWorkerA((Integer) workerASpinner.getValue());
                 core.setCountWorkerB((Integer) workerBSpinner.getValue());
                 core.setCountWorkerC((Integer) workerCSpinner.getValue());
-                //core.setBurnInCount(burnInCount);
-                core.setWorkPlacesCount(5);
+                core.setBurnInCount(burnInCount);
+                core.setWorkPlacesCount((Integer) workPlaceSpinner.getValue());
 
                 worker = new AgentSimulationWorker();
                 worker.execute();
@@ -471,6 +473,14 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         core.stopSimulation();
         worker.cancel(true);
 
+    }
+
+    public JSpinner getWorkPlaceSpinner() {
+        return workPlaceSpinner;
+    }
+
+    public void setWorkPlaceSpinner(JSpinner workPlaceSpinner) {
+        this.workPlaceSpinner = workPlaceSpinner;
     }
 
 

@@ -14,6 +14,7 @@ public class TableDelegate implements ISimDelegate {
     private OrdersTableModel ordersTableModel;
     private FurnitureTableModel furnitureTableModel;
 
+
     public TableDelegate(OrdersTableModel ordersTableModel, FurnitureTableModel furnitureTableModel) {
         this.ordersTableModel = ordersTableModel;
         this.furnitureTableModel = furnitureTableModel;
