@@ -23,7 +23,9 @@ public class AgentPracovnikovC extends OSPABA.Agent
 	private void init()
 	{
 		new ManagerPracovnikovC(Id.managerPracovnikovC, mySim(), this);
-		addOwnMessage(Mc.rVyberPracovnikaC);
+		addOwnMessage(Mc.rVyberPracovnikaCMontaz);
+		addOwnMessage(Mc.rVyberPracovnikaCMorenie);
+		addOwnMessage(Mc.rVyberPracovnikaCLakovanie);
 		addOwnMessage(Mc.noticeUvolniC);
 	}
 	//meta! tag="end"

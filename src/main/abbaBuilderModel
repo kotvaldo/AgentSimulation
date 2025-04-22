@@ -5,7 +5,7 @@
       <SimId>40</SimId>
       <InternalId>230</InternalId>
       <Name>AgentPracovnikovC</Name>
-      <Bounds>137,1306,180,180</Bounds>
+      <Bounds>159,1298,180,180</Bounds>
       <Reasoner>ManagerPracovnikovC</Reasoner>
       <ReasonerBounds>74,25,32,25</ReasonerBounds>
       <UsePetriNet>false</UsePetriNet>
@@ -40,7 +40,7 @@
       <SimId>38</SimId>
       <InternalId>228</InternalId>
       <Name>AgentPracovnikovA</Name>
-      <Bounds>-499,1339,180,180</Bounds>
+      <Bounds>-453,1343,180,180</Bounds>
       <Reasoner>ManagerPracovnikovA</Reasoner>
       <ReasonerBounds>74,25,32,25</ReasonerBounds>
       <UsePetriNet>false</UsePetriNet>
@@ -49,7 +49,7 @@
       <SimId>42</SimId>
       <InternalId>267</InternalId>
       <Name>AgentCinnosti</Name>
-      <Bounds>1394,1027,180,180</Bounds>
+      <Bounds>1394,1025,180,180</Bounds>
       <Reasoner>ManagerCinnosti</Reasoner>
       <ReasonerBounds>74,25,32,25</ReasonerBounds>
       <UsePetriNet>false</UsePetriNet>
@@ -139,7 +139,7 @@
       <SimId>39</SimId>
       <InternalId>229</InternalId>
       <Name>AgentPracovnikovB</Name>
-      <Bounds>-227,1355,180,180</Bounds>
+      <Bounds>-213,1357,180,180</Bounds>
       <Reasoner>ManagerPracovnikovB</Reasoner>
       <UsePetriNet>false</UsePetriNet>
     </Agent>
@@ -568,7 +568,15 @@
     <Message>
       <SimId>1087</SimId>
       <InternalId>248</InternalId>
-      <Name>rVyberPracovnikaCLakovanieMorenie</Name>
+      <Name>rVyberPracovnikaCMorenie</Name>
+      <Type>RequestResponse</Type>
+      <Source>5</Source>
+      <Destination>230</Destination>
+    </Message>
+    <Message>
+      <SimId>1104</SimId>
+      <InternalId>379</InternalId>
+      <Name>rVyberPracovnikaCLakovanie</Name>
       <Type>RequestResponse</Type>
       <Source>5</Source>
       <Destination>230</Destination>
@@ -582,5 +590,5 @@
       <Destination>5</Destination>
     </Message>
   </Messages>
-  <IID>374</IID>
+  <IID>381</IID>
 </ABAsim>

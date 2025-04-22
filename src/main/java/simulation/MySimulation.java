@@ -19,7 +19,7 @@ import entities.*;
 
 import java.util.ArrayList;
 
-public class MySimulation extends OSPABA.Simulation
+public class MySimulation extends Simulation
 {
 	private final Generators generators;
 	private final ArrayList<Order> orderArrayList;

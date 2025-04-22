@@ -1,22 +1,15 @@
 package agents.agentpracovnikovc;
 
 import OSPABA.*;
-import entities.WorkerB;
-import entities.WorkerC;
 import simulation.*;
-
-import java.util.LinkedList;
 
 //meta! id="230"
 public class ManagerPracovnikovC extends OSPABA.Manager
 {
-	private LinkedList<WorkerC> freeWorkersC = new LinkedList<>();
 	public ManagerPracovnikovC(int id, Simulation mySim, Agent myAgent)
 	{
 		super(id, mySim, myAgent);
 		init();
-		MySimulation mySimulation = (MySimulation) _mySim;
-		freeWorkersC = new LinkedList<>(mySimulation.getWorkersCArrayList());
 	}
 
 	@Override
@@ -29,35 +22,26 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 		{
 			petriNet().clear();
 		}
-		freeWorkersC.clear();
-		MySimulation mySimulation = (MySimulation) _mySim;
-		freeWorkersC = new LinkedList<>(mySimulation.getWorkersCArrayList());
+	}
 
+	//meta! sender="AgentPracovnikov", id="366", type="Request"
+	public void processRVyberPracovnikaCMontaz(MessageForm message)
+	{
 	}
 
 	//meta! sender="AgentPracovnikov", id="248", type="Request"
-	public void processRVyberPracovnikaC(MessageForm message)
+	public void processRVyberPracovnikaCMorenie(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
+	}
 
-		if (!freeWorkersC.isEmpty()) {
-			WorkerC workerC = freeWorkersC.removeFirst();
-			msg.setWorkerC(workerC);
-		} else {
-			msg.setWorkerA(null);
-		}
-
-		response(msg);
+	//meta! sender="AgentPracovnikov", id="379", type="Request"
+	public void processRVyberPracovnikaCLakovanie(MessageForm message)
+	{
 	}
 
 	//meta! sender="AgentPracovnikov", id="241", type="Notice"
 	public void processNoticeUvolniC(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.getWorkerC().setIsBusy(false);
-		this.freeWorkersC.addLast(msg.getWorkerC());
-		msg.setWorkerC(null);
-
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -82,8 +66,16 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 			processNoticeUvolniC(message);
 		break;
 
-		case Mc.rVyberPracovnikaC:
-			processRVyberPracovnikaC(message);
+		case Mc.rVyberPracovnikaCMorenie:
+			processRVyberPracovnikaCMorenie(message);
+		break;
+
+		case Mc.rVyberPracovnikaCLakovanie:
+			processRVyberPracovnikaCLakovanie(message);
+		break;
+
+		case Mc.rVyberPracovnikaCMontaz:
+			processRVyberPracovnikaCMontaz(message);
 		break;
 
 		default:

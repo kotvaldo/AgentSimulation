@@ -2,10 +2,12 @@ package delegates;
 
 import GUI.Models.FurnitureTableModel;
 import GUI.Models.OrdersTableModel;
+import GUI.Models.WorkPlacesTableModel;
+import GUI.Models.WorkersTableModel;
 import OSPABA.ISimDelegate;
 import OSPABA.SimState;
 import OSPABA.Simulation;
-import simulation.MySimulation;
+import entities.Worker;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -13,11 +15,14 @@ import java.util.ArrayList;
 public class TableDelegate implements ISimDelegate {
     private OrdersTableModel ordersTableModel;
     private FurnitureTableModel furnitureTableModel;
+    private WorkPlacesTableModel workPlacesTableModel;
+    private WorkersTableModel workersTableModel;
 
-
-    public TableDelegate(OrdersTableModel ordersTableModel, FurnitureTableModel furnitureTableModel) {
+    public TableDelegate(OrdersTableModel ordersTableModel, FurnitureTableModel furnitureTableModel, WorkPlacesTableModel workPlacesTableModel, WorkersTableModel workersTableModel) {
         this.ordersTableModel = ordersTableModel;
         this.furnitureTableModel = furnitureTableModel;
+        this.workPlacesTableModel = workPlacesTableModel;
+        this.workersTableModel = workersTableModel;
     }
 
     @Override
@@ -27,13 +32,22 @@ public class TableDelegate implements ISimDelegate {
 
     @Override
     public void refresh(Simulation simulation) {
-
         MySimulation sim = (MySimulation) simulation;
         SwingUtilities.invokeLater(() -> {
             this.ordersTableModel.setOrders(new ArrayList<>(sim.getOrderArrayList()));
             this.furnitureTableModel.setFurniture(new ArrayList<>(sim.getFurnitureArrayList()));
+            this.workPlacesTableModel.setWorkPlaces(new ArrayList<>(sim.getWorkPlacesArrayList()));
+            ArrayList<Worker> workersArrayList = new ArrayList<>();
+            workersArrayList.addAll(sim.getWorkersAArrayList());
+            workersArrayList.addAll(sim.getWorkersBArrayList());
+            workersArrayList.addAll(sim.getWorkersCArrayList());
+
+            this.workersTableModel.setWorkers(workersArrayList);
+
             ordersTableModel.fireTableDataChanged();
             furnitureTableModel.fireTableDataChanged();
+            workPlacesTableModel.fireTableDataChanged();
+            workersTableModel.fireTableDataChanged();
         });
 
 

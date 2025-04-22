@@ -6,7 +6,7 @@ import agents.agentokolia.*;
 import simulation.*;
 
 //meta! id="301"
-public class PlanovacPrichodObjednavky extends OSPABA.Scheduler
+public class PlanovacPrichodObjednavky extends Scheduler
 {
 	
 	public PlanovacPrichodObjednavky(int id, Simulation mySim, CommonAgent myAgent)

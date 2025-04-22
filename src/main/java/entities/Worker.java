@@ -7,15 +7,15 @@ public class Worker {
     private final int id;
     private boolean isBusy;
     private final String type;
-    private Order order;
+    private Furniture furniture;
     private WorkPlace currentWorkPlace;
-    private final Utilisation utilisation = new Utilisation();
+    protected final Utilisation utilisation = new Utilisation();
 
     public Worker(String type) {
         this.id = IDGenerator.getInstance().getNextPersonId();
         this.type = type;
         isBusy = false;
-        order = null;
+        furniture = null;
         currentWorkPlace = null;
     }
 
@@ -26,7 +26,7 @@ public class Worker {
     public void setIsBusy(boolean busy) {
         this.isBusy = busy;
         if (!busy) {
-            order = null;
+            furniture = null;
         }
     }
 
@@ -38,12 +38,12 @@ public class Worker {
         return type;
     }
 
-    public Order getOrder() {
-        return order;
+    public Furniture getFurniture() {
+        return furniture;
     }
 
-    public void setOrder(Order orderId, double currentTime) {
-        this.order = orderId;
+    public void setFurniture(Furniture orderId, double currentTime) {
+        this.furniture = orderId;
         setIsBusy(orderId != null);
     }
 
@@ -70,7 +70,7 @@ public class Worker {
     }
 
     public void clear() {
-        order = null;
+        furniture = null;
         currentWorkPlace = null;
         isBusy = false;
 

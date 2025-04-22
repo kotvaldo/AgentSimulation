@@ -28,12 +28,15 @@ public class Mc extends OSPABA.IdList
 	public static final int noticeSpracujObjednavku = 1012;
 	public static final int noticeNovaObjednavka = 1100;
 	public static final int rVyberPracovnikaSkladanie = 1016;
+	public static final int rVyberPracovnikaAMontaz = 1102;
+	public static final int rVyberPracovnikaCMontaz = 1103;
 	public static final int noticeUvolniA = 1079;
 	public static final int noticeUvolniB = 1080;
 	public static final int noticeUvolniC = 1081;
-	public static final int rVyberPracovnikaA = 1082;
-	public static final int rVyberPracovnikaB = 1085;
-	public static final int rVyberPracovnikaC = 1087;
+	public static final int rVyberPracovnikaARezanie = 1082;
+	public static final int rVyberPracovnikaBRSkladanie = 1085;
+	public static final int rVyberPracovnikaCMorenie = 1087;
+	public static final int rVyberPracovnikaCLakovanie = 1104;
 	public static final int noticeUvolniPracovnikaA = 1027;
 	//meta! tag="end"
 

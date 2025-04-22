@@ -23,18 +23,21 @@ public class AgentPracovnikov extends OSPABA.Agent
 	private void init()
 	{
 		new ManagerPracovnikov(Id.managerPracovnikov, mySim(), this);
-		addOwnMessage(Mc.rVyberPracovnikaB);
 		addOwnMessage(Mc.init);
-		addOwnMessage(Mc.rVyberPracovnikaC);
 		addOwnMessage(Mc.rVyberPracovnikaLakovanie);
-		addOwnMessage(Mc.rVyberPracovnikaA);
-		addOwnMessage(Mc.rVyberPracovnikaMorenie);
+		addOwnMessage(Mc.rVyberPracovnikaARezanie);
 		addOwnMessage(Mc.rVyberPracovnikaSkladanie);
 		addOwnMessage(Mc.noticeUvolniPracovnikaB);
 		addOwnMessage(Mc.rVyberPracovnikaMontaz);
 		addOwnMessage(Mc.noticeUvolniPracovnikaA);
-		addOwnMessage(Mc.rVyberPracovnikaRezanie);
+		addOwnMessage(Mc.rVyberPracovnikaBRSkladanie);
 		addOwnMessage(Mc.noticeUvolniPracovnikaC);
+		addOwnMessage(Mc.rVyberPracovnikaCMontaz);
+		addOwnMessage(Mc.rVyberPracovnikaMorenie);
+		addOwnMessage(Mc.rVyberPracovnikaCMorenie);
+		addOwnMessage(Mc.rVyberPracovnikaCLakovanie);
+		addOwnMessage(Mc.rVyberPracovnikaAMontaz);
+		addOwnMessage(Mc.rVyberPracovnikaRezanie);
 	}
 	//meta! tag="end"
 }

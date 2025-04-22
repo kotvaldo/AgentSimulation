@@ -61,12 +61,12 @@ public class ManagerSkladu extends OSPABA.Manager
 			processRPripravVSklade(message);
 		break;
 
-		case Mc.finish:
-			processFinish(message);
-		break;
-
 		case Mc.init:
 			processInit(message);
+		break;
+
+		case Mc.finish:
+			processFinish(message);
 		break;
 
 		default:

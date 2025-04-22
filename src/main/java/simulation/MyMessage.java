@@ -3,7 +3,7 @@ package simulation;
 import OSPABA.*;
 import entities.*;
 
-public class MyMessage extends OSPABA.MessageForm
+public class MyMessage extends MessageForm
 {
 	private Order order;
 	private Furniture furniture;

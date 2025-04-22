@@ -12,7 +12,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import simulation.MySimulation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -247,7 +246,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
 
 
         //delegates and observers
-        core.registerDelegate(new TableDelegate(ordersTableModel, furnitureTableModel));
+        core.registerDelegate(new TableDelegate(ordersTableModel, furnitureTableModel, workPlacesTableModel, workersTableModel));
         core.registerDelegate(new SimulationTimeDelegate(label, dayCountLabel));
     }
 

@@ -1,12 +1,8 @@
 package entities;
 
-import OSPABA.MessageForm;
-import OSPABA.SimComponent;
 import OSPDataStruct.SimQueue;
 import Statistics.TimeWeightedStatistic;
 import simulation.MyMessage;
-
-import java.util.LinkedList;
 
 public class Queue {
     private final SimQueue<MyMessage> queue;

@@ -7,7 +7,7 @@ import simulation.*;
 import java.util.LinkedList;
 
 //meta! id="62"
-public class ManagerPracovisk extends OSPABA.Manager
+public class ManagerPracovisk extends Manager
 {
 	private LinkedList<WorkPlace> freeWorkPlaces = new LinkedList<>();
 	public ManagerPracovisk(int id, Simulation mySim, Agent myAgent)
@@ -33,10 +33,10 @@ public class ManagerPracovisk extends OSPABA.Manager
 	public WorkPlace dajPrveVolneMiestoPodlaId() {
 		MySimulation mySimulation = (MySimulation) _mySim;
 
-        return mySimulation.getWorkPlacesArrayList().stream()
-                .filter(p -> !p.isBusy())
-                .findFirst()
-                .orElse(null);
+		return mySimulation.getWorkPlacesArrayList().stream()
+				.filter(p -> !p.isBusy())
+				.findFirst()
+				.orElse(null);
 	}
 	//meta! sender="AgentNabytku", id="72", type="Notice"
 	public void processInit(MessageForm message)
@@ -78,21 +78,21 @@ public class ManagerPracovisk extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.rDajVolnePracovneMiesto:
-			processRDajVolnePracovneMiesto(message);
-		break;
+			case Mc.rDajVolnePracovneMiesto:
+				processRDajVolnePracovneMiesto(message);
+				break;
 
-		case Mc.noticeUvolniPracovneMiesto:
-			processNoticeUvolniPracovneMiesto(message);
-		break;
+			case Mc.noticeUvolniPracovneMiesto:
+				processNoticeUvolniPracovneMiesto(message);
+				break;
 
-		case Mc.init:
-			processInit(message);
-		break;
+			case Mc.init:
+				processInit(message);
+				break;
 
-		default:
-			processDefault(message);
-		break;
+			default:
+				processDefault(message);
+				break;
 		}
 	}
 	//meta! tag="end"

@@ -6,7 +6,7 @@ import entities.*;
 import simulation.*;
 
 //meta! id="2"
-public class ManagerOkolia extends OSPABA.Manager
+public class ManagerOkolia extends Manager
 {
 	public ManagerOkolia(int id, Simulation mySim, Agent myAgent)
 	{

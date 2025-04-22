@@ -67,6 +67,10 @@ public class ManagerPohybu extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
+		case Mc.rPresunNaPracovisko:
+			processRPresunNaPracovisko(message);
+		break;
+
 		case Mc.finish:
 			switch (message.sender().id())
 			{
@@ -86,10 +90,6 @@ public class ManagerPohybu extends OSPABA.Manager
 
 		case Mc.rPresunDoSkladu:
 			processRPresunDoSkladu(message);
-		break;
-
-		case Mc.rPresunNaPracovisko:
-			processRPresunNaPracovisko(message);
 		break;
 
 		default:

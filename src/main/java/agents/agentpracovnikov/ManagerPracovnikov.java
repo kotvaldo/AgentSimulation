@@ -1,22 +1,15 @@
 package agents.agentpracovnikov;
 
 import OSPABA.*;
-import entities.WorkerA;
-import entities.WorkerB;
-import entities.WorkerC;
 import simulation.*;
-
-import java.util.LinkedList;
 
 //meta! id="5"
 public class ManagerPracovnikov extends OSPABA.Manager
 {
-
 	public ManagerPracovnikov(int id, Simulation mySim, Agent myAgent)
 	{
 		super(id, mySim, myAgent);
 		init();
-
 	}
 
 	@Override
@@ -31,36 +24,22 @@ public class ManagerPracovnikov extends OSPABA.Manager
 		}
 	}
 
-
-	//meta! sender="AgentPracovnikovB", id="246", type="Response"
-	public void processRVyberPracovnikaB(MessageForm message)
-	{
-
-	}
-
 	//meta! sender="AgentNabytku", id="65", type="Notice"
 	public void processInit(MessageForm message)
 	{
 	}
 
-	//meta! sender="AgentPracovnikovC", id="248", type="Response"
-	public void processRVyberPracovnikaC(MessageForm message)
-	{
-		
-	}
-
 	//meta! sender="AgentNabytku", id="164", type="Request"
 	public void processRVyberPracovnikaLakovanie(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message;
+		msg.setCode(Mc.rVyberPracovnikaCLakovanie);
+		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
+		request(msg);
 	}
 
 	//meta! sender="AgentPracovnikovA", id="242", type="Response"
-	public void processRVyberPracovnikaA(MessageForm message)
-	{
-	}
-
-	//meta! sender="AgentNabytku", id="162", type="Request"
-	public void processRVyberPracovnikaMorenie(MessageForm message)
+	public void processRVyberPracovnikaARezanie(MessageForm message)
 	{
 	}
 
@@ -69,52 +48,59 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="AgentNabytku", id="167", type="Request"
-	public void processRVyberPracovnikaMontaz(MessageForm message)
-	{
-		MyMessage msg = (MyMessage) message;
-
-		msg.setCode(Mc.rVyberPracovnikaC);
-		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
-		request(msg);
-	}
-	//meta! sender="AgentNabytku", id="168", type="Request"
-	public void processRVyberPracovnikaRezanie(MessageForm message)
-	{
-		MyMessage msg = (MyMessage) message;
-
-		msg.setCode(Mc.rVyberPracovnikaA);
-		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovA));
-		request(msg);
-
-	}
 	//meta! sender="AgentNabytku", id="204", type="Notice"
 	public void processNoticeUvolniPracovnikaB(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.noticeUvolniB);
-		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovB));
-		notice(msg);
+	}
+
+	//meta! sender="AgentNabytku", id="167", type="Request"
+	public void processRVyberPracovnikaMontaz(MessageForm message)
+	{
 	}
 
 	//meta! sender="AgentNabytku", id="126", type="Notice"
 	public void processNoticeUvolniPracovnikaA(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.noticeUvolniA);
-		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovA));
-		notice(msg);
 	}
 
-
+	//meta! sender="AgentPracovnikovB", id="246", type="Response"
+	public void processRVyberPracovnikaBRSkladanie(MessageForm message)
+	{
+	}
 
 	//meta! sender="AgentNabytku", id="205", type="Notice"
 	public void processNoticeUvolniPracovnikaC(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message.createCopy();
-		msg.setCode(Mc.noticeUvolniC);
-		msg.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
-		notice(msg);
+	}
+
+	//meta! sender="AgentPracovnikovC", id="366", type="Response"
+	public void processRVyberPracovnikaCMontaz(MessageForm message)
+	{
+	}
+
+	//meta! sender="AgentNabytku", id="162", type="Request"
+	public void processRVyberPracovnikaMorenie(MessageForm message)
+	{
+	}
+
+	//meta! sender="AgentPracovnikovC", id="248", type="Response"
+	public void processRVyberPracovnikaCMorenie(MessageForm message)
+	{
+	}
+
+	//meta! sender="AgentPracovnikovC", id="379", type="Response"
+	public void processRVyberPracovnikaCLakovanie(MessageForm message)
+	{
+	}
+
+	//meta! sender="AgentPracovnikovA", id="365", type="Response"
+	public void processRVyberPracovnikaAMontaz(MessageForm message)
+	{
+	}
+
+	//meta! sender="AgentNabytku", id="168", type="Request"
+	public void processRVyberPracovnikaRezanie(MessageForm message)
+	{
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -135,44 +121,12 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.rVyberPracovnikaMontaz:
-			processRVyberPracovnikaMontaz(message);
-		break;
-
-		case Mc.rVyberPracovnikaMorenie:
-			processRVyberPracovnikaMorenie(message);
-		break;
-
-		case Mc.rVyberPracovnikaLakovanie:
-			processRVyberPracovnikaLakovanie(message);
-		break;
-
 		case Mc.rVyberPracovnikaSkladanie:
 			processRVyberPracovnikaSkladanie(message);
 		break;
 
-		case Mc.init:
-			processInit(message);
-		break;
-
-		case Mc.rVyberPracovnikaA:
-			processRVyberPracovnikaA(message);
-		break;
-
-		case Mc.rVyberPracovnikaB:
-			processRVyberPracovnikaB(message);
-		break;
-
-		case Mc.rVyberPracovnikaC:
-			processRVyberPracovnikaC(message);
-		break;
-
-		case Mc.noticeUvolniPracovnikaC:
-			processNoticeUvolniPracovnikaC(message);
-		break;
-
-		case Mc.noticeUvolniPracovnikaA:
-			processNoticeUvolniPracovnikaA(message);
+		case Mc.rVyberPracovnikaMontaz:
+			processRVyberPracovnikaMontaz(message);
 		break;
 
 		case Mc.noticeUvolniPracovnikaB:
@@ -180,8 +134,51 @@ public class ManagerPracovnikov extends OSPABA.Manager
 		break;
 
 		case Mc.rVyberPracovnikaRezanie:
-
 			processRVyberPracovnikaRezanie(message);
+		break;
+
+		case Mc.rVyberPracovnikaLakovanie:
+			processRVyberPracovnikaLakovanie(message);
+		break;
+
+		case Mc.rVyberPracovnikaMorenie:
+			processRVyberPracovnikaMorenie(message);
+		break;
+
+		case Mc.rVyberPracovnikaCMontaz:
+			processRVyberPracovnikaCMontaz(message);
+		break;
+
+		case Mc.rVyberPracovnikaBRSkladanie:
+			processRVyberPracovnikaBRSkladanie(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
+		break;
+
+		case Mc.rVyberPracovnikaAMontaz:
+			processRVyberPracovnikaAMontaz(message);
+		break;
+
+		case Mc.rVyberPracovnikaCMorenie:
+			processRVyberPracovnikaCMorenie(message);
+		break;
+
+		case Mc.noticeUvolniPracovnikaA:
+			processNoticeUvolniPracovnikaA(message);
+		break;
+
+		case Mc.rVyberPracovnikaCLakovanie:
+			processRVyberPracovnikaCLakovanie(message);
+		break;
+
+		case Mc.rVyberPracovnikaARezanie:
+			processRVyberPracovnikaARezanie(message);
+		break;
+
+		case Mc.noticeUvolniPracovnikaC:
+			processNoticeUvolniPracovnikaC(message);
 		break;
 
 		default:

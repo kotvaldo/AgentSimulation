@@ -44,7 +44,7 @@ public class WorkersTableModel extends AbstractTableModel {
             case 0 -> worker.getId();
             case 1 -> worker.getType();
             case 2 -> WorkerBussyState.getNameByValue(worker.getBusy());
-            case 3 -> worker.getOrder() != null ? "" + worker.getOrder().getId() : "No Order";
+            case 3 -> worker.getFurniture() != null ? "" + worker.getFurniture().getId() : "No Order";
             case 4 -> worker.getCurrentWorkPlace() != null ? "" + worker.getCurrentWorkPlace().getId() : "Storage";
             default -> null;
         };
