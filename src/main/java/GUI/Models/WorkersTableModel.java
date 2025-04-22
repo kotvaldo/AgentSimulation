@@ -1,8 +1,9 @@
 package GUI.Models;
 
 
-import Furniture.Entity.Worker;
-import Furniture.Enums.WorkerBussyState;
+
+import Enums.WorkerBussyState;
+import entities.Worker;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;

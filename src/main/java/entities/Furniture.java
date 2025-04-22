@@ -7,6 +7,7 @@ public class Furniture {
     private final Order order;
     private final int type;
     private int state;
+    private WorkPlace workPlace;
 
     private double startTimeCuttingQueue;
     private double endTimeCuttingQueue;
@@ -21,6 +22,7 @@ public class Furniture {
         this.id = IDGenerator.getInstance().getNextFurnitureId();
         this.type = type;
         this.order = order;
+        this.workPlace = null;
     }
 
     public int getType() {
@@ -105,5 +107,13 @@ public class Furniture {
 
     public void setEndTimeMontageQueue(double endTimeMontageQueue) {
         this.endTimeMontageQueue = endTimeMontageQueue;
+    }
+
+    public WorkPlace getWorkPlace() {
+        return workPlace;
+    }
+
+    public void setWorkPlace(WorkPlace workPlace) {
+        this.workPlace = workPlace;
     }
 }

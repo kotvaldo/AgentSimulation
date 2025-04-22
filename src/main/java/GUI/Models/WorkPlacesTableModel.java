@@ -1,6 +1,6 @@
 package GUI.Models;
 
-import Furniture.Entity.WorkPlace;
+import entities.WorkPlace;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -40,7 +40,7 @@ public class WorkPlacesTableModel extends AbstractTableModel {
         return switch (columnIndex) {
             case 0 -> workPlace.getId();
             case 1 -> workPlace.isBusy() ? "Busy" : "Available";
-            case 2 -> workPlace.getOrder() != null ? workPlace.getOrder().getId() : "No Order";
+            case 2 -> workPlace.getFurniture() != null ? workPlace.getFurniture().getId() : "No Furniture";
             case 3 -> workPlace.getActivity();
             default -> null;
         };

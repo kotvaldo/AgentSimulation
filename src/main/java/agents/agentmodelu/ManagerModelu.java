@@ -16,17 +16,18 @@ public class ManagerModelu extends OSPABA.Manager
 	public void prepareReplication()
 	{
 		super.prepareReplication();
-		// Setup component for the next replication
 
 		if (petriNet() != null)
 		{
 			petriNet().clear();
 		}
+
 	}
 
 	//meta! sender="AgentNabytku", id="153", type="Notice"
 	public void processNoticeHotovaObjednavka(MessageForm message)
 	{
+
 	}
 
 	//meta! sender="AgentOkolia", id="328", type="Notice"
@@ -38,17 +39,12 @@ public class ManagerModelu extends OSPABA.Manager
 		notice(myMessage);
 	}
 
-	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)
 	{
 		switch (message.code())
 		{
+			// doplň default spracovanie
 		}
-	}
-
-	//meta! userInfo="Generated code: do not modify", tag="begin"
-	public void init()
-	{
 	}
 
 	@Override
@@ -56,25 +52,29 @@ public class ManagerModelu extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.noticeHotovaObjednavka:
-			processNoticeHotovaObjednavka(message);
-		break;
+			case Mc.noticeHotovaObjednavka:
+				processNoticeHotovaObjednavka(message);
+				break;
 
-		case Mc.noticePrichodObjednavky:
-			processNoticePrichodObjednavky(message);
-		break;
-
-		default:
-			processDefault(message);
-		break;
+			case Mc.noticePrichodObjednavky:
+				processNoticePrichodObjednavky(message);
+				break;
+			case Mc.init:
+				init();
+			default:
+				processDefault(message);
+				break;
 		}
 	}
-	//meta! tag="end"
+
+	public void init()
+	{
+
+	}
 
 	@Override
 	public AgentModelu myAgent()
 	{
-		return (AgentModelu)super.myAgent();
+		return (AgentModelu) super.myAgent();
 	}
-
 }

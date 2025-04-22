@@ -12,7 +12,7 @@ public class Order {
     private int state;
     private final double arrivalTime;
     private double endTime;
-    private double timeOfWork;
+    private double timeOfWork = -1;
     private ArrayList<Furniture> furnitureList;
     private final Average timeOfWorkAverage;
 
@@ -66,6 +66,10 @@ public class Order {
         this.timeOfWork = endTime - arrivalTime;
         this.state = OrderStateValues.ORDER_DONE.getValue();
         this.timeOfWorkAverage.add(timeOfWork);
+    }
+
+    public double getTimeOfWork() {
+        return timeOfWork;
     }
 
     public ArrayList<Furniture> getFurnitureList() {

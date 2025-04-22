@@ -1,13 +1,10 @@
 package GUI;
 
-import Furniture.Enums.SimulationSpeedLimitValues;
-import Furniture.FurnitureEventCore;
-import Furniture.Observers.*;
-import GUI.Models.OrdersTableModel;
-import GUI.Models.UtilisationTableModel;
-import GUI.Models.WorkPlacesTableModel;
-import GUI.Models.WorkersTableModel;
+import Enums.PresetSimulationValues;
+import Enums.SimulationSpeedLimitValues;
+import GUI.Models.*;
 import Observer.Subject;
+import delegates.SimulationTimeDelegate;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -30,6 +27,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private final OrdersTableModel ordersTableModel;
     private final WorkersTableModel workersTableModel;
     private final WorkPlacesTableModel workPlacesTableModel;
+    private final FurnitureTableModel furnitureTableModel;
     private final JLabel dayCountLabel;
     private final JLabel replicationCountLabel;
     private final JCheckBox slowDownCheckBox;
@@ -52,7 +50,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private JLabel utilisationAllIntervalLabel;
     private UtilisationTableModel utilisationTableModel;
     private JTable utilisationTable;
-
+    private Subject subject;
     private JFreeChart chart;
     private ChartPanel chartPanel;
     XYSeriesCollection dataset;
@@ -92,11 +90,19 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         timeOfWorkPanel.add(timeOfWorkLabel);
         timeOfWorkPanel.add(timeOfWorkIntervalLabel);
         timeOfWorkPanel.setVisible(false);
-
+        Subject subject = new Subject();
 
         replicationLabel.setVisible(false);
         core = new MySimulation();
         dayCountLabel = new JLabel("Day : 0");
+        core.registerDelegate(new SimulationTimeDelegate());
+        //callback UI refresh
+        core.onRefreshUI(core -> {
+            System.out.println("🔁 refreshUI called at sim time: " + core.currentTime());
+            System.out.println("📦 počet objednávok: " + ((MySimulation) core).getOrderArrayList().size());
+            System.out.println("👷‍♀️ pracovníci A: " + ((MySimulation) core).getWorkersAArrayList().size());
+            subject.notifyObservers();
+        });
 
 
         JButton pauseButton = new JButton("Pause Simulation");
@@ -109,6 +115,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         ordersTableModel = new OrdersTableModel(new ArrayList<>());
         workersTableModel = new WorkersTableModel(new ArrayList<>());
         workPlacesTableModel = new WorkPlacesTableModel(new ArrayList<>());
+        furnitureTableModel = new FurnitureTableModel(new ArrayList<>());
 
         JTable ordersTable = new JTable(ordersTableModel);
         ordersTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
@@ -121,6 +128,11 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         JTable workPlaceTable = new JTable(workPlacesTableModel);
         workPlaceTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
         JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
+
+        JTable furnitureTable = new JTable(furnitureTableModel);
+        furnitureTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
+        JScrollPane furnitureSroll = new JScrollPane(furnitureTable);
+
 
         utilisationTableModel = new UtilisationTableModel(
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
@@ -140,9 +152,14 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         tablePanel.add(Box.createHorizontalStrut(10));
         tablePanel.add(workPlaceSroll);
         tablePanel.add(utilisationScroll);
-        tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220));
+        tablePanel.add(Box.createHorizontalStrut(10));
+        tablePanel.add(furnitureSroll);
+        JScrollPane scrollPane = new JScrollPane(tablePanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER); // ak nechceš vertikálny scroll
 
-        this.centerPanel.add(tablePanel);
+        this.centerPanel.add(scrollPane);
+
 
         //statistic for simulation run
 
@@ -167,14 +184,21 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         speedSlider.setLabelTable(labelTable);
 
         speedSlider.addChangeListener(e -> {
-           // SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
-          //  core.setSimSpeed(speed.getValue());
+            SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
+            core.setSimSpeed(speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.getValue(), 1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue());
         });
 
 
         slowDownCheckBox = new JCheckBox("Slow Down", true);
         slowDownCheckBox.addActionListener(e -> {
-            core.setSlowMode(slowDownCheckBox.isSelected());
+            if (slowDownCheckBox.isSelected()) {
+                speedSlider.setValue(1);
+                SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(5);
+                core.setSimSpeed(
+                        speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.getValue(),
+                        1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue()
+                );
+            }
             ordersScroll.setVisible(slowDownCheckBox.isSelected());
             workersScroll.setVisible(slowDownCheckBox.isSelected());
             workPlaceSroll.setVisible(slowDownCheckBox.isSelected());
@@ -250,7 +274,6 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         centerPanel.add(chartPanel);
         chartPanel.setVisible(false);
     }
-
 
 
     @Override
@@ -406,28 +429,28 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                     ordersTableModel.setOrders(new ArrayList<>());
                     workersTableModel.setWorkers(new ArrayList<>());
                     workPlacesTableModel.setWorkPlaces(new ArrayList<>());
+                    furnitureTableModel.setFurniture(new ArrayList<>());
                 });
-                int replicationCount = 0;
-                if (slowDownCheckBox.isSelected()) {
-                    replicationCount = 1;
 
-                } else {
-                    replicationCount = Integer.parseInt(replicationsInput.getText());
+                int replicationCount = Integer.parseInt(replicationsInput.getText());
+                System.out.println("replication count: " + replicationCount);
+                core.onSimulationDidFinish(sim -> {
+                    System.out.println("Simulácia skončila!");
+                });
 
-                }
                 int burnInCount = 0;
-               /* core.setReplicationCount(replicationCount);
-                if (slowDownCheckBox.isSelected()) {
-                    SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
-                    core.setSimSpeed(speed.getValue());
+                core.setReplicationsCount(replicationCount);
+                SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
+                core.setSimSpeed(
+                        speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.getValue(),
+                        1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue()
+                );
 
-                } else {
-                    burnInCount = Integer.parseInt(burnInInput.getText());
-                }*/
                 core.setCountWorkerA((Integer) workerASpinner.getValue());
                 core.setCountWorkerB((Integer) workerBSpinner.getValue());
                 core.setCountWorkerC((Integer) workerCSpinner.getValue());
                 //core.setBurnInCount(burnInCount);
+                core.setWorkPlacesCount(5);
 
                 worker = new AgentSimulationWorker();
                 worker.execute();
@@ -452,7 +475,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private class AgentSimulationWorker extends SwingWorker<Void, Void> {
         @Override
         protected Void doInBackground() {
-            core.simulate();
+            core.simulate(core.getReplicationsCount(), PresetSimulationValues.END_OF_SIMULATION.getValue());
             return null;
         }
 

@@ -32,16 +32,17 @@ public class MySimulation extends OSPABA.Simulation
 	private int countWorkerC;
 	private boolean slowMode = false;
 	private int workPlacesCount;
+	private int actualRepCount = 0;
+	private final ArrayList<WorkerA> workersAArrayList;
+	private final ArrayList<WorkerB> workersBArrayList;
+	private final ArrayList<WorkerC> workersCArrayList;
+	private final ArrayList<WorkPlace> workPlacesArrayList;
 
-	private ArrayList<WorkerA> workersAArrayList;
-	private ArrayList<WorkerB> workersBArrayList;
-	private ArrayList<WorkerC> workersCArrayList;
-	private ArrayList<WorkPlace> workPlacesArrayList;
+	private int replicationsCount;
 
 
 	public MySimulation()
 	{
-		init();
 		this.generators = new Generators();
 		orderArrayList = new ArrayList<>();
 		furnitureArrayList = new ArrayList<>();
@@ -52,12 +53,14 @@ public class MySimulation extends OSPABA.Simulation
 		workersBArrayList = new ArrayList<>();
 		workersCArrayList = new ArrayList<>();
 		workPlacesArrayList = new ArrayList<>();
+		init();
 
 
 	}
 	@Override
 	public void prepareSimulation()
 	{
+		actualRepCount = 0;
 		super.prepareSimulation();
 		// Create global statistcis
 
@@ -66,7 +69,6 @@ public class MySimulation extends OSPABA.Simulation
 	@Override
 	public void prepareReplication()
 	{
-		super.prepareReplication();
 		orderArrayList.clear();
 		furnitureArrayList.clear();
 		partialTimeOfWork.clear();
@@ -90,6 +92,28 @@ public class MySimulation extends OSPABA.Simulation
 			workPlacesArrayList.add(new WorkPlace());
 		}
 
+		System.out.println("Worker A: " + workersAArrayList.size());
+		System.out.println("Worker B: " + workersBArrayList.size());
+		System.out.println("Worker C: " + workersCArrayList.size());
+		System.out.println("Worker Places: " + workPlacesArrayList.size());
+
+		super.prepareReplication();
+
+		System.out.println("🟡 Počet správ vo frontoch agentov:");
+		System.out.println("AgentModelu: " + agentModelu().allMessageCount());
+
+		System.out.println("🟡 Počet správ vo frontoch agentov:");
+		System.out.println("AgentModelu: " + agentModelu().allMessageCount());
+		System.out.println("AgentOkolia: " + agentOkolia().allMessageCount());
+		System.out.println("AgentNabytku: " + agentNabytku().allMessageCount());
+		System.out.println("AgentCinnosti: " + agentCinnosti().allMessageCount());
+		System.out.println("AgentSkladu: " + agentSkladu().allMessageCount());
+		System.out.println("AgentPracovisk: " + agentPracovisk().allMessageCount());
+		System.out.println("AgentPohybu: " + agentPohybu().allMessageCount());
+		System.out.println("AgentPracovnikov: " + agentPracovnikov().allMessageCount());
+		System.out.println("AgentPracovnikovA: " + agentPracovnikovA().allMessageCount());
+		System.out.println("AgentPracovnikovB: " + agentPracovnikovB().allMessageCount());
+		System.out.println("AgentPracovnikovC: " + agentPracovnikovC().allMessageCount());
 
 		// Reset entities, queues, local statistics, etc...
 	}
@@ -97,6 +121,8 @@ public class MySimulation extends OSPABA.Simulation
 	@Override
 	public void replicationFinished()
 	{
+		actualRepCount++;
+		System.out.println("Rep count : " + actualRepCount);
 		// Collect local statistics into global, update UI, etc...
 		super.replicationFinished();
 	}
@@ -290,6 +316,14 @@ public AgentPracovnikovB agentPracovnikovB()
 
     public ArrayList<WorkerA> getWorkersAArrayList() {
         return workersAArrayList;
+    }
+
+    public int getReplicationsCount() {
+        return replicationsCount;
+    }
+
+    public void setReplicationsCount(int replicationsCount) {
+        this.replicationsCount = replicationsCount;
     }
 
 

@@ -1,7 +1,10 @@
 package org.example;
 
+import GUI.EventSimulationGUI;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        EventSimulationGUI eventSimulationGUI = new EventSimulationGUI();
+        eventSimulationGUI.setVisible(true);
     }
 }

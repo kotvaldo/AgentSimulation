@@ -1,6 +1,5 @@
 package GUI;
 
-import CustomDelegates.SimulationTimeDelegate;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 
@@ -15,7 +14,6 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JTextField updateFrequencyInput;
     protected JButton startButton;
     protected JButton stopButton;
-    protected SimulationTimeDelegate simulationTimeDelegate;
     protected JPanel customPanel;
     protected JPanel inputPanel;
     protected JPanel statsPanel;
@@ -48,7 +46,6 @@ public abstract class AbstractSimulationGUI extends JFrame {
         //inputPanel.add(updateFrequencyInput);
         this.setupCustomInput();
 
-        this.simulationTimeDelegate = new SimulationTimeDelegate();
         controlPanel = new JPanel();
         controlPanel.add(startButton);
         controlPanel.add(stopButton);
