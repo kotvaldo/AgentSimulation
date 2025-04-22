@@ -8,6 +8,7 @@ import simulation.*;
 //meta! id="301"
 public class PlanovacPrichodObjednavky extends OSPABA.Scheduler
 {
+	
 	public PlanovacPrichodObjednavky(int id, Simulation mySim, CommonAgent myAgent)
 	{
 		super(id, mySim, myAgent);

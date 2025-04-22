@@ -5,6 +5,7 @@ import Enums.SimulationSpeedLimitValues;
 import GUI.Models.*;
 import Observer.Subject;
 import delegates.SimulationTimeDelegate;
+import delegates.TableDelegate;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -73,8 +74,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         this.simulationSpeedLabel = new JLabel("Simulation Speed: ");
         label = new JLabel("Simulation Time : 0");
         this.replicationCountLabel = new JLabel("Replication Count : 0");
-        replicationCountLabel.setVisible(false);
-        replicationsInput.setVisible(false);
+        replicationCountLabel.setVisible(true);
+        replicationsInput.setVisible(true);
 
 
         JPanel newOrdersPanel = new JPanel(new GridLayout(2, 1));
@@ -95,14 +96,16 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         replicationLabel.setVisible(false);
         core = new MySimulation();
         dayCountLabel = new JLabel("Day : 0");
-        core.registerDelegate(new SimulationTimeDelegate());
         //callback UI refresh
         core.onRefreshUI(core -> {
-            System.out.println("🔁 refreshUI called at sim time: " + core.currentTime());
-            System.out.println("📦 počet objednávok: " + ((MySimulation) core).getOrderArrayList().size());
-            System.out.println("👷‍♀️ pracovníci A: " + ((MySimulation) core).getWorkersAArrayList().size());
+
             subject.notifyObservers();
         });
+
+        core.onSimulationDidFinish(sim -> {
+            System.out.println("Simulácia skončila!");
+        });
+
 
 
         JButton pauseButton = new JButton("Pause Simulation");
@@ -187,8 +190,9 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
             SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
             core.setSimSpeed(speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.getValue(), 1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue());
         });
-
-
+        /*  core.onReplicationWillStart(_ -> {
+            core.setSimSpeed(1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue(), 1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue());
+        });*/
         slowDownCheckBox = new JCheckBox("Slow Down", true);
         slowDownCheckBox.addActionListener(e -> {
             if (slowDownCheckBox.isSelected()) {
@@ -204,11 +208,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
             workPlaceSroll.setVisible(slowDownCheckBox.isSelected());
             speedSlider.setVisible(slowDownCheckBox.isSelected());
             simulationSpeedLabel.setVisible(slowDownCheckBox.isSelected());
-            replicationCountLabel.setVisible(!slowDownCheckBox.isSelected());
             label.setVisible(slowDownCheckBox.isSelected());
             dayCountLabel.setVisible(slowDownCheckBox.isSelected());
-            replicationsInput.setVisible(!slowDownCheckBox.isSelected());
-            replicationLabel.setVisible(!slowDownCheckBox.isSelected());
             burnInInput.setVisible(!slowDownCheckBox.isSelected());
             burnLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationALabel.setVisible(!slowDownCheckBox.isSelected());
@@ -243,6 +244,10 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         this.inputPanel.add(speedSlider);
         this.inputPanel.add(replicationCountLabel);
 
+
+        //delegates and observers
+        core.registerDelegate(new TableDelegate(ordersTableModel, furnitureTableModel));
+        core.registerDelegate(new SimulationTimeDelegate(label, dayCountLabel));
     }
 
     @Override
@@ -433,10 +438,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                 });
 
                 int replicationCount = Integer.parseInt(replicationsInput.getText());
-                System.out.println("replication count: " + replicationCount);
-                core.onSimulationDidFinish(sim -> {
-                    System.out.println("Simulácia skončila!");
-                });
+                // System.out.println("replication count: " + replicationCount);
 
                 int burnInCount = 0;
                 core.setReplicationsCount(replicationCount);

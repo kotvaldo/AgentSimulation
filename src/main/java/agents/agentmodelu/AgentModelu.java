@@ -17,10 +17,11 @@ public class AgentModelu extends OSPABA.Agent
 	{
 		super.prepareReplication();
 
-		MessageForm msg = new MyMessage(_mySim);
+		MyMessage msg = new MyMessage(mySim());
+		msg.setAddressee(this);
 		msg.setCode(Mc.init);
-		msg.setAddressee(_mySim.findAgent(Id.agentOkolia));
 		myManager().notice(msg);
+
 		// Setup component for the next replication
 	}
 

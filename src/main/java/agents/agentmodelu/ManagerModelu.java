@@ -22,6 +22,11 @@ public class ManagerModelu extends OSPABA.Manager
 			petriNet().clear();
 		}
 
+		MessageForm msgOkolie = new MyMessage(_mySim);
+		msgOkolie.setCode(Mc.init);
+		msgOkolie.setAddressee(_mySim.findAgent(Id.agentOkolia));
+		notice(msgOkolie);
+
 	}
 
 	//meta! sender="AgentNabytku", id="153", type="Notice"
@@ -69,7 +74,6 @@ public class ManagerModelu extends OSPABA.Manager
 
 	public void init()
 	{
-
 	}
 
 	@Override

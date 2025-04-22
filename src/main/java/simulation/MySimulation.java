@@ -92,14 +92,14 @@ public class MySimulation extends OSPABA.Simulation
 			workPlacesArrayList.add(new WorkPlace());
 		}
 
-		System.out.println("Worker A: " + workersAArrayList.size());
+		/*System.out.println("Worker A: " + workersAArrayList.size());
 		System.out.println("Worker B: " + workersBArrayList.size());
 		System.out.println("Worker C: " + workersCArrayList.size());
 		System.out.println("Worker Places: " + workPlacesArrayList.size());
-
+*/
 		super.prepareReplication();
 
-		System.out.println("🟡 Počet správ vo frontoch agentov:");
+		/*System.out.println("🟡 Počet správ vo frontoch agentov:");
 		System.out.println("AgentModelu: " + agentModelu().allMessageCount());
 
 		System.out.println("🟡 Počet správ vo frontoch agentov:");
@@ -114,6 +114,7 @@ public class MySimulation extends OSPABA.Simulation
 		System.out.println("AgentPracovnikovA: " + agentPracovnikovA().allMessageCount());
 		System.out.println("AgentPracovnikovB: " + agentPracovnikovB().allMessageCount());
 		System.out.println("AgentPracovnikovC: " + agentPracovnikovC().allMessageCount());
+		*/
 
 		// Reset entities, queues, local statistics, etc...
 	}
@@ -148,6 +149,7 @@ public class MySimulation extends OSPABA.Simulation
 		setAgentPracovnikovC(new AgentPracovnikovC(Id.agentPracovnikovC, this, agentPracovnikov()));
 		setAgentPracovnikovA(new AgentPracovnikovA(Id.agentPracovnikovA, this, agentPracovnikov()));
 		setAgentPracovnikovB(new AgentPracovnikovB(Id.agentPracovnikovB, this, agentPracovnikov()));
+
 	}
 
 	private AgentModelu _agentModelu;
