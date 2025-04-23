@@ -175,53 +175,41 @@ public class ManagerNabytku extends OSPABA.Manager {
 
 
     private void checkProcessingQueueNonProcessed(MyMessage msg) {
-
-        /*if (msg.getWorkerA() != null && msg.getWorkPlace() != null) {
-
+        if (msg.getWorkerA() != null && msg.getWorkPlace() != null) {
             queueNonProcessed.getQueue().removeIf(m -> m.equals(msg));
 
-            if(msg.getWorkerA().getCurrentWorkPlace() != null) {
+            msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
+            msg.getFurniture().setWorkPlace(msg.getWorkPlace());
+            msg.getWorkPlace().setFurniture(msg.getFurniture());
+
+            if (msg.getWorkerA().getCurrentWorkPlace() != null) {
                 msg.setCode(Mc.rPresunDoSkladu);
                 msg.setAddressee(mySim().findAgent(Id.agentPohybu));
-
                 msg.getWorkerA().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
-                msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
-
-
-                msg.getFurniture().setWorkPlace(msg.getWorkPlace());
-                msg.getWorkPlace().setFurniture(msg.getFurniture());
-
             } else {
                 msg.setCode(Mc.rPripravVSklade);
                 msg.setAddressee(mySim().findAgent(Id.agentSkladu));
-
                 msg.getWorkerA().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
-                msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
-
-                msg.getFurniture().setWorkPlace(msg.getWorkPlace());
-                msg.getWorkPlace().setFurniture(msg.getFurniture());
-
-
             }
 
             request(msg);
+            return; // Správa bola vybavená, ostatné netreba
         }
 
-
-        // Ak má worker, ale nie workplace
         if (msg.getWorkerA() != null && msg.getWorkPlace() == null) {
             MyMessage reqPlace = new MyMessage(msg);
             reqPlace.setCode(Mc.dajPracovneMiestoRezanie);
             reqPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
             request(reqPlace);
+            return;
         }
 
-        // Ak má workplace, ale nie worker-a
         if (msg.getWorkPlace() != null && msg.getWorkerA() == null) {
             MyMessage reqWorker = new MyMessage(msg);
             reqWorker.setCode(Mc.rVyberPracovnikaRezanie);
             reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
             request(reqWorker);
+            return;
         }
 
         if (msg.getWorkPlace() == null && msg.getWorkerA() == null) {
@@ -229,8 +217,7 @@ public class ManagerNabytku extends OSPABA.Manager {
             reqWorker.setCode(Mc.rVyberPracovnikaRezanie);
             reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
             request(reqWorker);
-        }*/
-
+        }
     }
 
 

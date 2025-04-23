@@ -53,6 +53,7 @@ public class ManagerPracovisk extends Manager {
         if (workPlace != null) {
             workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
         }
+
         msg.setWorkPlace(workPlace);
         msg.setCode(Mc.dajPracovneMiestoRezanie);
         msg.setAddressee(Id.agentNabytku);
