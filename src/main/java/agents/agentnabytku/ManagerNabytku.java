@@ -51,8 +51,29 @@ public class ManagerNabytku extends OSPABA.Manager {
 
     //meta! sender="AgentPracovisk", id="388", type="Response"
     public void processDajPracovneMiestoRezanie(MessageForm message) {
-       /* MyMessage msg = (MyMessage) message;
-        checkProcessingQueueNonProcessed(msg);*/
+        MyMessage msg = (MyMessage) message.createCopy();
+        if (msg.getWorkerA() == null && msg.getWorkPlace() != null) {
+            MyMessage reqPlace = new MyMessage(msg);
+            reqPlace.setCode(Mc.dajPracovneMiestoRezanie);
+            reqPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+            request(reqPlace);
+
+        } else if (msg.getWorkerA() != null && msg.getWorkPlace() != null) {
+            msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
+            msg.getFurniture().setWorkPlace(msg.getWorkPlace());
+            msg.getWorkPlace().setFurniture(msg.getFurniture());
+
+            if (msg.getWorkerA().getCurrentWorkPlace() != null) {
+                msg.setCode(Mc.rPresunDoSkladu);
+                msg.setAddressee(mySim().findAgent(Id.agentPohybu));
+                msg.getWorkerA().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+            } else {
+                msg.setCode(Mc.rPripravVSklade);
+                msg.setAddressee(mySim().findAgent(Id.agentSkladu));
+                msg.getWorkerA().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+            }
+            request(msg);
+        }
     }
 
     //meta! sender="AgentPracovisk", id="389", type="Response"
@@ -107,8 +128,32 @@ public class ManagerNabytku extends OSPABA.Manager {
 
     //meta! sender="AgentPracovnikov", id="168", type="Response"
     public void processRVyberPracovnikaRezanie(MessageForm message) {
-       /* MyMessage msg = (MyMessage) message;
-        checkProcessingQueueNonProcessed(msg);*/
+        MyMessage msg = (MyMessage) message.createCopy();
+        if (msg.getWorkerA() != null && msg.getWorkPlace() == null) {
+            MyMessage reqPlace = new MyMessage(msg);
+            reqPlace.setCode(Mc.dajPracovneMiestoRezanie);
+            reqPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+            request(reqPlace);
+        } else if (msg.getWorkerA() != null && msg.getWorkPlace() != null) {
+
+            msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
+            msg.getFurniture().setWorkPlace(msg.getWorkPlace());
+            msg.getWorkPlace().setFurniture(msg.getFurniture());
+
+            if (msg.getWorkerA().getCurrentWorkPlace() != null) {
+                msg.setCode(Mc.rPresunDoSkladu);
+                msg.setAddressee(mySim().findAgent(Id.agentPohybu));
+                msg.getWorkerA().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+            } else {
+                msg.setCode(Mc.rPripravVSklade);
+                msg.setAddressee(mySim().findAgent(Id.agentSkladu));
+                msg.getWorkerA().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+            }
+
+            request(msg);
+
+        }
+
     }
 
 

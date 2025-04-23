@@ -44,7 +44,7 @@ public class ManagerPracovnikov extends OSPABA.Manager
 		MyMessage msg = (MyMessage) message;
 		msg.setCode(Mc.rVyberPracovnikaRezanie);
 		msg.setAddressee(mySim().findAgent(Id.agentNabytku));
-		response(message);
+		response(msg);
 
 	}
 
