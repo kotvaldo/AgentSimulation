@@ -1,5 +1,8 @@
 package agents.agentnabytku;
 
+import Enums.OrderStateValues;
+import Enums.WorkPlaceStateValues;
+import Enums.WorkerBussyState;
 import OSPABA.*;
 import entities.*;
 import simulation.Id;
@@ -81,19 +84,56 @@ public class ManagerNabytku extends OSPABA.Manager {
 	public void processNoticeSpracujObjednavku(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
 		MySimulation mySimulation = (MySimulation) _mySim;
+		msg.getOrder().setState(OrderStateValues.PROCESSING_ORDER.getValue());
 		for (Furniture furniture : msg.getOrder().getFurnitureList()) {
 			MyMessage furnitureMsg = new MyMessage(mySimulation);
+			furnitureMsg.setOrder(msg.getOrder());
 			furnitureMsg.setFurniture(furniture);
+			furnitureMsg.setWorkPlace(null);
+			furnitureMsg.setWorkerA(null);
+			furnitureMsg.setWorkerB(null);
+			furnitureMsg.setWorkerC(null);
 			this.queueNonProcessed.getQueue().addLast(furnitureMsg);
-		}
 
-		for (MyMessage furnitureMsg : this.queueNonProcessed.getQueue()) {
-			MyMessage workerRequest = new MyMessage(furnitureMsg);
-			workerRequest.setCode(Mc.rVyberPracovnikaRezanie);
-			workerRequest.setAddressee(mySim().findAgent(Id.agentPracovnikov));
-			request(workerRequest);
 		}
+		checkProcessingQueueNonProcessed();
 
+	}
+
+
+	private void checkProcessingQueueNonProcessed() {
+		for (MyMessage msg : queueNonProcessed.getQueue()) {
+			// Ak má oboch – môžeš rovno poslať na pohyb
+			if (msg.getWorkerA() != null && msg.getWorkPlace() != null) {
+
+				queueNonProcessed.getQueue().remove(msg);
+
+				MyMessage moveMsg = new MyMessage(msg);
+				moveMsg.setCode(Mc.rPresunDoSkladu);
+				moveMsg.setAddressee(mySim().findAgent(Id.agentPohybu));
+				msg.getWorkerA().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+				msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
+				request(moveMsg);
+
+				break; // spracovávame len jeden naraz, aby sme nezmienili front počas iterácie
+			}
+
+			// Ak má worker, ale nie workplace
+			if (msg.getWorkerA() != null && msg.getWorkPlace() == null) {
+				MyMessage reqPlace = new MyMessage(msg);
+				reqPlace.setCode(Mc.rDajVolnePracovneMiesto);
+				reqPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+				request(reqPlace);
+			}
+
+			// Ak má workplace, ale nie worker-a
+			if (msg.getWorkPlace() != null && msg.getWorkerA() == null) {
+				MyMessage reqWorker = new MyMessage(msg);
+				reqWorker.setCode(Mc.rVyberPracovnikaRezanie);
+				reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+				request(reqWorker);
+			}
+		}
 	}
 
 	//meta! sender="AgentCinnosti", id="284", type="Response"
@@ -114,7 +154,16 @@ public class ManagerNabytku extends OSPABA.Manager {
 
 	//meta! sender="AgentPracovnikov", id="168", type="Response"
 	public void processRVyberPracovnikaRezanie(MessageForm message) {
+		MyMessage msg = (MyMessage) message;
+
+		if (msg.getWorkerA() != null) {
+			MyMessage reqPlace = new MyMessage(msg);
+			reqPlace.setCode(Mc.rDajVolnePracovneMiesto);
+			reqPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+			request(reqPlace);
+		}
 	}
+
 
 	//meta! sender="AgentCinnosti", id="285", type="Response"
 	public void processRUrobPripravuVSklade(MessageForm message) {
@@ -129,6 +178,8 @@ public class ManagerNabytku extends OSPABA.Manager {
 		switch (message.code()) {
 		}
 	}
+
+
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init() {

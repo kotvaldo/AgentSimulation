@@ -1,5 +1,6 @@
 package agents.agentpracovisk;
 
+import Enums.WorkPlaceStateValues;
 import OSPABA.*;
 import entities.WorkPlace;
 import simulation.*;
@@ -57,6 +58,9 @@ public class ManagerPracovisk extends Manager
 	{
 		MyMessage myMessage = (MyMessage) message;
 		WorkPlace workPlace = dajPrveVolneMiestoPodlaId();
+		if(workPlace != null) {
+			workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
+		}
 		myMessage.setWorkPlace(workPlace);
 		myMessage.setCode(Mc.rDajVolnePracovneMiesto);
 		myMessage.setAddressee(Id.agentNabytku);

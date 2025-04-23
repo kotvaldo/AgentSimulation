@@ -30,8 +30,13 @@ public class ManagerPohybu extends Manager
 	}
 
 	//meta! sender="AgentNabytku", id="138", type="Request"
-	public void processRPresunDoSkladu(MessageForm message)
-	{
+	public void processRPresunDoSkladu(MessageForm message) {
+		MyMessage msg = (MyMessage) message;
+		msg.setCode(Mc.finish);  // Proces ukončí s týmto kódom
+
+		// Spustenie procesu presunu
+		msg.setAddressee(myAgent().findAssistant(Id.procesPresunDoSkladu));
+		startContinualAssistant(msg);
 	}
 
 	//meta! sender="AgentNabytku", id="71", type="Notice"
@@ -42,6 +47,13 @@ public class ManagerPohybu extends Manager
 	//meta! sender="ProcesPresunDoSkladu", id="117", type="Finish"
 	public void processFinishProcesPresunDoSkladu(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message;
+
+		// Explicitne nastavíme späť správny kód (ak to vyžaduje ďalšie rozlíšenie)
+		msg.setCode(Mc.rPresunDoSkladu);
+
+		// Vráť správu späť do ManagerNabytku
+		response(msg);
 	}
 
 	//meta! sender="ProcesPresunNaPracovisko", id="115", type="Finish"

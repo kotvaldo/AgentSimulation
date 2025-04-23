@@ -39,6 +39,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private JSpinner workPlaceSpinner;
     private JLabel countALabel;
     private JLabel countBLabel;
+    private boolean paused = false;
     private JLabel countCLabel;
     private final JLabel newOrdersAfterSimulationLabel;
     private final JLabel timeOfWorkLabel;
@@ -108,10 +109,20 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         });
 
 
-
         JButton pauseButton = new JButton("Pause Simulation");
         this.controlPanel.add(pauseButton);
-        pauseButton.addActionListener(e -> core.pauseSimulation());
+        pauseButton.addActionListener(e -> {
+            if(paused) {
+                core.resumeSimulation();
+                paused = false;
+            } else {
+                core.pauseSimulation();
+                paused = true;
+            }
+
+
+
+        });
         core.setSlowMode(true);
 
 
