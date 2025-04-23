@@ -5,7 +5,7 @@ import simulation.*;
 import agents.agentpohybu.continualassistants.*;
 
 //meta! id="35"
-public class AgentPohybu extends OSPABA.Agent
+public class AgentPohybu extends Agent
 {
 	public AgentPohybu(int id, Simulation mySim, Agent parent)
 	{
@@ -24,8 +24,9 @@ public class AgentPohybu extends OSPABA.Agent
 	private void init()
 	{
 		new ManagerPohybu(Id.managerPohybu, mySim(), this);
-		new ProcesPresunDoSkladu(Id.procesPresunDoSkladu, mySim(), this);
 		new ProcesPresunNaPracovisko(Id.procesPresunNaPracovisko, mySim(), this);
+		new ProcesPresunDoSkladu(Id.procesPresunDoSkladu, mySim(), this);
+		addOwnMessage(Mc.rPresunZoSkladu);
 		addOwnMessage(Mc.rPresunDoSkladu);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.rPresunNaPracovisko);

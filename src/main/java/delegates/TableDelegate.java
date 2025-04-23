@@ -8,6 +8,7 @@ import OSPABA.ISimDelegate;
 import OSPABA.SimState;
 import OSPABA.Simulation;
 import entities.Worker;
+import simulation.MySimulation;
 
 import javax.swing.*;
 import java.util.ArrayList;

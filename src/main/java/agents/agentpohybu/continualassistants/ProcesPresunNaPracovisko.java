@@ -6,7 +6,7 @@ import agents.agentpohybu.*;
 import OSPABA.Process;
 
 //meta! id="114"
-public class ProcesPresunNaPracovisko extends OSPABA.Process
+public class ProcesPresunNaPracovisko extends Process
 {
 	public ProcesPresunNaPracovisko(int id, Simulation mySim, CommonAgent myAgent)
 	{

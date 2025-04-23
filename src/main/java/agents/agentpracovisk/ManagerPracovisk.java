@@ -21,14 +21,16 @@ public class ManagerPracovisk extends Manager
 	public void prepareReplication()
 	{
 		super.prepareReplication();
-		// Setup component for the next replication
 
-		if (petriNet() != null)
-		{
+		if (petriNet() != null) {
 			petriNet().clear();
 		}
 
+		MySimulation mySimulation = (MySimulation) _mySim;
+		freeWorkPlaces.clear();
+		freeWorkPlaces.addAll(mySimulation.getWorkPlacesArrayList());
 	}
+
 
 	public WorkPlace dajPrveVolneMiestoPodlaId() {
 		MySimulation mySimulation = (MySimulation) _mySim;
@@ -50,13 +52,16 @@ public class ManagerPracovisk extends Manager
 		myMessage.getWorkPlace().setBusy(false);
 	}
 
-	//meta! sender="AgentNabytku", id="182", type="Response"
+	//meta! sender="AgentNabytku", id="182", type="Request"
 	public void processRDajVolnePracovneMiesto(MessageForm message)
 	{
 		MyMessage myMessage = (MyMessage) message;
 		WorkPlace workPlace = dajPrveVolneMiestoPodlaId();
 		myMessage.setWorkPlace(workPlace);
-		myMessage.getWorkPlace().setBusy(true);
+		myMessage.setCode(Mc.rDajVolnePracovneMiesto);
+		myMessage.setAddressee(Id.agentNabytku);
+		response(myMessage);
+
 
 	}
 

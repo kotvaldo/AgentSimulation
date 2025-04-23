@@ -1,85 +1,121 @@
 package agents.agentpracovnikova;
 
+import Enums.WorkerBussyState;
 import OSPABA.*;
+import entities.WorkerA;
 import simulation.*;
 
+import java.util.LinkedList;
+
 //meta! id="228"
-public class ManagerPracovnikovA extends OSPABA.Manager
-{
-	public ManagerPracovnikovA(int id, Simulation mySim, Agent myAgent)
-	{
-		super(id, mySim, myAgent);
-		init();
-	}
+public class ManagerPracovnikovA extends OSPABA.Manager {
+    private LinkedList<WorkerA> freeWorkers;
 
-	@Override
-	public void prepareReplication()
-	{
-		super.prepareReplication();
-		// Setup component for the next replication
 
-		if (petriNet() != null)
-		{
-			petriNet().clear();
-		}
-	}
+    public ManagerPracovnikovA(int id, Simulation mySim, Agent myAgent) {
+        super(id, mySim, myAgent);
+        init();
+    }
 
-	//meta! sender="AgentPracovnikov", id="242", type="Request"
-	public void processRVyberPracovnikaARezanie(MessageForm message)
-	{
-	}
+    @Override
+    public void prepareReplication() {
+        super.prepareReplication();
+        // Setup component for the next replication
 
-	//meta! sender="AgentPracovnikov", id="239", type="Notice"
-	public void processNoticeUvolniA(MessageForm message)
-	{
-	}
+        if (petriNet() != null) {
+            petriNet().clear();
+        }
 
-	//meta! sender="AgentPracovnikov", id="365", type="Request"
-	public void processRVyberPracovnikaAMontaz(MessageForm message)
-	{
-	}
+        MySimulation sim = (MySimulation) _mySim;
+        freeWorkers = new LinkedList<>();
 
-	//meta! userInfo="Process messages defined in code", id="0"
-	public void processDefault(MessageForm message)
-	{
-		switch (message.code())
-		{
-		}
-	}
+        for (WorkerA worker : sim.getWorkersAArrayList()) {
+            worker.setState(WorkerBussyState.NON_BUSY.getValue());
+            freeWorkers.add(worker);
+        }
 
-	//meta! userInfo="Generated code: do not modify", tag="begin"
-	public void init()
-	{
-	}
+    }
 
-	@Override
-	public void processMessage(MessageForm message)
-	{
-		switch (message.code())
-		{
-		case Mc.noticeUvolniA:
-			processNoticeUvolniA(message);
-		break;
+    //meta! sender="AgentPracovnikov", id="242", type="Request"
+    public void processRVyberPracovnikaARezanie(MessageForm message) {
+        MyMessage msg = (MyMessage) message;
 
-		case Mc.rVyberPracovnikaAMontaz:
-			processRVyberPracovnikaAMontaz(message);
-		break;
+        WorkerA worker = freeWorkers.poll();
+        if (worker != null) {
+            worker.setState(WorkerBussyState.ASSIGNED.getValue());
+            msg.setWorkerA(worker);
+        } else {
+            msg.setWorkerA(null);
+        }
 
-		case Mc.rVyberPracovnikaARezanie:
-			processRVyberPracovnikaARezanie(message);
-		break;
+        msg.setCode(Mc.rVyberPracovnikaARezanie);
+        msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+        response(msg);
+    }
 
-		default:
-			processDefault(message);
-		break;
-		}
-	}
-	//meta! tag="end"
+    //meta! sender="AgentPracovnikov", id="365", type="Request"
+    public void processRVyberPracovnikaAMontaz(MessageForm message) {
+        MyMessage msg = (MyMessage) message;
 
-	@Override
-	public AgentPracovnikovA myAgent()
-	{
-		return (AgentPracovnikovA)super.myAgent();
-	}
+        WorkerA worker = freeWorkers.poll();
+        if (worker != null) {
+            worker.setState(WorkerBussyState.ASSIGNED.getValue());
+            msg.setWorkerA(worker);
+        } else {
+            msg.setWorkerA(null);
+        }
+
+        msg.setCode(Mc.rVyberPracovnikaAMontaz);
+        msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+        response(msg);
+    }
+
+    //meta! sender="AgentPracovnikov", id="239", type="Notice"
+    public void processNoticeUvolniA(MessageForm message) {
+        MyMessage msg = (MyMessage) message;
+        WorkerA worker = msg.getWorkerA();
+
+        if (worker != null) {
+            worker.setState(WorkerBussyState.NON_BUSY.getValue());
+            freeWorkers.add(worker);
+        }
+    }
+
+    //meta! userInfo="Process messages defined in code", id="0"
+    public void processDefault(MessageForm message) {
+        switch (message.code()) {
+        }
+    }
+
+    //meta! userInfo="Generated code: do not modify", tag="begin"
+    public void init() {
+    }
+
+    @Override
+    public void processMessage(MessageForm message) {
+        switch (message.code()) {
+            case Mc.noticeUvolniA:
+                processNoticeUvolniA(message);
+                break;
+
+            case Mc.rVyberPracovnikaAMontaz:
+                processRVyberPracovnikaAMontaz(message);
+                break;
+
+            case Mc.rVyberPracovnikaARezanie:
+                processRVyberPracovnikaARezanie(message);
+                break;
+
+            default:
+                processDefault(message);
+                break;
+        }
+    }
+    //meta! tag="end"
+
+    @Override
+    public AgentPracovnikovA myAgent() {
+        return (AgentPracovnikovA) super.myAgent();
+    }
 
 }

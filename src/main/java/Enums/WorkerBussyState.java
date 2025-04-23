@@ -1,20 +1,24 @@
 package Enums;
 
 public enum WorkerBussyState {
-    BUSY_WORKER(true),
-    NON_BUSY_WORKER(false);
+    NON_BUSY(0),
+    ASSIGNED(1),
+    BUSY(2),
+    MOVING_TO_STORAGE(3),
+    MOVING_FROM_STORAGE(4),
+    MOVE_TO_WORKPLACE(5);
 
-    private final boolean isBusy;
+    private final int stateCode;
 
-    WorkerBussyState(boolean isBusyWorker) {
-        this.isBusy = isBusyWorker;
+    WorkerBussyState(int stateCode) {
+        this.stateCode = stateCode;
     }
 
-    public boolean getValue() {
-        return isBusy;
+    public int getValue() {
+        return stateCode;
     }
 
-    public static String getNameByValue(boolean value) {
+    public static String getNameByValue(int value) {
         for (WorkerBussyState state : WorkerBussyState.values()) {
             if (state.getValue() == value) {
                 return state.name();
@@ -23,4 +27,3 @@ public enum WorkerBussyState {
         return "UNKNOWN";
     }
 }
-

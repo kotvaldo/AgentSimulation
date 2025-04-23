@@ -4,7 +4,7 @@ import OSPABA.*;
 import simulation.*;
 
 //meta! id="35"
-public class ManagerPohybu extends OSPABA.Manager
+public class ManagerPohybu extends Manager
 {
 	public ManagerPohybu(int id, Simulation mySim, Agent myAgent)
 	{
@@ -24,6 +24,11 @@ public class ManagerPohybu extends OSPABA.Manager
 		}
 	}
 
+	//meta! sender="AgentNabytku", id="385", type="Request"
+	public void processRPresunZoSkladu(MessageForm message)
+	{
+	}
+
 	//meta! sender="AgentNabytku", id="138", type="Request"
 	public void processRPresunDoSkladu(MessageForm message)
 	{
@@ -34,13 +39,13 @@ public class ManagerPohybu extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="ProcesPresunNaPracovisko", id="115", type="Finish"
-	public void processFinishProcesPresunNaPracovisko(MessageForm message)
+	//meta! sender="ProcesPresunDoSkladu", id="117", type="Finish"
+	public void processFinishProcesPresunDoSkladu(MessageForm message)
 	{
 	}
 
-	//meta! sender="ProcesPresunDoSkladu", id="117", type="Finish"
-	public void processFinishProcesPresunDoSkladu(MessageForm message)
+	//meta! sender="ProcesPresunNaPracovisko", id="115", type="Finish"
+	public void processFinishProcesPresunNaPracovisko(MessageForm message)
 	{
 	}
 
@@ -67,21 +72,25 @@ public class ManagerPohybu extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.rPresunNaPracovisko:
-			processRPresunNaPracovisko(message);
-		break;
-
 		case Mc.finish:
 			switch (message.sender().id())
 			{
-			case Id.procesPresunNaPracovisko:
-				processFinishProcesPresunNaPracovisko(message);
-			break;
-
 			case Id.procesPresunDoSkladu:
 				processFinishProcesPresunDoSkladu(message);
 			break;
+
+			case Id.procesPresunNaPracovisko:
+				processFinishProcesPresunNaPracovisko(message);
+			break;
 			}
+		break;
+
+		case Mc.rPresunZoSkladu:
+			processRPresunZoSkladu(message);
+		break;
+
+		case Mc.rPresunNaPracovisko:
+			processRPresunNaPracovisko(message);
 		break;
 
 		case Mc.init:

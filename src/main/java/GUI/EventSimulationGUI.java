@@ -12,6 +12,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import simulation.MySimulation;
 
 import javax.swing.*;
 import java.awt.*;

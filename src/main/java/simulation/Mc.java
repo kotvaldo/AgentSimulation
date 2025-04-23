@@ -2,9 +2,10 @@ package simulation;
 
 import OSPABA.*;
 
-public class Mc extends OSPABA.IdList
+public class Mc extends IdList
 {
 	//meta! userInfo="Generated code: do not modify", tag="begin"
+	public static final int rPresunZoSkladu = 1105;
 	public static final int init = 1028;
 	public static final int rPresunDoSkladu = 1036;
 	public static final int noticeHotovaObjednavka = 1042;

@@ -1,39 +1,66 @@
 package agents.agentpracovnikovb;
 
+import Enums.WorkerBussyState;
 import OSPABA.*;
+import entities.WorkerB;
 import simulation.*;
+
+import java.util.LinkedList;
 
 //meta! id="229"
 public class ManagerPracovnikovB extends OSPABA.Manager
 {
-	public ManagerPracovnikovB(int id, Simulation mySim, Agent myAgent)
-	{
+	private LinkedList<WorkerB> freeWorkers;
+
+	public ManagerPracovnikovB(int id, Simulation mySim, Agent myAgent) {
 		super(id, mySim, myAgent);
 		init();
 	}
 
 	@Override
-	public void prepareReplication()
-	{
+	public void prepareReplication() {
 		super.prepareReplication();
-		// Setup component for the next replication
 
-		if (petriNet() != null)
-		{
+		if (petriNet() != null) {
 			petriNet().clear();
+		}
+
+		MySimulation sim = (MySimulation) _mySim;
+		freeWorkers = new LinkedList<>();
+
+		for (WorkerB worker : sim.getWorkersBArrayList()) {
+			worker.setState(WorkerBussyState.NON_BUSY.getValue());
+			freeWorkers.add(worker);
 		}
 	}
 
-	//meta! sender="AgentPracovnikov", id="240", type="Notice"
-	public void processNoticeUvolniB(MessageForm message)
-	{
-	}
-
 	//meta! sender="AgentPracovnikov", id="246", type="Request"
-	public void processRVyberPracovnikaBRSkladanie(MessageForm message)
-	{
+	public void processRVyberPracovnikaBRSkladanie(MessageForm message) {
+		MyMessage msg = (MyMessage) message;
+
+		WorkerB worker = freeWorkers.poll();
+		if (worker != null) {
+			worker.setState(WorkerBussyState.ASSIGNED.getValue());
+			msg.setWorkerB(worker);
+		} else {
+			msg.setWorkerB(null);
+		}
+
+		msg.setCode(Mc.rVyberPracovnikaBRSkladanie);
+		msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+		response(msg);
 	}
 
+	//meta! sender="AgentPracovnikov", id="240", type="Notice"
+	public void processNoticeUvolniB(MessageForm message) {
+		MyMessage msg = (MyMessage) message;
+		WorkerB worker = msg.getWorkerB();
+
+		if (worker != null) {
+			worker.setState(WorkerBussyState.NON_BUSY.getValue());
+			freeWorkers.add(worker);
+		}
+	}
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)
 	{

@@ -5,7 +5,7 @@ import Statistics.Utilisation;
 
 public class Worker {
     private final int id;
-    private boolean isBusy;
+    private int state;
     private final String type;
     private Furniture furniture;
     private WorkPlace currentWorkPlace;
@@ -14,18 +14,18 @@ public class Worker {
     public Worker(String type) {
         this.id = IDGenerator.getInstance().getNextPersonId();
         this.type = type;
-        isBusy = false;
+        state = 0;
         furniture = null;
         currentWorkPlace = null;
     }
 
-    public boolean getBusy() {
-        return isBusy;
+    public int getState() {
+        return state;
     }
 
-    public void setIsBusy(boolean busy) {
-        this.isBusy = busy;
-        if (!busy) {
+    public void setState(int state) {
+        this.state = state;
+        if (state == 0) {
             furniture = null;
         }
     }
@@ -42,9 +42,8 @@ public class Worker {
         return furniture;
     }
 
-    public void setFurniture(Furniture orderId, double currentTime) {
-        this.furniture = orderId;
-        setIsBusy(orderId != null);
+    public void setFurniture(Furniture furnitureID, double currentTime) {
+        this.furniture = furnitureID;
     }
 
 
@@ -72,7 +71,7 @@ public class Worker {
     public void clear() {
         furniture = null;
         currentWorkPlace = null;
-        isBusy = false;
+        state = 0;
 
     }
 }

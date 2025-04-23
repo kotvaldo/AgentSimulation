@@ -1,49 +1,47 @@
 package entities;
 
+import Enums.WorkPlaceStateValues;
 import IDGenerator.IDGenerator;
 
 public class WorkPlace {
     private final int id;
     private Furniture furniture;
-    private boolean isBusy;
     private Worker worker;
     private String activity = "Nothing";
+    private int state;
 
     public WorkPlace() {
         this.id = IDGenerator.getInstance().getNextWorkplaceId();
-        isBusy = false;
-        furniture = null;
-        worker = null;
+        this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
+        this.furniture = null;
+        this.worker = null;
     }
-
 
     public Furniture getFurniture() {
         return furniture;
-
     }
 
     public void setFurniture(Furniture furniture) {
         this.furniture = furniture;
-        this.isBusy = furniture != null;
+        if (furniture != null) {
+            this.state = WorkPlaceStateValues.ASSIGNED.getValue();
+        } else if (worker == null) {
+            this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
+        }
     }
 
     public boolean isBusy() {
-        return this.isBusy;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        WorkPlace workplace = (WorkPlace) obj;
-        return id == workplace.id;
+        return state == WorkPlaceStateValues.ASSIGNED.getValue()
+                || state == WorkPlaceStateValues.WORKING.getValue();
     }
 
     public void setBusy(boolean busy) {
-        if(!busy) {
+        if (!busy) {
             this.furniture = null;
+            this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
+        } else {
+            this.state = WorkPlaceStateValues.WORKING.getValue();
         }
-        isBusy = busy;
     }
 
     public int getId() {
@@ -56,6 +54,13 @@ public class WorkPlace {
 
     public void setWorker(Worker worker) {
         this.worker = worker;
+        if (worker != null && furniture != null) {
+            this.state = WorkPlaceStateValues.WORKING.getValue();
+        } else if (worker != null) {
+            this.state = WorkPlaceStateValues.ASSIGNED.getValue();
+        } else if (furniture == null) {
+            this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
+        }
     }
 
     public String getActivity() {
@@ -64,5 +69,21 @@ public class WorkPlace {
 
     public void setActivity(String activity) {
         this.activity = activity;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        WorkPlace workplace = (WorkPlace) obj;
+        return id == workplace.id;
     }
 }
