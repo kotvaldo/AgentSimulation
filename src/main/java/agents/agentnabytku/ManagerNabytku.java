@@ -6,7 +6,6 @@ import Enums.WorkerBussyState;
 import OSPABA.*;
 import entities.*;
 import simulation.Id;
-import simulation.Mc;
 import simulation.MyMessage;
 import simulation.MySimulation;
 
@@ -78,6 +77,7 @@ public class ManagerNabytku extends OSPABA.Manager {
 
 	//meta! sender="AgentPracovisk", id="182", type="Response"
 	public void processRDajVolnePracovneMiesto(MessageForm message) {
+
 	}
 
 	//meta! sender="AgentModelu", id="81", type="Notice"
@@ -94,7 +94,7 @@ public class ManagerNabytku extends OSPABA.Manager {
 			furnitureMsg.setWorkerB(null);
 			furnitureMsg.setWorkerC(null);
 			this.queueNonProcessed.getQueue().addLast(furnitureMsg);
-
+			System.out.println(queueNonProcessed.getQueue());
 		}
 		checkProcessingQueueNonProcessed();
 
@@ -128,6 +128,13 @@ public class ManagerNabytku extends OSPABA.Manager {
 
 			// Ak má workplace, ale nie worker-a
 			if (msg.getWorkPlace() != null && msg.getWorkerA() == null) {
+				MyMessage reqWorker = new MyMessage(msg);
+				reqWorker.setCode(Mc.rVyberPracovnikaRezanie);
+				reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+				request(reqWorker);
+			}
+
+			if(msg.getWorkerB() == null && msg.getWorkerA() == null) {
 				MyMessage reqWorker = new MyMessage(msg);
 				reqWorker.setCode(Mc.rVyberPracovnikaRezanie);
 				reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));

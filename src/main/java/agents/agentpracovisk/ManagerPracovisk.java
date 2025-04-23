@@ -8,108 +8,128 @@ import simulation.*;
 import java.util.LinkedList;
 
 //meta! id="62"
-public class ManagerPracovisk extends Manager
-{
-	private LinkedList<WorkPlace> freeWorkPlaces = new LinkedList<>();
-	public ManagerPracovisk(int id, Simulation mySim, Agent myAgent)
-	{
-		super(id, mySim, myAgent);
-		init();
-		MySimulation mySimulation = (MySimulation) _mySim;
-	}
+public class ManagerPracovisk extends Manager {
+    private LinkedList<WorkPlace> freeWorkPlaces = new LinkedList<>();
 
-	@Override
-	public void prepareReplication()
-	{
-		super.prepareReplication();
+    public ManagerPracovisk(int id, Simulation mySim, Agent myAgent) {
+        super(id, mySim, myAgent);
+        init();
+    }
 
-		if (petriNet() != null) {
-			petriNet().clear();
-		}
+    @Override
+    public void prepareReplication() {
+        super.prepareReplication();
 
-		MySimulation mySimulation = (MySimulation) _mySim;
-		freeWorkPlaces.clear();
-		freeWorkPlaces.addAll(mySimulation.getWorkPlacesArrayList());
-	}
+        if (petriNet() != null) {
+            petriNet().clear();
+        }
 
+        MySimulation mySimulation = (MySimulation) _mySim;
+        freeWorkPlaces.clear();
+        freeWorkPlaces.addAll(mySimulation.getWorkPlacesArrayList());
+    }
 
-	public WorkPlace dajPrveVolneMiestoPodlaId() {
-		MySimulation mySimulation = (MySimulation) _mySim;
+    private void pridelPracovisko(MyMessage message) {
+        WorkPlace workPlace = freeWorkPlaces.stream()
+            .filter(wp -> wp.getState() == WorkPlaceStateValues.NOT_WORKING.getValue())
+            .findFirst()
+            .orElse(null);
 
-		return mySimulation.getWorkPlacesArrayList().stream()
-				.filter(p -> !p.isBusy())
-				.findFirst()
-				.orElse(null);
-	}
-	//meta! sender="AgentNabytku", id="72", type="Notice"
-	public void processInit(MessageForm message)
-	{
-	}
+        if (workPlace != null) {
+            workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
+        }
 
-	//meta! sender="AgentNabytku", id="207", type="Notice"
-	public void processNoticeUvolniPracovneMiesto(MessageForm message)
-	{
-		MyMessage myMessage = (MyMessage) message.createCopy();
-		myMessage.getWorkPlace().setBusy(false);
-	}
+        message.setWorkPlace(workPlace);
+        message.setCode(Mc.rDajVolnePracovneMiesto);
+        message.setAddressee(Id.agentNabytku);
+        response(message);
+    }
 
-	//meta! sender="AgentNabytku", id="182", type="Request"
-	public void processRDajVolnePracovneMiesto(MessageForm message)
-	{
-		MyMessage myMessage = (MyMessage) message;
-		WorkPlace workPlace = dajPrveVolneMiestoPodlaId();
-		if(workPlace != null) {
-			workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
-		}
-		myMessage.setWorkPlace(workPlace);
-		myMessage.setCode(Mc.rDajVolnePracovneMiesto);
-		myMessage.setAddressee(Id.agentNabytku);
-		response(myMessage);
+    //meta! sender="AgentNabytku", id="72", type="Notice"
+    public void processInit(MessageForm message) {
+    }
 
+    //meta! sender="AgentNabytku", id="207", type="Notice"
+    public void processNoticeUvolniPracovneMiesto(MessageForm message) {
+        MyMessage myMessage = (MyMessage) message.createCopy();
+        myMessage.getWorkPlace().setState(WorkPlaceStateValues.NOT_WORKING.getValue());
+    }
 
-	}
+    //meta! sender="AgentNabytku", id="388", type="Request"
+    public void processDajPracovneMiestoRezanie(MessageForm message) {
+        pridelPracovisko((MyMessage) message);
+    }
 
-	//meta! userInfo="Process messages defined in code", id="0"
-	public void processDefault(MessageForm message)
-	{
-		switch (message.code())
-		{
-		}
-	}
+    //meta! sender="AgentNabytku", id="387", type="Request"
+    public void processRDajPracovneMiestoSkladanie(MessageForm message) {
+        pridelPracovisko((MyMessage) message);
+    }
 
-	//meta! userInfo="Generated code: do not modify", tag="begin"
-	public void init()
-	{
-	}
+    //meta! sender="AgentNabytku", id="390", type="Request"
+    public void processRDajPracovneMiestoMontaz(MessageForm message) {
+        pridelPracovisko((MyMessage) message);
+    }
 
-	@Override
-	public void processMessage(MessageForm message)
-	{
-		switch (message.code())
-		{
-			case Mc.rDajVolnePracovneMiesto:
-				processRDajVolnePracovneMiesto(message);
-				break;
+    //meta! sender="AgentNabytku", id="389", type="Request"
+    public void processRDajPracovneMiestoLakovanie(MessageForm message) {
+        pridelPracovisko((MyMessage) message);
+    }
 
-			case Mc.noticeUvolniPracovneMiesto:
-				processNoticeUvolniPracovneMiesto(message);
-				break;
+    //meta! sender="AgentNabytku", id="182", type="Request"
+    public void processRDajPracovneMiestoMorenie(MessageForm message) {
+        pridelPracovisko((MyMessage) message);
+    }
 
-			case Mc.init:
-				processInit(message);
-				break;
+    //meta! userInfo="Process messages defined in code", id="0"
+    public void processDefault(MessageForm message) {
+        switch (message.code()) {
+        }
+    }
 
-			default:
-				processDefault(message);
-				break;
-		}
-	}
-	//meta! tag="end"
+    //meta! userInfo="Generated code: do not modify", tag="begin"
+    public void init() {
+    }
 
-	@Override
-	public AgentPracovisk myAgent()
-	{
-		return (AgentPracovisk)super.myAgent();
-	}
+    @Override
+    public void processMessage(MessageForm message) {
+        switch (message.code()) {
+            case Mc.init:
+                processInit(message);
+                break;
 
+            case Mc.rDajPracovneMiestoMorenie:
+                processRDajPracovneMiestoMorenie(message);
+                break;
+
+            case Mc.noticeUvolniPracovneMiesto:
+                processNoticeUvolniPracovneMiesto(message);
+                break;
+
+            case Mc.rDajPracovneMiestoMontaz:
+                processRDajPracovneMiestoMontaz(message);
+                break;
+
+            case Mc.rDajPracovneMiestoSkladanie:
+                processRDajPracovneMiestoSkladanie(message);
+                break;
+
+            case Mc.dajPracovneMiestoRezanie:
+                processDajPracovneMiestoRezanie(message);
+                break;
+
+            case Mc.rDajPracovneMiestoLakovanie:
+                processRDajPracovneMiestoLakovanie(message);
+                break;
+
+            default:
+                processDefault(message);
+                break;
+        }
+    }
+    //meta! tag="end"
+
+    @Override
+    public AgentPracovisk myAgent() {
+        return (AgentPracovisk) super.myAgent();
+    }
 }

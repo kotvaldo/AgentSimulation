@@ -130,7 +130,7 @@
       <SimId>15</SimId>
       <InternalId>62</InternalId>
       <Name>AgentPracovisk</Name>
-      <Bounds>736,1365,180,180</Bounds>
+      <Bounds>738,1371,180,180</Bounds>
       <Reasoner>ManagerPracovisk</Reasoner>
       <ReasonerBounds>72,27,32,25</ReasonerBounds>
       <UsePetriNet>false</UsePetriNet>
@@ -184,6 +184,38 @@
       <Type>Notice</Type>
       <Source>9</Source>
       <Destination>118</Destination>
+    </Message>
+    <Message>
+      <SimId>1106</SimId>
+      <InternalId>387</InternalId>
+      <Name>rDajPracovneMiestoSkladanie</Name>
+      <Type>RequestResponse</Type>
+      <Source>9</Source>
+      <Destination>62</Destination>
+    </Message>
+    <Message>
+      <SimId>1107</SimId>
+      <InternalId>388</InternalId>
+      <Name>dajPracovneMiestoRezanie</Name>
+      <Type>RequestResponse</Type>
+      <Source>9</Source>
+      <Destination>62</Destination>
+    </Message>
+    <Message>
+      <SimId>1108</SimId>
+      <InternalId>389</InternalId>
+      <Name>rDajPracovneMiestoLakovanie</Name>
+      <Type>RequestResponse</Type>
+      <Source>9</Source>
+      <Destination>62</Destination>
+    </Message>
+    <Message>
+      <SimId>1109</SimId>
+      <InternalId>390</InternalId>
+      <Name>rDajPracovneMiestoMontaz</Name>
+      <Type>RequestResponse</Type>
+      <Source>9</Source>
+      <Destination>62</Destination>
     </Message>
     <Message>
       <InternalId>264</InternalId>
@@ -394,7 +426,7 @@
     <Message>
       <SimId>1056</SimId>
       <InternalId>182</InternalId>
-      <Name>rDajVolnePracovneMiesto</Name>
+      <Name>rDajPracovneMiestoMorenie</Name>
       <Type>RequestResponse</Type>
       <Source>9</Source>
       <Destination>62</Destination>
@@ -598,5 +630,5 @@
       <Destination>5</Destination>
     </Message>
   </Messages>
-  <IID>386</IID>
+  <IID>392</IID>
 </ABAsim>

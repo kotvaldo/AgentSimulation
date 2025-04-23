@@ -7,6 +7,10 @@ public class Mc extends IdList
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public static final int rPresunZoSkladu = 1105;
 	public static final int init = 1028;
+	public static final int rDajPracovneMiestoSkladanie = 1106;
+	public static final int dajPracovneMiestoRezanie = 1107;
+	public static final int rDajPracovneMiestoLakovanie = 1108;
+	public static final int rDajPracovneMiestoMontaz = 1109;
 	public static final int rPresunDoSkladu = 1036;
 	public static final int noticeHotovaObjednavka = 1042;
 	public static final int rUrobRezanie = 1091;
@@ -20,7 +24,7 @@ public class Mc extends IdList
 	public static final int rVyberPracovnikaLakovanie = 1046;
 	public static final int rVyberPracovnikaMontaz = 1049;
 	public static final int rVyberPracovnikaRezanie = 1050;
-	public static final int rDajVolnePracovneMiesto = 1056;
+	public static final int rDajPracovneMiestoMorenie = 1056;
 	public static final int rPripravVSklade = 1097;
 	public static final int noticePrichodObjednavky = 1099;
 	public static final int noticeUvolniPracovnikaB = 1070;

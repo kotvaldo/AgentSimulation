@@ -24,8 +24,12 @@ public class AgentPracovisk extends Agent
 	{
 		new ManagerPracovisk(Id.managerPracovisk, mySim(), this);
 		addOwnMessage(Mc.init);
+		addOwnMessage(Mc.dajPracovneMiestoRezanie);
+		addOwnMessage(Mc.rDajPracovneMiestoSkladanie);
 		addOwnMessage(Mc.noticeUvolniPracovneMiesto);
-		addOwnMessage(Mc.rDajVolnePracovneMiesto);
+		addOwnMessage(Mc.rDajPracovneMiestoMontaz);
+		addOwnMessage(Mc.rDajPracovneMiestoLakovanie);
+		addOwnMessage(Mc.rDajPracovneMiestoMorenie);
 	}
 	//meta! tag="end"
 }
