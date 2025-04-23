@@ -26,8 +26,9 @@ public class AgentPohybu extends Agent
 		new ManagerPohybu(Id.managerPohybu, mySim(), this);
 		new ProcesPresunNaPracovisko(Id.procesPresunNaPracovisko, mySim(), this);
 		new ProcesPresunDoSkladu(Id.procesPresunDoSkladu, mySim(), this);
-		addOwnMessage(Mc.rPresunZoSkladu);
+		new ProcesPresunZoSkladu(Id.procesPresunZoSkladu, mySim(), this);
 		addOwnMessage(Mc.rPresunDoSkladu);
+		addOwnMessage(Mc.rPresunZoSkladu);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.rPresunNaPracovisko);
 	}

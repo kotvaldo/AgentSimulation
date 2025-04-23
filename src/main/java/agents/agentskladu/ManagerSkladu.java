@@ -1,5 +1,6 @@
 package agents.agentskladu;
 
+import Enums.WorkerBussyState;
 import OSPABA.*;
 import simulation.*;
 
@@ -32,11 +33,20 @@ public class ManagerSkladu extends OSPABA.Manager
 	//meta! sender="ProcesPripravaVSklade", id="129", type="Finish"
 	public void processFinish(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message.createCopy();
+		msg.setCode(Mc.rPripravVSklade);
+		msg.setAddressee(Id.agentNabytku);
+		response(msg);
 	}
 
 	//meta! sender="AgentNabytku", id="324", type="Request"
 	public void processRPripravVSklade(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message.createCopy();
+		msg.getWorkerA().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+		msg.setAddressee(myAgent().findAssistant(Id.procesPripravaVSklade));
+		msg.setCode(Mc.finish);
+		startContinualAssistant(msg);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

@@ -24,17 +24,21 @@ public class ManagerPohybu extends Manager
 		}
 	}
 
-	//meta! sender="AgentNabytku", id="385", type="Request"
-	public void processRPresunZoSkladu(MessageForm message)
-	{
-	}
-
 	//meta! sender="AgentNabytku", id="138", type="Request"
 	public void processRPresunDoSkladu(MessageForm message) {
 		MyMessage msg = (MyMessage) message;
 		msg.setCode(Mc.finish);
 
 		msg.setAddressee(myAgent().findAssistant(Id.procesPresunDoSkladu));
+		startContinualAssistant(msg);
+	}
+
+	//meta! sender="AgentNabytku", id="385", type="Request"
+	public void processRPresunZoSkladu(MessageForm message)
+	{
+		MyMessage msg = (MyMessage) message;
+		msg.setCode(Mc.finish);
+		msg.setAddressee(myAgent().findAssistant(Id.procesPresunZoSkladu));
 		startContinualAssistant(msg);
 	}
 
@@ -47,20 +51,67 @@ public class ManagerPohybu extends Manager
 	public void processFinishProcesPresunDoSkladu(MessageForm message)
 	{
 		MyMessage msg = (MyMessage) message;
-
 		msg.setCode(Mc.rPresunDoSkladu);
+		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
+		response(msg);
+	}
 
+	//meta! sender="ProcesPresunZoSkladu", id="395", type="Finish"
+	public void processFinishProcesPresunZoSkladu(MessageForm message)
+	{
+		MyMessage msg = (MyMessage) message;
+		msg.setCode(Mc.rPresunZoSkladu);
+
+		if (msg.getWorkerA() != null) {
+			msg.getWorkerA().setCurrentWorkPlace(msg.getWorkPlace());
+		} else if (msg.getWorkerB() != null) {
+			msg.getWorkerB().setCurrentWorkPlace(msg.getWorkPlace());
+		} else if (msg.getWorkerC() != null) {
+			msg.getWorkerC().setCurrentWorkPlace(msg.getWorkPlace());
+		}
+		if (msg.getWorkPlace() != null) {
+			msg.getWorkPlace().setWorker(msg.getWorkerA() != null ? msg.getWorkerA() :
+					msg.getWorkerB() != null ? msg.getWorkerB() :
+							msg.getWorkerC());
+		}
+
+
+		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
 		response(msg);
 	}
 
 	//meta! sender="ProcesPresunNaPracovisko", id="115", type="Finish"
 	public void processFinishProcesPresunNaPracovisko(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message;
+		msg.setCode(Mc.rPresunNaPracovisko);
+
+		if (msg.getWorkerA() != null) {
+			msg.getWorkerA().setCurrentWorkPlace(msg.getWorkPlace());
+		} else if (msg.getWorkerB() != null) {
+			msg.getWorkerB().setCurrentWorkPlace(msg.getWorkPlace());
+		} else if (msg.getWorkerC() != null) {
+			msg.getWorkerC().setCurrentWorkPlace(msg.getWorkPlace());
+		}
+
+		if (msg.getWorkPlace() != null) {
+			msg.getWorkPlace().setWorker(msg.getWorkerA() != null ? msg.getWorkerA() :
+					msg.getWorkerB() != null ? msg.getWorkerB() :
+							msg.getWorkerC());
+		}
+
+		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
+		response(msg);
 	}
 
 	//meta! sender="AgentNabytku", id="157", type="Request"
 	public void processRPresunNaPracovisko(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message;
+		msg.setCode(Mc.finish);
+
+		msg.setAddressee(myAgent().findAssistant(Id.procesPresunNaPracovisko));
+		startContinualAssistant(msg);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -88,26 +139,30 @@ public class ManagerPohybu extends Manager
 				processFinishProcesPresunDoSkladu(message);
 			break;
 
+			case Id.procesPresunZoSkladu:
+				processFinishProcesPresunZoSkladu(message);
+			break;
+
 			case Id.procesPresunNaPracovisko:
 				processFinishProcesPresunNaPracovisko(message);
 			break;
 			}
 		break;
 
-		case Mc.rPresunZoSkladu:
-			processRPresunZoSkladu(message);
+		case Mc.rPresunDoSkladu:
+			processRPresunDoSkladu(message);
 		break;
 
-		case Mc.rPresunNaPracovisko:
-			processRPresunNaPracovisko(message);
+		case Mc.rPresunZoSkladu:
+			processRPresunZoSkladu(message);
 		break;
 
 		case Mc.init:
 			processInit(message);
 		break;
 
-		case Mc.rPresunDoSkladu:
-			processRPresunDoSkladu(message);
+		case Mc.rPresunNaPracovisko:
+			processRPresunNaPracovisko(message);
 		break;
 
 		default:

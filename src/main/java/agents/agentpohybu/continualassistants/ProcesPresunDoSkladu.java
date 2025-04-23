@@ -1,5 +1,6 @@
 package agents.agentpohybu.continualassistants;
 
+import Enums.PresetSimulationValues;
 import Enums.WorkerBussyState;
 import OSPABA.*;
 import simulation.*;
@@ -31,7 +32,9 @@ public class ProcesPresunDoSkladu extends Process
 		}
 
 		double newTime = ((MySimulation) mySim()).getGenerators().getTimeMovingIntoStorageDist().sample();
-		hold(newTime, msg);
+		if(newTime + mySim().currentTime() < PresetSimulationValues.END_OF_SIMULATION.getValue()) {
+			hold(newTime, msg);
+		}
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

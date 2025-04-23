@@ -141,6 +141,11 @@ public class ManagerNabytku extends OSPABA.Manager {
     //Sklad
     //meta! sender="AgentSkladu", id="324", type="Response"
     public void processRPripravVSklade(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+        msg.setCode(Mc.rPresunZoSkladu);
+
+        msg.setAddressee(myAgent().findAssistant(Id.agentPohybu));
+        request(msg);
     }
 
 
@@ -175,10 +180,9 @@ public class ManagerNabytku extends OSPABA.Manager {
 
             queueNonProcessed.getQueue().removeIf(m -> m.equals(msg));
 
-            MyMessage moveMsg = new MyMessage(msg);
-            if(moveMsg.getWorkerA().getCurrentWorkPlace() != null) {
-                moveMsg.setCode(Mc.rPresunDoSkladu);
-                moveMsg.setAddressee(mySim().findAgent(Id.agentPohybu));
+            if(msg.getWorkerA().getCurrentWorkPlace() != null) {
+                msg.setCode(Mc.rPresunDoSkladu);
+                msg.setAddressee(mySim().findAgent(Id.agentPohybu));
 
                 msg.getWorkerA().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
                 msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
@@ -188,8 +192,8 @@ public class ManagerNabytku extends OSPABA.Manager {
                 msg.getWorkPlace().setFurniture(msg.getFurniture());
 
             } else {
-                moveMsg.setCode(Mc.rPripravVSklade);
-                moveMsg.setAddressee(mySim().findAgent(Id.agentSkladu));
+                msg.setCode(Mc.rPripravVSklade);
+                msg.setAddressee(mySim().findAgent(Id.agentSkladu));
 
                 msg.getWorkerA().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
                 msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
@@ -200,7 +204,7 @@ public class ManagerNabytku extends OSPABA.Manager {
 
             }
 
-            request(moveMsg);
+            request(msg);
         }
 
 
@@ -220,7 +224,7 @@ public class ManagerNabytku extends OSPABA.Manager {
             request(reqWorker);
         }
 
-        if (msg.getWorkerB() == null && msg.getWorkerA() == null) {
+        if (msg.getWorkPlace() == null && msg.getWorkerA() == null) {
             MyMessage reqWorker = new MyMessage(msg);
             reqWorker.setCode(Mc.rVyberPracovnikaRezanie);
             reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));

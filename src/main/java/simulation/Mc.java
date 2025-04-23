@@ -15,6 +15,7 @@ public class Mc extends IdList
 	public static final int noticeHotovaObjednavka = 1042;
 	public static final int rUrobRezanie = 1091;
 	public static final int rPresunNaPracovisko = 1043;
+	public static final int rUrobPripravuVSklade = 1092;
 	public static final int rUrobMorenie = 1093;
 	public static final int rUrobLakovanie = 1094;
 	public static final int rUrobSkladanie = 1095;
