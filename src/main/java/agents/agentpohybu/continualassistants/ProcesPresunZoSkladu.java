@@ -21,8 +21,9 @@ public class ProcesPresunZoSkladu extends Process {
 
     //meta! sender="AgentPohybu", id="395", type="Start"
     public void processStart(MessageForm message) {
-        MyMessage msg = (MyMessage) message;
+        MyMessage msg = (MyMessage) message.createCopy();
 
+        msg.setCode(Mc.finish);
         if (msg.getWorkerA() != null) {
             msg.getWorkerA().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue());
         } else if (msg.getWorkerB() != null) {
@@ -40,6 +41,13 @@ public class ProcesPresunZoSkladu extends Process {
     //meta! userInfo="Process messages defined in code", id="0"
     public void processDefault(MessageForm message) {
         switch (message.code()) {
+            case Mc.finish ->{
+                MyMessage msg = (MyMessage) message.createCopy();
+                message.setAddressee(myAgent());
+                assistantFinished(msg);
+
+
+            }
         }
     }
 
@@ -53,7 +61,6 @@ public class ProcesPresunZoSkladu extends Process {
 
             default:
                 processDefault(message);
-                break;
         }
     }
     //meta! tag="end"

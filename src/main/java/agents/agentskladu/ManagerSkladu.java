@@ -35,7 +35,7 @@ public class ManagerSkladu extends OSPABA.Manager
 	{
 		MyMessage msg = (MyMessage) message.createCopy();
 		msg.setCode(Mc.rPripravVSklade);
-		msg.setAddressee(Id.agentNabytku);
+		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
 		response(msg);
 	}
 
@@ -44,8 +44,8 @@ public class ManagerSkladu extends OSPABA.Manager
 	{
 		MyMessage msg = (MyMessage) message.createCopy();
 		msg.getWorkerA().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+		msg.setCode(Mc.start);
 		msg.setAddressee(myAgent().findAssistant(Id.procesPripravaVSklade));
-		msg.setCode(Mc.finish);
 		startContinualAssistant(msg);
 	}
 

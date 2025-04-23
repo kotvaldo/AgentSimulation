@@ -161,19 +161,33 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.X_AXIS));
         tablePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
+// Nastavenie fixnej veľkosti pre každý JScrollPane
+        Dimension scrollSize = new Dimension(250, 300); // prispôsob si výšku a šírku
+
+        ordersScroll.setPreferredSize(scrollSize);
+        workersScroll.setPreferredSize(scrollSize);
+        workPlaceSroll.setPreferredSize(scrollSize);
+        utilisationScroll.setPreferredSize(scrollSize);
+        furnitureSroll.setPreferredSize(scrollSize);
+
         tablePanel.add(ordersScroll);
         tablePanel.add(Box.createHorizontalStrut(10));
         tablePanel.add(workersScroll);
         tablePanel.add(Box.createHorizontalStrut(10));
         tablePanel.add(workPlaceSroll);
+        tablePanel.add(Box.createHorizontalStrut(10));
         tablePanel.add(utilisationScroll);
         tablePanel.add(Box.createHorizontalStrut(10));
         tablePanel.add(furnitureSroll);
+
         JScrollPane scrollPane = new JScrollPane(tablePanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER); // ak nechceš vertikálny scroll
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 
-        this.centerPanel.add(scrollPane);
+        scrollPane.setPreferredSize(new Dimension(1000, 600)); // prispôsob si výšku panelu
+
+// Pridaj do hlavného panelu (napr. centerPanel)
+        this.centerPanel.add(scrollPane, BorderLayout.CENTER); // ak používaš BorderLayout
 
 
         //statistic for simulation run

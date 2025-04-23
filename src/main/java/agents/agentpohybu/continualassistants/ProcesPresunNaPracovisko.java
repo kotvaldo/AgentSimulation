@@ -46,6 +46,14 @@ public class ProcesPresunNaPracovisko extends Process
 	{
 		switch (message.code())
 		{
+			case Mc.finish ->{
+				MyMessage msg = (MyMessage) message.createCopy();
+				message.setAddressee(myAgent());
+				assistantFinished(msg);
+
+
+			}
+
 		}
 	}
 

@@ -1,6 +1,7 @@
 package simulation;
 
 import Generation.Generators;
+import IDGenerator.IDGenerator;
 import OSPABA.*;
 import Statistics.Average;
 import Statistics.QueueLength;
@@ -63,7 +64,7 @@ public class MySimulation extends Simulation
 		actualRepCount = 0;
 		super.prepareSimulation();
 		// Create global statistcis
-
+		IDGenerator.getInstance().clearGenerators();
 	}
 
 	@Override

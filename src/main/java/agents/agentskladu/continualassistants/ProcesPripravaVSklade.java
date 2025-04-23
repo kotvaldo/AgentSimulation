@@ -25,23 +25,33 @@ public class ProcesPripravaVSklade extends OSPABA.Process
 	//meta! sender="AgentSkladu", id="129", type="Start"
 	public void processStart(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
+		MyMessage msg = (MyMessage) message.createCopy();
 
 		if (msg.getWorkerA() != null) {
 			msg.getWorkerA().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
 		}
-
+		msg.setCode(Mc.finish);
 		double newTime = ((MySimulation) mySim()).getGenerators().getTimeSpentInStorageDist().sample();
+		/*System.out.println("New time " + newTime);
+		System.out.println(Utility.Utility.fromSecondsToTime(newTime + mySim().currentTime()));
+		System.out.println(msg);*/
+
 		if (newTime + mySim().currentTime() < PresetSimulationValues.END_OF_SIMULATION.getValue()) {
 			hold(newTime, msg);
+		} else {
+			assistantFinished(msg);
 		}
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)
 	{
-		switch (message.code())
-		{
+		switch (message.code()) {
+			case Mc.finish:
+				MyMessage msg = (MyMessage) message.createCopy();
+				message.setAddressee(myAgent());
+				assistantFinished(msg);
+				break;
 		}
 	}
 

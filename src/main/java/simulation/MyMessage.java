@@ -113,4 +113,18 @@ public class MyMessage extends MessageForm
     public void setType(Integer type) {
         this.type = type;
     }
+	@Override
+	public String toString() {
+		return "MyMessage{" +
+				"furniture=" + (furniture != null ? furniture.getId() : "null") +
+				", code=" + code() +
+				", workerA=" + getWorkerA() +
+				", order=" + getOrder() +
+				", sender=" + sender() +
+				", addressee=" + addressee() +
+				", time=" + mySim().currentTime() +
+				'}';
+	}
+
+
 }

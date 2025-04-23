@@ -186,11 +186,11 @@ public class ManagerNabytku extends OSPABA.Manager {
     //Sklad
     //meta! sender="AgentSkladu", id="324", type="Response"
     public void processRPripravVSklade(MessageForm message) {
-       /* MyMessage msg = (MyMessage) message.createCopy();
+        MyMessage msg = (MyMessage) message.createCopy();
         msg.setCode(Mc.rPresunZoSkladu);
-
-        msg.setAddressee(myAgent().findAssistant(Id.agentPohybu));
-        request(msg);*/
+        msg.getWorkerA().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue());
+        msg.setAddressee(_mySim.findAgent(Id.agentPohybu));
+        request(msg);
     }
 
 

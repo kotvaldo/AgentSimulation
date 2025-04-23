@@ -27,7 +27,7 @@ public class ManagerPohybu extends Manager
 	//meta! sender="AgentNabytku", id="138", type="Request"
 	public void processRPresunDoSkladu(MessageForm message) {
 		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.finish);
+		msg.setCode(Mc.start);
 
 		msg.setAddressee(myAgent().findAssistant(Id.procesPresunDoSkladu));
 		startContinualAssistant(msg);
@@ -36,9 +36,9 @@ public class ManagerPohybu extends Manager
 	//meta! sender="AgentNabytku", id="385", type="Request"
 	public void processRPresunZoSkladu(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.finish);
+		MyMessage msg = (MyMessage) message.createCopy();
 		msg.setAddressee(myAgent().findAssistant(Id.procesPresunZoSkladu));
+		msg.setCode(Mc.start);
 		startContinualAssistant(msg);
 	}
 
@@ -50,7 +50,7 @@ public class ManagerPohybu extends Manager
 	//meta! sender="ProcesPresunDoSkladu", id="117", type="Finish"
 	public void processFinishProcesPresunDoSkladu(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
+		MyMessage msg = (MyMessage) message.createCopy();
 		msg.setCode(Mc.rPresunDoSkladu);
 		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
 		response(msg);
@@ -107,9 +107,8 @@ public class ManagerPohybu extends Manager
 	//meta! sender="AgentNabytku", id="157", type="Request"
 	public void processRPresunNaPracovisko(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.finish);
-
+		MyMessage msg = (MyMessage) message.createCopy();
+		msg.setCode(Mc.start);
 		msg.setAddressee(myAgent().findAssistant(Id.procesPresunNaPracovisko));
 		startContinualAssistant(msg);
 	}
