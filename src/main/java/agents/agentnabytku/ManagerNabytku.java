@@ -51,8 +51,8 @@ public class ManagerNabytku extends OSPABA.Manager {
 
     //meta! sender="AgentPracovisk", id="388", type="Response"
     public void processDajPracovneMiestoRezanie(MessageForm message) {
-        MyMessage msg = (MyMessage) message;
-        checkProcessingQueueNonProcessed(msg);
+       /* MyMessage msg = (MyMessage) message;
+        checkProcessingQueueNonProcessed(msg);*/
     }
 
     //meta! sender="AgentPracovisk", id="389", type="Response"
@@ -107,8 +107,8 @@ public class ManagerNabytku extends OSPABA.Manager {
 
     //meta! sender="AgentPracovnikov", id="168", type="Response"
     public void processRVyberPracovnikaRezanie(MessageForm message) {
-        MyMessage msg = (MyMessage) message;
-        checkProcessingQueueNonProcessed(msg);
+       /* MyMessage msg = (MyMessage) message;
+        checkProcessingQueueNonProcessed(msg);*/
     }
 
 
@@ -141,11 +141,11 @@ public class ManagerNabytku extends OSPABA.Manager {
     //Sklad
     //meta! sender="AgentSkladu", id="324", type="Response"
     public void processRPripravVSklade(MessageForm message) {
-        MyMessage msg = (MyMessage) message.createCopy();
+       /* MyMessage msg = (MyMessage) message.createCopy();
         msg.setCode(Mc.rPresunZoSkladu);
 
         msg.setAddressee(myAgent().findAssistant(Id.agentPohybu));
-        request(msg);
+        request(msg);*/
     }
 
 
@@ -176,7 +176,7 @@ public class ManagerNabytku extends OSPABA.Manager {
 
     private void checkProcessingQueueNonProcessed(MyMessage msg) {
 
-        if (msg.getWorkerA() != null && msg.getWorkPlace() != null) {
+        /*if (msg.getWorkerA() != null && msg.getWorkPlace() != null) {
 
             queueNonProcessed.getQueue().removeIf(m -> m.equals(msg));
 
@@ -229,7 +229,7 @@ public class ManagerNabytku extends OSPABA.Manager {
             reqWorker.setCode(Mc.rVyberPracovnikaRezanie);
             reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
             request(reqWorker);
-        }
+        }*/
 
     }
 
