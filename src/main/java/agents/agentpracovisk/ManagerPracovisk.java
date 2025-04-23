@@ -29,20 +29,11 @@ public class ManagerPracovisk extends Manager {
         freeWorkPlaces.addAll(mySimulation.getWorkPlacesArrayList());
     }
 
-    private void pridelPracovisko(MyMessage message) {
-        WorkPlace workPlace = freeWorkPlaces.stream()
-            .filter(wp -> wp.getState() == WorkPlaceStateValues.NOT_WORKING.getValue())
-            .findFirst()
-            .orElse(null);
-
-        if (workPlace != null) {
-            workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
-        }
-
-        message.setWorkPlace(workPlace);
-        message.setCode(Mc.rDajVolnePracovneMiesto);
-        message.setAddressee(Id.agentNabytku);
-        response(message);
+    private WorkPlace dajPrveVolneMiestoPodlaId() {
+        return freeWorkPlaces.stream()
+                .filter(wp -> wp.getState() == WorkPlaceStateValues.NOT_WORKING.getValue())
+                .findFirst()
+                .orElse(null);
     }
 
     //meta! sender="AgentNabytku", id="72", type="Notice"
@@ -55,30 +46,75 @@ public class ManagerPracovisk extends Manager {
         myMessage.getWorkPlace().setState(WorkPlaceStateValues.NOT_WORKING.getValue());
     }
 
-    //meta! sender="AgentNabytku", id="388", type="Request"
     public void processDajPracovneMiestoRezanie(MessageForm message) {
-        pridelPracovisko((MyMessage) message);
+        MyMessage msg = (MyMessage) message;
+        WorkPlace workPlace = dajPrveVolneMiestoPodlaId();
+
+        if (workPlace != null) {
+            workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
+        }
+        msg.setWorkPlace(workPlace);
+        msg.setCode(Mc.dajPracovneMiestoRezanie);
+        msg.setAddressee(Id.agentNabytku);
+        response(msg);
     }
 
-    //meta! sender="AgentNabytku", id="387", type="Request"
+    // Pridelenie pracoviska pre skladanie
     public void processRDajPracovneMiestoSkladanie(MessageForm message) {
-        pridelPracovisko((MyMessage) message);
+        MyMessage msg = (MyMessage) message;
+        WorkPlace workPlace = dajPrveVolneMiestoPodlaId();
+
+        if (workPlace != null) {
+            workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
+        }
+        msg.setWorkPlace(workPlace);
+        msg.setCode(Mc.rDajPracovneMiestoSkladanie);
+        msg.setAddressee(Id.agentNabytku);
+        response(msg);
     }
 
-    //meta! sender="AgentNabytku", id="390", type="Request"
+    // Pridelenie pre montáž
     public void processRDajPracovneMiestoMontaz(MessageForm message) {
-        pridelPracovisko((MyMessage) message);
+        MyMessage msg = (MyMessage) message;
+        WorkPlace workPlace = dajPrveVolneMiestoPodlaId();
+
+        if (workPlace != null) {
+            workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
+        }
+        msg.setWorkPlace(workPlace);
+        msg.setCode(Mc.rDajPracovneMiestoMontaz);
+        msg.setAddressee(Id.agentNabytku);
+        response(msg);
     }
 
-    //meta! sender="AgentNabytku", id="389", type="Request"
-    public void processRDajPracovneMiestoLakovanie(MessageForm message) {
-        pridelPracovisko((MyMessage) message);
-    }
-
-    //meta! sender="AgentNabytku", id="182", type="Request"
+    // Pridelenie pre morenie
     public void processRDajPracovneMiestoMorenie(MessageForm message) {
-        pridelPracovisko((MyMessage) message);
+        MyMessage msg = (MyMessage) message;
+        WorkPlace workPlace = dajPrveVolneMiestoPodlaId();
+
+        if (workPlace != null) {
+            workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
+        }
+        msg.setWorkPlace(workPlace);
+        msg.setCode(Mc.rDajPracovneMiestoMorenie);
+        msg.setAddressee(Id.agentNabytku);
+        response(msg);
     }
+
+    // Pridelenie pre lakovanie
+    public void processRDajPracovneMiestoLakovanie(MessageForm message) {
+        MyMessage msg = (MyMessage) message;
+        WorkPlace workPlace = dajPrveVolneMiestoPodlaId();
+
+        if (workPlace != null) {
+            workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
+        }
+        msg.setWorkPlace(workPlace);
+        msg.setCode(Mc.rDajPracovneMiestoLakovanie);
+        msg.setAddressee(Id.agentNabytku);
+        response(msg);
+    }
+
 
     //meta! userInfo="Process messages defined in code", id="0"
     public void processDefault(MessageForm message) {

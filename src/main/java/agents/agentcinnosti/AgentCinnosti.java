@@ -34,7 +34,6 @@ public class AgentCinnosti extends OSPABA.Agent
 		addOwnMessage(Mc.rUrobSkladanie);
 		addOwnMessage(Mc.rUrobMorenie);
 		addOwnMessage(Mc.rUrobMontaz);
-		addOwnMessage(Mc.rUrobPripravuVSklade);
 		addOwnMessage(Mc.rUrobLakovanie);
 	}
 	//meta! tag="end"

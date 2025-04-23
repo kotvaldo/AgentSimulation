@@ -74,10 +74,6 @@ public class ManagerCinnosti extends OSPABA.Manager
 	{
 	}
 
-	//meta! sender="AgentNabytku", id="285", type="Request"
-	public void processRUrobPripravuVSklade(MessageForm message)
-	{
-	}
 
 	//meta! sender="AgentNabytku", id="287", type="Request"
 	public void processRUrobLakovanie(MessageForm message)
@@ -137,10 +133,6 @@ public class ManagerCinnosti extends OSPABA.Manager
 
 		case Mc.rUrobSkladanie:
 			processRUrobSkladanie(message);
-		break;
-
-		case Mc.rUrobPripravuVSklade:
-			processRUrobPripravuVSklade(message);
 		break;
 
 		case Mc.init:

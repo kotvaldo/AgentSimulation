@@ -4,7 +4,7 @@ import OSPABA.*;
 import simulation.*;
 
 //meta! id="9"
-public class AgentNabytku extends OSPABA.Agent
+public class AgentNabytku extends Agent
 {
 	public AgentNabytku(int id, Simulation mySim, Agent parent)
 	{
@@ -28,17 +28,20 @@ public class AgentNabytku extends OSPABA.Agent
 		addOwnMessage(Mc.rVyberPracovnikaLakovanie);
 		addOwnMessage(Mc.rPresunNaPracovisko);
 		addOwnMessage(Mc.rVyberPracovnikaSkladanie);
-		addOwnMessage(Mc.rUrobMorenie);
 		addOwnMessage(Mc.rVyberPracovnikaMontaz);
-		addOwnMessage(Mc.rDajVolnePracovneMiesto);
+		addOwnMessage(Mc.rUrobMorenie);
 		addOwnMessage(Mc.rUrobMontaz);
+		addOwnMessage(Mc.rDajPracovneMiestoMorenie);
+		addOwnMessage(Mc.rDajPracovneMiestoLakovanie);
+		addOwnMessage(Mc.rDajPracovneMiestoMontaz);
+		addOwnMessage(Mc.dajPracovneMiestoRezanie);
+		addOwnMessage(Mc.rDajPracovneMiestoSkladanie);
 		addOwnMessage(Mc.noticeSpracujObjednavku);
 		addOwnMessage(Mc.rUrobRezanie);
 		addOwnMessage(Mc.rUrobSkladanie);
 		addOwnMessage(Mc.rVyberPracovnikaMorenie);
 		addOwnMessage(Mc.rPripravVSklade);
 		addOwnMessage(Mc.rVyberPracovnikaRezanie);
-		addOwnMessage(Mc.rUrobPripravuVSklade);
 		addOwnMessage(Mc.rUrobLakovanie);
 	}
 	//meta! tag="end"

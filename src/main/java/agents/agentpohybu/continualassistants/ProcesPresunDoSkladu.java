@@ -26,13 +26,12 @@ public class ProcesPresunDoSkladu extends Process
 	{
 		MyMessage msg = (MyMessage) message;
 
-
 		if (msg.getWorkerA() != null) {
 			msg.getWorkerA().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
 		}
 
-		double trvaniePresunu = ((MySimulation) mySim()).getGenerators().getTimeMovingIntoStorageDist().sample();
-		hold(trvaniePresunu, msg);
+		double newTime = ((MySimulation) mySim()).getGenerators().getTimeMovingIntoStorageDist().sample();
+		hold(newTime, msg);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
