@@ -9,8 +9,8 @@ public class Id extends IdList
 	public static final int agentOkolia = 2;
 	public static final int agentPohybu = 9;
 	public static final int agentPracovnikovA = 38;
-	public static final int agentPracovnikovB = 39;
 	public static final int agentPracovnikov = 3;
+	public static final int agentPracovnikovB = 39;
 	public static final int agentPracovnikovC = 40;
 	public static final int agentNabytku = 6;
 	public static final int agentCinnosti = 42;
@@ -20,8 +20,8 @@ public class Id extends IdList
 	public static final int managerOkolia = 102;
 	public static final int managerPohybu = 109;
 	public static final int managerPracovnikovA = 138;
-	public static final int managerPracovnikovB = 139;
 	public static final int managerPracovnikov = 103;
+	public static final int managerPracovnikovB = 139;
 	public static final int managerPracovnikovC = 140;
 	public static final int managerNabytku = 106;
 	public static final int managerCinnosti = 142;

@@ -48,7 +48,6 @@ public class ManagerModelu extends Manager
 	{
 		switch (message.code())
 		{
-			// doplň default spracovanie
 		}
 	}
 

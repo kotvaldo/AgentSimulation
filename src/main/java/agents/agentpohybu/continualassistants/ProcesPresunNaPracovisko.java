@@ -1,7 +1,5 @@
 package agents.agentpohybu.continualassistants;
 
-import Enums.PresetSimulationValues;
-import Enums.WorkerBussyState;
 import OSPABA.*;
 import simulation.*;
 import agents.agentpohybu.*;
@@ -25,20 +23,6 @@ public class ProcesPresunNaPracovisko extends Process
 	//meta! sender="AgentPohybu", id="115", type="Start"
 	public void processStart(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-
-		if (msg.getWorkerA() != null) {
-			msg.getWorkerA().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
-		} else if (msg.getWorkerB() != null) {
-			msg.getWorkerB().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
-		} else if (msg.getWorkerC() != null) {
-			msg.getWorkerC().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
-		}
-
-		double newTime = ((MySimulation) mySim()).getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
-		if(newTime + mySim().currentTime() < PresetSimulationValues.END_OF_SIMULATION.getValue()) {
-			hold(newTime, msg);
-		}
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -46,14 +30,6 @@ public class ProcesPresunNaPracovisko extends Process
 	{
 		switch (message.code())
 		{
-			case Mc.finish ->{
-				MyMessage msg = (MyMessage) message.createCopy();
-				message.setAddressee(myAgent());
-				assistantFinished(msg);
-
-
-			}
-
 		}
 	}
 

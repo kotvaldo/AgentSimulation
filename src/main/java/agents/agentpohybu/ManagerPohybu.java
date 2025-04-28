@@ -25,21 +25,17 @@ public class ManagerPohybu extends Manager
 	}
 
 	//meta! sender="AgentNabytku", id="138", type="Request"
-	public void processRPresunDoSkladu(MessageForm message) {
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.start);
-
-		msg.setAddressee(myAgent().findAssistant(Id.procesPresunDoSkladu));
-		startContinualAssistant(msg);
+	public void processRPresunDoSkladu(MessageForm message)
+	{
 	}
 
 	//meta! sender="AgentNabytku", id="385", type="Request"
 	public void processRPresunZoSkladu(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message.createCopy();
-		msg.setAddressee(myAgent().findAssistant(Id.procesPresunZoSkladu));
-		msg.setCode(Mc.start);
-		startContinualAssistant(msg);
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setAddressee(myAgent().findAssistant(Id.procesPresunZoSkladu));
+		myMessage.setCode(Mc.start);
+		startContinualAssistant(myMessage);
 	}
 
 	//meta! sender="AgentNabytku", id="71", type="Notice"
@@ -50,67 +46,25 @@ public class ManagerPohybu extends Manager
 	//meta! sender="ProcesPresunDoSkladu", id="117", type="Finish"
 	public void processFinishProcesPresunDoSkladu(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message.createCopy();
-		msg.setCode(Mc.rPresunDoSkladu);
-		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
-		response(msg);
 	}
 
 	//meta! sender="ProcesPresunZoSkladu", id="395", type="Finish"
 	public void processFinishProcesPresunZoSkladu(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.rPresunZoSkladu);
-
-		if (msg.getWorkerA() != null) {
-			msg.getWorkerA().setCurrentWorkPlace(msg.getWorkPlace());
-		} else if (msg.getWorkerB() != null) {
-			msg.getWorkerB().setCurrentWorkPlace(msg.getWorkPlace());
-		} else if (msg.getWorkerC() != null) {
-			msg.getWorkerC().setCurrentWorkPlace(msg.getWorkPlace());
-		}
-		if (msg.getWorkPlace() != null) {
-			msg.getWorkPlace().setWorker(msg.getWorkerA() != null ? msg.getWorkerA() :
-					msg.getWorkerB() != null ? msg.getWorkerB() :
-							msg.getWorkerC());
-		}
-
-
-		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
-		response(msg);
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rPresunZoSkladu);
+		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(myMessage);
 	}
 
 	//meta! sender="ProcesPresunNaPracovisko", id="115", type="Finish"
 	public void processFinishProcesPresunNaPracovisko(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.rPresunNaPracovisko);
-
-		if (msg.getWorkerA() != null) {
-			msg.getWorkerA().setCurrentWorkPlace(msg.getWorkPlace());
-		} else if (msg.getWorkerB() != null) {
-			msg.getWorkerB().setCurrentWorkPlace(msg.getWorkPlace());
-		} else if (msg.getWorkerC() != null) {
-			msg.getWorkerC().setCurrentWorkPlace(msg.getWorkPlace());
-		}
-
-		if (msg.getWorkPlace() != null) {
-			msg.getWorkPlace().setWorker(msg.getWorkerA() != null ? msg.getWorkerA() :
-					msg.getWorkerB() != null ? msg.getWorkerB() :
-							msg.getWorkerC());
-		}
-
-		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
-		response(msg);
 	}
 
 	//meta! sender="AgentNabytku", id="157", type="Request"
 	public void processRPresunNaPracovisko(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message.createCopy();
-		msg.setCode(Mc.start);
-		msg.setAddressee(myAgent().findAssistant(Id.procesPresunNaPracovisko));
-		startContinualAssistant(msg);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -131,6 +85,14 @@ public class ManagerPohybu extends Manager
 	{
 		switch (message.code())
 		{
+		case Mc.rPresunNaPracovisko:
+			processRPresunNaPracovisko(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
+		break;
+
 		case Mc.finish:
 			switch (message.sender().id())
 			{
@@ -154,14 +116,6 @@ public class ManagerPohybu extends Manager
 
 		case Mc.rPresunZoSkladu:
 			processRPresunZoSkladu(message);
-		break;
-
-		case Mc.init:
-			processInit(message);
-		break;
-
-		case Mc.rPresunNaPracovisko:
-			processRPresunNaPracovisko(message);
 		break;
 
 		default:
