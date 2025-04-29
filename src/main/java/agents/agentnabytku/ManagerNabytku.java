@@ -63,6 +63,7 @@ public class ManagerNabytku extends Manager
 			this.queueNonProcessed.getQueue().addLast(furnitureMsg);
 			//System.out.println(queueNonProcessed.getQueue());
 		}
+		System.out.println(queueNonProcessed.getQueue().size());
 		for (MyMessage msgFromQueue : queueNonProcessed.getQueue()) {
 			if (msgFromQueue.getWorkerForCutting() != null && msgFromQueue.getWorkPlace() != null) {
 				System.out.println(queueNonProcessed.getQueue().size());
@@ -82,21 +83,21 @@ public class ManagerNabytku extends Manager
 					msgFromQueue.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
 				}
 				request(msgFromQueue);
-				return;
+				continue;
 			}
 			if (msgFromQueue.getWorkPlace() == null) {
 				MyMessage reqWorkPlace = new MyMessage(msgFromQueue);
 				reqWorkPlace.setCode(Mc.dajPracovneMiestoRezanie);
 				reqWorkPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
 				request(reqWorkPlace);
-				return;
+				continue;
 			}
 			if (msgFromQueue.getWorkerForCutting() == null) {
 				MyMessage reqWorker = new MyMessage(msgFromQueue);
 				reqWorker.setCode(Mc.rVyberPracovnikaRezanie);
 				reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
 				request(reqWorker);
-				return;
+				continue;
 			}
 		}
 
@@ -139,11 +140,6 @@ public class ManagerNabytku extends Manager
 			reqPlace.setCode(Mc.dajPracovneMiestoRezanie);
 			reqPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
 			request(reqPlace);
-		} else if(msg.getWorkerForCutting() == null) {
-			MyMessage reqWorker = new MyMessage(msg);
-			reqWorker.setCode(Mc.rVyberPracovnikaARezanie);
-			reqWorker.setAddressee(mySim().findAgent(Id.agentPracovisk));
-			request(reqWorker);
 		} else if (msg.getWorkerForCutting() != null && msg.getWorkPlace() != null) {
 			msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
 			msg.getFurniture().setWorkPlace(msg.getWorkPlace());
