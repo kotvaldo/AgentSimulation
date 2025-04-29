@@ -1,5 +1,6 @@
 package agents.agentpohybu.continualassistants;
 
+import Enums.PresetSimulationValues;
 import OSPABA.*;
 import simulation.*;
 import agents.agentpohybu.*;
@@ -23,6 +24,15 @@ public class ProcesPresunNaPracovisko extends Process
 	//meta! sender="AgentPohybu", id="115", type="Start"
 	public void processStart(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		MySimulation simulation = (MySimulation) _mySim;
+		myMessage.setCode(Mc.finish);
+		double newTime = simulation.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
+
+		if(newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.getValue()) {
+			hold(newTime, myMessage);
+		}
+
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -30,6 +40,11 @@ public class ProcesPresunNaPracovisko extends Process
 	{
 		switch (message.code())
 		{
+			case Mc.finish -> {
+				MyMessage msg = (MyMessage) message.createCopy();
+				msg.setAddressee(myAgent());
+				assistantFinished(msg);
+			}
 		}
 	}
 

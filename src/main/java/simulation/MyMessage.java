@@ -8,9 +8,11 @@ public class MyMessage extends MessageForm
 	private Order order;
 	private Furniture furniture;
 	private WorkPlace workPlace;
-	private WorkerA workerA;
-	private WorkerB workerB;
-	private WorkerC workerC;
+	private Worker workerForCutting;
+	private Worker workerForAssembly;
+	private Worker workerForMontage;
+	private Worker workerForPainting;
+	private Worker workerForStaining;
 	private Integer type = null;
 
 	public MyMessage(Simulation mySim)
@@ -36,9 +38,9 @@ public class MyMessage extends MessageForm
 		super.copy(message);
 		MyMessage original = (MyMessage)message;
 		workPlace = original.getWorkPlace();
-		workerA = original.getWorkerA();
-		workerB = original.getWorkerB();
-		workerC = original.getWorkerC();
+		workerForCutting = original.getWorkerForCutting();
+		workerForAssembly = original.getWorkerForAssembly();
+		workerForMontage = original.getWorkerForMontage();
 		order = original.getOrder();
 		furniture = original.getFurniture();
 		type = original.getType();
@@ -69,12 +71,12 @@ public class MyMessage extends MessageForm
 		this.workPlace = workPlace;
 	}
 
-	public WorkerA getWorkerA() {
-		return workerA;
+	public Worker getWorkerForCutting() {
+		return workerForCutting;
 	}
 
-	public void setWorkerA(WorkerA workerA) {
-		this.workerA = workerA;
+	public void setWorkerForCutting(WorkerA workerForCutting) {
+		this.workerForCutting = workerForCutting;
 	}
 
 	@Override
@@ -90,20 +92,20 @@ public class MyMessage extends MessageForm
 		return this.getFurniture().getId() == other.getFurniture().getId();
 	}
 
-    public WorkerB getWorkerB() {
-        return workerB;
+    public Worker getWorkerForAssembly() {
+        return workerForAssembly;
     }
 
-    public void setWorkerB(WorkerB workerB) {
-        this.workerB = workerB;
+    public void setWorkerForAssembly(WorkerB workerForAssembly) {
+        this.workerForAssembly = workerForAssembly;
     }
 
-    public WorkerC getWorkerC() {
-        return workerC;
+    public Worker getWorkerForMontage() {
+        return workerForMontage;
     }
 
-    public void setWorkerC(WorkerC workerC) {
-        this.workerC = workerC;
+    public void setWorkerForMontage(WorkerC workerForMontage) {
+        this.workerForMontage = workerForMontage;
     }
 
     public Integer getType() {
@@ -118,7 +120,7 @@ public class MyMessage extends MessageForm
 		return "MyMessage{" +
 				"furniture=" + (furniture != null ? furniture.getId() : "null") +
 				", code=" + code() +
-				", workerA=" + getWorkerA() +
+				", workerA=" + getWorkerForCutting() +
 				", order=" + getOrder() +
 				", sender=" + sender() +
 				", addressee=" + addressee() +
@@ -127,4 +129,20 @@ public class MyMessage extends MessageForm
 	}
 
 
+    public Worker getWorkerForPainting() {
+        return workerForPainting;
+    }
+
+    public void setWorkerForPainting(Worker workerForPainting) {
+        this.workerForPainting = workerForPainting;
+    }
+
+
+    public Worker getWorkerForStaining() {
+        return workerForStaining;
+    }
+
+    public void setWorkerForStaining(Worker workerForStaining) {
+        this.workerForStaining = workerForStaining;
+    }
 }

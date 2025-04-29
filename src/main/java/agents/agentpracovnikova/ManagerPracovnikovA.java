@@ -43,9 +43,9 @@ public class ManagerPracovnikovA extends OSPABA.Manager {
         WorkerA worker = freeWorkers.poll();
         if (worker != null) {
             worker.setState(WorkerBussyState.ASSIGNED.getValue());
-            msg.setWorkerA(worker);
+            msg.setWorkerForCutting(worker);
         } else {
-            msg.setWorkerA(null);
+            msg.setWorkerForCutting(null);
         }
 
         msg.setCode(Mc.rVyberPracovnikaARezanie);
@@ -60,9 +60,9 @@ public class ManagerPracovnikovA extends OSPABA.Manager {
         WorkerA worker = freeWorkers.poll();
         if (worker != null) {
             worker.setState(WorkerBussyState.ASSIGNED.getValue());
-            msg.setWorkerA(worker);
+            msg.setWorkerForCutting(worker);
         } else {
-            msg.setWorkerA(null);
+            msg.setWorkerForCutting(null);
         }
 
         msg.setCode(Mc.rVyberPracovnikaAMontaz);
@@ -73,11 +73,12 @@ public class ManagerPracovnikovA extends OSPABA.Manager {
     //meta! sender="AgentPracovnikov", id="239", type="Notice"
     public void processNoticeUvolniA(MessageForm message) {
         MyMessage msg = (MyMessage) message;
-        WorkerA worker = msg.getWorkerA();
+        WorkerA worker = (WorkerA) msg.getWorkerForCutting();
 
         if (worker != null) {
             worker.setState(WorkerBussyState.NON_BUSY.getValue());
-            freeWorkers.add(worker);
+            freeWorkers.addLast(worker);
+
         }
     }
 

@@ -1,5 +1,6 @@
 package agents.agentcinnosti.continualassistants;
 
+import Enums.PresetSimulationValues;
 import OSPABA.*;
 import simulation.*;
 import agents.agentcinnosti.*;
@@ -23,6 +24,20 @@ public class ProcesRezania extends OSPABA.Process
 	//meta! sender="AgentCinnosti", id="275", type="Start"
 	public void processStart(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		MySimulation simulation = (MySimulation) _mySim;
+		myMessage.setCode(Mc.finish);
+		double newTime = 0;
+		if(myMessage.getFurniture().getType() == 1) {
+			newTime = simulation.getGenerators().getCuttingTableDist().sample();
+		} else if(myMessage.getFurniture().getType() == 2) {
+			newTime = simulation.getGenerators().getCuttingChairDist().sample();
+		} else if(myMessage.getFurniture().getType() == 3) {
+			newTime = simulation.getGenerators().getCuttingWardrobeDist().sample();
+		}
+		if(newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.getValue()) {
+			hold(newTime, myMessage);
+		}
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -30,6 +45,11 @@ public class ProcesRezania extends OSPABA.Process
 	{
 		switch (message.code())
 		{
+			case Mc.finish -> {
+				MyMessage msg = (MyMessage) message.createCopy();
+				msg.setAddressee(myAgent());
+				assistantFinished(msg);
+			}
 		}
 	}
 

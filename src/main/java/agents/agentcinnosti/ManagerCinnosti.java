@@ -1,5 +1,7 @@
 package agents.agentcinnosti;
 
+import Enums.FurnitureStateValues;
+import Enums.WorkerBussyState;
 import OSPABA.*;
 import simulation.*;
 
@@ -32,6 +34,13 @@ public class ManagerCinnosti extends OSPABA.Manager
 	//meta! sender="AgentNabytku", id="284", type="Request"
 	public void processRUrobRezanie(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message.createCopy();
+		msg.getWorkerForCutting().setState(WorkerBussyState.BUSY.getValue());
+		msg.getFurniture().setState(FurnitureStateValues.PROCESSING_CUTTING.getValue());
+		msg.getWorkPlace().setActualWorkingWorker(msg.getWorkerForCutting());
+		msg.setCode(Mc.start);
+		msg.setAddressee(myAgent().findAssistant(Id.procesRezania));
+		startContinualAssistant(msg);
 	}
 
 	//meta! sender="AgentNabytku", id="288", type="Request"
@@ -62,6 +71,12 @@ public class ManagerCinnosti extends OSPABA.Manager
 	//meta! sender="ProcesRezania", id="275", type="Finish"
 	public void processFinishProcesRezania(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message.createCopy();
+		msg.getWorkPlace().setActualWorkingWorker(null);
+		msg.setCode(Mc.rUrobRezanie);
+		msg.getWorkerForCutting().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(msg);
 	}
 
 	//meta! sender="AgentNabytku", id="286", type="Request"

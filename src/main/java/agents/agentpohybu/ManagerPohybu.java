@@ -1,5 +1,6 @@
 package agents.agentpohybu;
 
+import Enums.WorkerBussyState;
 import OSPABA.*;
 import simulation.*;
 
@@ -27,6 +28,13 @@ public class ManagerPohybu extends Manager
 	//meta! sender="AgentNabytku", id="138", type="Request"
 	public void processRPresunDoSkladu(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setAddressee(myAgent().findAssistant(Id.procesPresunDoSkladu));
+		if(myMessage.getWorkerForCutting() != null) {
+			myMessage.getWorkerForCutting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+			myMessage.setCode(Mc.start);
+			startContinualAssistant(myMessage);
+		}
 	}
 
 	//meta! sender="AgentNabytku", id="385", type="Request"
@@ -46,6 +54,13 @@ public class ManagerPohybu extends Manager
 	//meta! sender="ProcesPresunDoSkladu", id="117", type="Finish"
 	public void processFinishProcesPresunDoSkladu(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rPresunDoSkladu);
+		if(myMessage.getWorkerForCutting() != null) {
+			myMessage.getWorkerForCutting().setCurrentWorkPlace(null);
+		}
+		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(myMessage);
 	}
 
 	//meta! sender="ProcesPresunZoSkladu", id="395", type="Finish"
@@ -53,6 +68,16 @@ public class ManagerPohybu extends Manager
 	{
 		MyMessage myMessage = (MyMessage) message.createCopy();
 		myMessage.setCode(Mc.rPresunZoSkladu);
+		if(myMessage.getWorkerForCutting() != null) {
+			myMessage.getWorkerForCutting().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForCutting());
+		} else if(myMessage.getWorkerForAssembly() != null) {
+			myMessage.getWorkerForAssembly().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForAssembly());
+		} else if(myMessage.getWorkerForMontage() != null) {
+			myMessage.getWorkerForMontage().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForMontage());
+		}
 		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
 		response(myMessage);
 	}
@@ -60,6 +85,7 @@ public class ManagerPohybu extends Manager
 	//meta! sender="ProcesPresunNaPracovisko", id="115", type="Finish"
 	public void processFinishProcesPresunNaPracovisko(MessageForm message)
 	{
+
 	}
 
 	//meta! sender="AgentNabytku", id="157", type="Request"

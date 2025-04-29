@@ -40,9 +40,9 @@ public class ManagerPracovnikovC extends OSPABA.Manager {
 		WorkerC worker = freeWorkers.poll();
 		if (worker != null) {
 			worker.setState(WorkerBussyState.ASSIGNED.getValue());
-			msg.setWorkerC(worker);
+			msg.setWorkerForMontage(worker);
 		} else {
-			msg.setWorkerC(null);
+			msg.setWorkerForMontage(null);
 		}
 
 		msg.setCode(Mc.rVyberPracovnikaCMontaz);
@@ -57,9 +57,9 @@ public class ManagerPracovnikovC extends OSPABA.Manager {
 		WorkerC worker = freeWorkers.poll();
 		if (worker != null) {
 			worker.setState(WorkerBussyState.ASSIGNED.getValue());
-			msg.setWorkerC(worker);
+			msg.setWorkerForMontage(worker);
 		} else {
-			msg.setWorkerC(null);
+			msg.setWorkerForMontage(null);
 		}
 
 		msg.setCode(Mc.rVyberPracovnikaCMorenie);
@@ -74,9 +74,9 @@ public class ManagerPracovnikovC extends OSPABA.Manager {
 		WorkerC worker = freeWorkers.poll();
 		if (worker != null) {
 			worker.setState(WorkerBussyState.ASSIGNED.getValue());
-			msg.setWorkerC(worker);
+			msg.setWorkerForMontage(worker);
 		} else {
-			msg.setWorkerC(null);
+			msg.setWorkerForMontage(null);
 		}
 
 		msg.setCode(Mc.rVyberPracovnikaCLakovanie);
@@ -87,7 +87,7 @@ public class ManagerPracovnikovC extends OSPABA.Manager {
 	//meta! sender="AgentPracovnikov", id="241", type="Notice"
 	public void processNoticeUvolniC(MessageForm message) {
 		MyMessage msg = (MyMessage) message;
-		WorkerC worker = msg.getWorkerC();
+		WorkerC worker = (WorkerC) msg.getWorkerForMontage();
 
 		if (worker != null) {
 			worker.setState(WorkerBussyState.NON_BUSY.getValue());

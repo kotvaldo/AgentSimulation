@@ -5,7 +5,6 @@ import Enums.WorkerBussyState;
 import OSPABA.*;
 import agents.agentskladu.*;
 import simulation.*;
-import OSPABA.Process;
 
 //meta! id="128"
 public class ProcesPripravaVSklade extends OSPABA.Process
@@ -27,8 +26,8 @@ public class ProcesPripravaVSklade extends OSPABA.Process
 	{
 		MyMessage msg = (MyMessage) message.createCopy();
 
-		if (msg.getWorkerA() != null) {
-			msg.getWorkerA().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+		if (msg.getWorkerForCutting() != null) {
+			msg.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
 		}
 		msg.setCode(Mc.finish);
 		double newTime = ((MySimulation) mySim()).getGenerators().getTimeSpentInStorageDist().sample();

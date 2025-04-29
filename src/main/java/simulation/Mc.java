@@ -16,7 +16,9 @@ public class Mc extends IdList
 	public static final int rUrobRezanie = 1091;
 	public static final int rPresunNaPracovisko = 1043;
 	public static final int rUrobMorenie = 1093;
+	public static final int noticeUvolniRezanie = 1110;
 	public static final int rUrobLakovanie = 1094;
+	public static final int noticeUvolniMontaz = 1111;
 	public static final int rUrobSkladanie = 1095;
 	public static final int rUrobMontaz = 1096;
 	public static final int rVyberPracovnikaMorenie = 1045;
@@ -26,8 +28,8 @@ public class Mc extends IdList
 	public static final int rDajPracovneMiestoMorenie = 1056;
 	public static final int rPripravVSklade = 1097;
 	public static final int noticePrichodObjednavky = 1099;
-	public static final int noticeUvolniPracovnikaB = 1070;
-	public static final int noticeUvolniPracovnikaC = 1071;
+	public static final int noticeUvolniSkladanie = 1070;
+	public static final int noticeUvolniMorenie = 1071;
 	public static final int noticeUvolniPracovneMiesto = 1073;
 	public static final int noticeSpracujObjednavku = 1012;
 	public static final int noticeNovaObjednavka = 1100;
@@ -41,7 +43,7 @@ public class Mc extends IdList
 	public static final int rVyberPracovnikaBRSkladanie = 1085;
 	public static final int rVyberPracovnikaCMorenie = 1087;
 	public static final int rVyberPracovnikaCLakovanie = 1104;
-	public static final int noticeUvolniPracovnikaA = 1027;
+	public static final int noticeUvolniLakovanie = 1027;
 	//meta! tag="end"
 
 	// 1..1000 range reserved for user

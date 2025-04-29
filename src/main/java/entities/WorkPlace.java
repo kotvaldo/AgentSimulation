@@ -6,7 +6,7 @@ import IDGenerator.IDGenerator;
 public class WorkPlace {
     private final int id;
     private Furniture furniture;
-    private Worker worker;
+    private Worker actualWorkingWorker;
     private String activity = "Nothing";
     private int state;
 
@@ -14,7 +14,7 @@ public class WorkPlace {
         this.id = IDGenerator.getInstance().getNextWorkplaceId();
         this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
         this.furniture = null;
-        this.worker = null;
+        this.actualWorkingWorker = null;
     }
 
     public Furniture getFurniture() {
@@ -25,7 +25,7 @@ public class WorkPlace {
         this.furniture = furniture;
         if (furniture != null) {
             this.state = WorkPlaceStateValues.ASSIGNED.getValue();
-        } else if (worker == null) {
+        } else if (actualWorkingWorker == null) {
             this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
         }
     }
@@ -48,15 +48,15 @@ public class WorkPlace {
         return id;
     }
 
-    public Worker getWorker() {
-        return worker;
+    public Worker getActualWorkingWorker() {
+        return actualWorkingWorker;
     }
 
-    public void setWorker(Worker worker) {
-        this.worker = worker;
-        if (worker != null && furniture != null) {
+    public void setActualWorkingWorker(Worker actualWorkingWorker) {
+        this.actualWorkingWorker = actualWorkingWorker;
+        if (actualWorkingWorker != null && furniture != null) {
             this.state = WorkPlaceStateValues.WORKING.getValue();
-        } else if (worker != null) {
+        } else if (actualWorkingWorker != null) {
             this.state = WorkPlaceStateValues.ASSIGNED.getValue();
         } else if (furniture == null) {
             this.state = WorkPlaceStateValues.NOT_WORKING.getValue();

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class WorkPlacesTableModel extends AbstractTableModel {
 
-    private final String[] columns = {"WorkPlace ID", "Busy State", "Order ID", "Curr_Activity"};
+    private final String[] columns = {"WorkPlace ID", "Busy State", "Furniture ID", "Curr_Activity"};
     private List<WorkPlace> workPlaces;
 
     public WorkPlacesTableModel(List<WorkPlace> workPlaces) {

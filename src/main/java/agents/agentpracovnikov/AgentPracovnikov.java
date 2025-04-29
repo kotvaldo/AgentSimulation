@@ -4,7 +4,7 @@ import OSPABA.*;
 import simulation.*;
 
 //meta! id="5"
-public class AgentPracovnikov extends OSPABA.Agent
+public class AgentPracovnikov extends Agent
 {
 	public AgentPracovnikov(int id, Simulation mySim, Agent parent)
 	{
@@ -24,17 +24,19 @@ public class AgentPracovnikov extends OSPABA.Agent
 	{
 		new ManagerPracovnikov(Id.managerPracovnikov, mySim(), this);
 		addOwnMessage(Mc.init);
+		addOwnMessage(Mc.noticeUvolniSkladanie);
+		addOwnMessage(Mc.noticeUvolniRezanie);
 		addOwnMessage(Mc.rVyberPracovnikaLakovanie);
+		addOwnMessage(Mc.noticeUvolniLakovanie);
 		addOwnMessage(Mc.rVyberPracovnikaARezanie);
 		addOwnMessage(Mc.rVyberPracovnikaSkladanie);
-		addOwnMessage(Mc.noticeUvolniPracovnikaB);
 		addOwnMessage(Mc.rVyberPracovnikaMontaz);
-		addOwnMessage(Mc.noticeUvolniPracovnikaA);
 		addOwnMessage(Mc.rVyberPracovnikaBRSkladanie);
-		addOwnMessage(Mc.noticeUvolniPracovnikaC);
 		addOwnMessage(Mc.rVyberPracovnikaCMontaz);
 		addOwnMessage(Mc.rVyberPracovnikaMorenie);
+		addOwnMessage(Mc.noticeUvolniMorenie);
 		addOwnMessage(Mc.rVyberPracovnikaCMorenie);
+		addOwnMessage(Mc.noticeUvolniMontaz);
 		addOwnMessage(Mc.rVyberPracovnikaCLakovanie);
 		addOwnMessage(Mc.rVyberPracovnikaAMontaz);
 		addOwnMessage(Mc.rVyberPracovnikaRezanie);
