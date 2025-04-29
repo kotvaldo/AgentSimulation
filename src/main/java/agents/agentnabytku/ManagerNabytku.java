@@ -107,6 +107,9 @@ public class ManagerNabytku extends Manager
 	//meta! sender="AgentPracovisk", id="388", type="Response"
 	public void processDajPracovneMiestoRezanie(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
+		queueNonProcessed.getQueue().stream().filter(q -> q.equals(msg)).findFirst().ifPresent(q -> {
+			q.setWorkPlace(msg.getWorkPlace());
+		});
 		if (msg.getWorkerForCutting() == null && msg.getWorkPlace() != null) {
 			MyMessage reqPlace = new MyMessage(msg);
 			reqPlace.setCode(Mc.rVyberPracovnikaRezanie);
@@ -117,7 +120,9 @@ public class ManagerNabytku extends Manager
 			msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
 			msg.getFurniture().setWorkPlace(msg.getWorkPlace());
 			msg.getWorkPlace().setFurniture(msg.getFurniture());
+			System.out.println(queueNonProcessed.getQueue().size());
 			queueNonProcessed.getQueue().removeIf(m -> m.equals(msg));
+			System.out.println(queueNonProcessed.getQueue().size());
 
 			if (msg.getWorkerForCutting().getCurrentWorkPlace() != null) {
 				msg.setCode(Mc.rPresunDoSkladu);
@@ -135,6 +140,9 @@ public class ManagerNabytku extends Manager
 	//meta! sender="AgentPracovnikov", id="168", type="Response"
 	public void processRVyberPracovnikaRezanie(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
+		queueNonProcessed.getQueue().stream().filter(q -> q.equals(msg)).findFirst().ifPresent(q -> {
+			q.setWorkerForCutting(msg.getWorkerForCutting());
+		});
 		if (msg.getWorkPlace() == null) {
 			MyMessage reqPlace = new MyMessage(msg);
 			reqPlace.setCode(Mc.dajPracovneMiestoRezanie);

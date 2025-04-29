@@ -75,7 +75,7 @@ public class MyMessage extends MessageForm
 		return workerForCutting;
 	}
 
-	public void setWorkerForCutting(WorkerA workerForCutting) {
+	public void setWorkerForCutting(Worker workerForCutting) {
 		this.workerForCutting = workerForCutting;
 	}
 
