@@ -39,7 +39,11 @@ public class ManagerPracovnikovA extends OSPABA.Manager {
     public void processRVyberPracovnikaARezanie(MessageForm message) {
         MyMessage msg = (MyMessage) message.createCopy();
 
-        WorkerA worker = freeWorkers.poll();
+        WorkerA worker = null;
+        if (!freeWorkers.isEmpty()) {
+            worker = freeWorkers.removeFirst();
+        }
+
         if (worker != null) {
             worker.setState(WorkerBussyState.ASSIGNED.getValue());
             msg.setWorkerForCutting(worker);
@@ -52,22 +56,28 @@ public class ManagerPracovnikovA extends OSPABA.Manager {
         response(msg);
     }
 
+
     //meta! sender="AgentPracovnikov", id="365", type="Request"
     public void processRVyberPracovnikaAMontaz(MessageForm message) {
         MyMessage msg = (MyMessage) message.createCopy();
 
-        WorkerA worker = freeWorkers.poll();
+        WorkerA worker = null;
+        if (!freeWorkers.isEmpty()) {
+            worker = freeWorkers.removeFirst();
+        }
+
         if (worker != null) {
             worker.setState(WorkerBussyState.ASSIGNED.getValue());
-            msg.setWorkerForCutting(worker);
+            msg.setWorkerForMontage(worker);
         } else {
-            msg.setWorkerForCutting(null);
+            msg.setWorkerForMontage(null);
         }
 
         msg.setCode(Mc.rVyberPracovnikaAMontaz);
         msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
         response(msg);
     }
+
 
     //meta! sender="AgentPracovnikov", id="239", type="Notice"
     public void processNoticeUvolniA(MessageForm message) {

@@ -35,9 +35,13 @@ public class ManagerPracovnikovC extends OSPABA.Manager {
 
 	//meta! sender="AgentPracovnikov", id="366", type="Request"
 	public void processRVyberPracovnikaCMontaz(MessageForm message) {
-		MyMessage msg = (MyMessage) message;
+		MyMessage msg = (MyMessage) message.createCopy();
 
-		WorkerC worker = freeWorkers.poll();
+		WorkerC worker = null;
+		if (!freeWorkers.isEmpty()) {
+			worker = freeWorkers.removeFirst();
+		}
+
 		if (worker != null) {
 			worker.setState(WorkerBussyState.ASSIGNED.getValue());
 			msg.setWorkerForMontage(worker);
@@ -50,16 +54,21 @@ public class ManagerPracovnikovC extends OSPABA.Manager {
 		response(msg);
 	}
 
+
 	//meta! sender="AgentPracovnikov", id="248", type="Request"
 	public void processRVyberPracovnikaCMorenie(MessageForm message) {
-		MyMessage msg = (MyMessage) message;
+		MyMessage msg = (MyMessage) message.createCopy();
 
-		WorkerC worker = freeWorkers.poll();
+		WorkerC worker = null;
+		if (!freeWorkers.isEmpty()) {
+			worker = freeWorkers.removeFirst();
+		}
+
 		if (worker != null) {
 			worker.setState(WorkerBussyState.ASSIGNED.getValue());
-			msg.setWorkerForMontage(worker);
+			msg.setWorkerForStaining(worker);
 		} else {
-			msg.setWorkerForMontage(null);
+			msg.setWorkerForStaining(null);
 		}
 
 		msg.setCode(Mc.rVyberPracovnikaCMorenie);
@@ -67,22 +76,28 @@ public class ManagerPracovnikovC extends OSPABA.Manager {
 		response(msg);
 	}
 
+
 	//meta! sender="AgentPracovnikov", id="379", type="Request"
 	public void processRVyberPracovnikaCLakovanie(MessageForm message) {
-		MyMessage msg = (MyMessage) message;
+		MyMessage msg = (MyMessage) message.createCopy();
 
-		WorkerC worker = freeWorkers.poll();
+		WorkerC worker = null;
+		if (!freeWorkers.isEmpty()) {
+			worker = freeWorkers.removeFirst();
+		}
+
 		if (worker != null) {
 			worker.setState(WorkerBussyState.ASSIGNED.getValue());
-			msg.setWorkerForMontage(worker);
+			msg.setWorkerForPainting(worker);
 		} else {
-			msg.setWorkerForMontage(null);
+			msg.setWorkerForPainting(null);
 		}
 
 		msg.setCode(Mc.rVyberPracovnikaCLakovanie);
 		msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
 		response(msg);
 	}
+
 
 	//meta! sender="AgentPracovnikov", id="241", type="Notice"
 	public void processNoticeUvolniC(MessageForm message) {
