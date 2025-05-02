@@ -41,6 +41,14 @@ public class Order {
         return id;
     }
 
+    private boolean isOrderFinished(Furniture furniture) {
+        for (Furniture f : furniture.getOrder().getFurnitureList()) {
+            if (!f.isDone()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     @Override
     public boolean equals(Object obj) {

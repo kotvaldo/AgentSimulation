@@ -75,6 +75,7 @@ public class ManagerNabytku extends Manager {
         MyMessage msg = (MyMessage) message.createCopy();
         queueNonProcessed.getQueue().stream().filter(q -> q.equals(msg)).findFirst().ifPresent(q -> {
             q.setWorkPlace(msg.getWorkPlace());
+            q.getFurniture().setWorkPlace(msg.getFurniture().getWorkPlace());
         });
         if (msg.getWorkerForCutting() == null && msg.getWorkPlace() != null) {
             MyMessage reqPlace = new MyMessage(msg);
@@ -173,39 +174,7 @@ public class ManagerNabytku extends Manager {
     }
 
 
-    //meta! sender="AgentCinnosti", id="284", type="Response"
-    public void processRUrobRezanie(MessageForm message) {
 
-        MyMessage msg = (MyMessage) message.createCopy();
-        msg.getWorkerForCutting().setState(WorkerBussyState.NON_BUSY.getValue());
-        MyMessage msgForReleaseWorker = new MyMessage(msg);
-        //adding toQueueColoring
-        msg.getWorkPlace().setActualWorkingWorker(null);
-        msg.setWorkerForCutting(null);
-        msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_2.getValue());
-        msg.getWorkPlace().setActivity(null);
-
-        queueStaining.getQueue().addLast(msg);
-
-        msgForReleaseWorker.setCode(Mc.noticeUvolniRezanie);
-        msgForReleaseWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
-        notice(msgForReleaseWorker);
-
-        if (!queueMontage.getQueue().isEmpty()) {
-            checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
-        }
-        if (!queueNonProcessed.getQueue().isEmpty()) {
-            checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
-        }
-        if (!queueStaining.getQueue().isEmpty()) {
-            checkAllItemsQueue(queueStaining, OperationType.STAINING);
-        }
-        if (!queuePainting.getQueue().isEmpty()) {
-            checkAllItemsQueue(queuePainting, OperationType.PAINTING);
-        }
-
-
-    }
 
     private void checkAllItemsQueue(Queue queue, OperationType type) {
         Iterator<MyMessage> iterator = queue.getQueue().iterator();
@@ -328,24 +297,118 @@ public class ManagerNabytku extends Manager {
             case MONTAGE -> msg.getWorkerForMontage().setState(state.getValue());
         }
     }
+    private boolean hasWorkerForType(MyMessage msg, OperationType type) {
+        return switch (type) {
+            case STAINING -> msg.getWorkerForStaining() != null;
+            case PAINTING -> msg.getWorkerForPainting() != null;
+            case ASSEMBLY -> msg.getWorkerForAssembly() != null;
+            case MONTAGE -> msg.getWorkerForMontage() != null;
+            default -> false;
+        };
+    }
 
 
     //meta! sender="AgentPracovisk", id="389", type="Response"
     public void processRDajPracovneMiestoLakovanie(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
 
+        queuePainting.getQueue().stream()
+                .filter(q -> q.equals(msg))
+                .findFirst()
+                .ifPresent(q -> {
+                    q.setWorkPlace(msg.getWorkPlace());
+                    q.getFurniture().setWorkPlace(msg.getFurniture().getWorkPlace());
+                });
+
+        if (!hasWorkerForType(msg, OperationType.PAINTING)) {
+            MyMessage reqWorker = new MyMessage(msg);
+            reqWorker.setCode(Mc.rVyberPracovnikaLakovanie);
+            reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+            request(reqWorker);
+            return;
+        }
+
+        handleCompletePreparation(msg, queuePainting, OperationType.PAINTING);
     }
+
 
     //meta! sender="AgentPracovisk", id="390", type="Response"
     public void processRDajPracovneMiestoMontaz(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+
+        queueMontage.getQueue().stream()
+                .filter(q -> q.equals(msg))
+                .findFirst()
+                .ifPresent(q -> {
+                    q.setWorkPlace(msg.getWorkPlace());
+                    q.getFurniture().setWorkPlace(msg.getFurniture().getWorkPlace());
+                });
+
+        if (msg.getWorkerForMontage() == null && msg.getWorkPlace() != null) {
+            MyMessage reqWorker = new MyMessage(msg);
+            reqWorker.setCode(Mc.rVyberPracovnikaMontaz);
+            reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+            request(reqWorker);
+            return;
+        }
+
+        if (msg.getWorkerForMontage() != null && msg.getWorkPlace() != null) {
+            handleCompletePreparation(msg, queueMontage, OperationType.MONTAGE);
+        }
     }
+
 
     //meta! sender="AgentPracovisk", id="182", type="Response"
     public void processRDajPracovneMiestoMorenie(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+
+        queueStaining.getQueue().stream()
+                .filter(q -> q.equals(msg))
+                .findFirst()
+                .ifPresent(q -> {
+                    q.setWorkPlace(msg.getWorkPlace());
+                    q.getFurniture().setWorkPlace(msg.getFurniture().getWorkPlace());
+                });
+
+        if (msg.getWorkerForStaining() == null && msg.getWorkPlace() != null) {
+            MyMessage reqWorker = new MyMessage(msg);
+            reqWorker.setCode(Mc.rVyberPracovnikaMorenie);
+            reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+            request(reqWorker);
+            return;
+        }
+
+        if (msg.getWorkerForStaining() != null && msg.getWorkPlace() != null) {
+            handleCompletePreparation(msg, queueStaining, OperationType.STAINING);
+        }
     }
+
 
     //meta! sender="AgentPracovisk", id="387", type="Response"
     public void processRDajPracovneMiestoSkladanie(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+
+        queueAssembly.getQueue().stream()
+                .filter(q -> q.equals(msg))
+                .findFirst()
+                .ifPresent(q -> {
+                    q.setWorkPlace(msg.getWorkPlace());
+                    q.getFurniture().setWorkPlace(msg.getFurniture().getWorkPlace());
+                });
+
+        if (msg.getWorkerForAssembly() == null && msg.getWorkPlace() != null) {
+            MyMessage reqWorker = new MyMessage(msg);
+            reqWorker.setCode(Mc.rVyberPracovnikaSkladanie);
+            reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+            request(reqWorker);
+            return;
+        }
+
+        if (msg.getWorkerForAssembly() != null && msg.getWorkPlace() != null) {
+            handleCompletePreparation(msg, queueAssembly, OperationType.ASSEMBLY);
+        }
     }
+
 
 
     //pohyb
@@ -359,41 +422,189 @@ public class ManagerNabytku extends Manager {
 
     //meta! sender="AgentPohybu", id="157", type="Response"
     public void processRPresunNaPracovisko(MessageForm message) {
-    }
-
-    //meta! sender="AgentPohybu", id="385", type="Response"
-    public void processRPresunZoSkladu(MessageForm message) {
         MyMessage msg = (MyMessage) message.createCopy();
-        msg.setCode(Mc.rUrobRezanie);
+
+        if (msg.getWorkerForStaining() != null) {
+            msg.setCode(Mc.rUrobMorenie);
+        } else if (msg.getWorkerForPainting() != null) {
+            msg.setCode(Mc.rUrobLakovanie);
+        } else if (msg.getWorkerForAssembly() != null) {
+            msg.setCode(Mc.rUrobSkladanie);
+        } else if (msg.getWorkerForMontage() != null) {
+            msg.setCode(Mc.rUrobMontaz);
+        } else {
+            throw new IllegalStateException("Presun na pracovisko: žiadny worker nie je nastavený.");
+        }
+
         msg.setAddressee(mySim().findAgent(Id.agentCinnosti));
         request(msg);
     }
 
 
+    //meta! sender="AgentPohybu", id="385", type="Response"
+    public void processRPresunZoSkladu(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+
+        if (msg.getWorkerForCutting() != null) {
+            msg.setCode(Mc.rUrobRezanie);
+        } else if (msg.getWorkerForStaining() != null) {
+            msg.setCode(Mc.rUrobMorenie);
+        } else if (msg.getWorkerForPainting() != null) {
+            msg.setCode(Mc.rUrobLakovanie);
+        } else if (msg.getWorkerForAssembly() != null) {
+            msg.setCode(Mc.rUrobSkladanie);
+        } else if (msg.getWorkerForMontage() != null) {
+            msg.setCode(Mc.rUrobMontaz);
+        } else {
+            throw new IllegalStateException("Presun zo skladu: žiadny worker nie je nastavený.");
+        }
+
+        msg.setAddressee(mySim().findAgent(Id.agentCinnosti));
+        request(msg);
+    }
+
+
+
     // Pracovnici Response agent Pracovnikov
 
-    //meta! sender="AgentPracovnikov", id="164", type="Response"
+    //meta! sender="AgentPracovnikov", id="XXX", type="Response"
     public void processRVyberPracovnikaLakovanie(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
 
+        queuePainting.getQueue().stream()
+                .filter(q -> q.equals(msg))
+                .findFirst()
+                .ifPresent(q -> q.setWorkerForPainting(msg.getWorkerForPainting()));
+
+        if (msg.getWorkPlace() == null) {
+            MyMessage reqPlace = new MyMessage(msg);
+            reqPlace.setCode(Mc.rDajPracovneMiestoLakovanie);
+            reqPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+            request(reqPlace);
+            return;
+        }
+
+        if (msg.getWorkerForPainting() != null && msg.getWorkPlace() != null) {
+            handleCompletePreparation(msg, queuePainting, OperationType.PAINTING);
+        }
     }
 
-    //meta! sender="AgentPracovnikov", id="162", type="Response"
+
+    //meta! sender="AgentPracovnikov", id="XXX", type="Response"
     public void processRVyberPracovnikaMorenie(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+
+        queueStaining.getQueue().stream()
+                .filter(q -> q.equals(msg))
+                .findFirst()
+                .ifPresent(q -> q.setWorkerForStaining(msg.getWorkerForStaining()));
+
+        if (msg.getWorkPlace() == null) {
+            MyMessage reqPlace = new MyMessage(msg);
+            reqPlace.setCode(Mc.rDajPracovneMiestoMorenie);
+            reqPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+            request(reqPlace);
+            return;
+        }
+
+        if (msg.getWorkerForStaining() != null && msg.getWorkPlace() != null) {
+            handleCompletePreparation(msg, queueStaining, OperationType.STAINING);
+        }
     }
 
-    //meta! sender="AgentPracovnikov", id="90", type="Response"
+
+    //meta! sender="AgentPracovnikov", id="XXX", type="Response"
     public void processRVyberPracovnikaSkladanie(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+
+        queueAssembly.getQueue().stream()
+                .filter(q -> q.equals(msg))
+                .findFirst()
+                .ifPresent(q -> q.setWorkerForAssembly(msg.getWorkerForAssembly()));
+
+        if (msg.getWorkPlace() == null) {
+            MyMessage reqPlace = new MyMessage(msg);
+            reqPlace.setCode(Mc.rDajPracovneMiestoSkladanie);
+            reqPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+            request(reqPlace);
+            return;
+        }
+
+        if (msg.getWorkerForAssembly() != null && msg.getWorkPlace() != null) {
+            handleCompletePreparation(msg, queueAssembly, OperationType.ASSEMBLY);
+        }
     }
 
-    //meta! sender="AgentPracovnikov", id="167", type="Response"
+
+    //meta! sender="AgentPracovnikov", id="XXX", type="Response"
     public void processRVyberPracovnikaMontaz(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+
+        queueMontage.getQueue().stream()
+                .filter(q -> q.equals(msg))
+                .findFirst()
+                .ifPresent(q -> q.setWorkerForMontage(msg.getWorkerForMontage()));
+
+        if (msg.getWorkPlace() == null) {
+            MyMessage reqPlace = new MyMessage(msg);
+            reqPlace.setCode(Mc.rDajPracovneMiestoMontaz);
+            reqPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+            request(reqPlace);
+            return;
+        }
+
+        if (msg.getWorkerForMontage() != null && msg.getWorkPlace() != null) {
+            handleCompletePreparation(msg, queueMontage, OperationType.MONTAGE);
+        }
     }
+
 
 
     //Cinnosti
 
+    //meta! sender="AgentCinnosti", id="284", type="Response"
+    public void processRUrobRezanie(MessageForm message) {
+
+        MyMessage msg = (MyMessage) message.createCopy();
+        msg.getWorkerForCutting().setState(WorkerBussyState.NON_BUSY.getValue());
+        MyMessage msgForReleaseWorker = new MyMessage(msg);
+        //adding toQueueColoring
+        msg.getWorkPlace().setActualWorkingWorker(null);
+        msg.setWorkerForCutting(null);
+        msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_2.getValue());
+        msg.getWorkPlace().setActivity(null);
+
+        queueStaining.getQueue().addLast(msg);
+
+        msgForReleaseWorker.setCode(Mc.noticeUvolniRezanie);
+        msgForReleaseWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+        notice(msgForReleaseWorker);
+
+        if (!queueMontage.getQueue().isEmpty()) {
+            checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
+        }
+        if (!queueNonProcessed.getQueue().isEmpty()) {
+            checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
+        }
+        if (!queueStaining.getQueue().isEmpty()) {
+            checkAllItemsQueue(queueStaining, OperationType.STAINING);
+        }
+        if (!queuePainting.getQueue().isEmpty()) {
+            checkAllItemsQueue(queuePainting, OperationType.PAINTING);
+        }
+
+
+    }
+
     //meta! sender="AgentCinnosti", id="286", type="Response"
     public void processRUrobMorenie(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+        msg.getWorkerForStaining().setState(WorkerBussyState.NON_BUSY.getValue());
+        MyMessage msgForReleaseWorker = new MyMessage(msg);
+        msg.getWorkPlace().setActualWorkingWorker(null);
+        msg.setWorkerForCutting(null);
+        msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_2.getValue());
+        msg.getWorkPlace().setActivity(null);
     }
 
     //meta! sender="AgentCinnosti", id="289", type="Response"

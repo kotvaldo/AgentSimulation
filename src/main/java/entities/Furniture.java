@@ -8,6 +8,7 @@ public class Furniture {
     private final int type;
     private int state;
     private WorkPlace workPlace;
+    private boolean isDone = false;
 
     private double startTimeCuttingQueue;
     private double endTimeCuttingQueue;
@@ -52,7 +53,9 @@ public class Furniture {
     public void setStartTimeCuttingQueue(double startTimeCuttingQueue) {
         this.startTimeCuttingQueue = startTimeCuttingQueue;
     }
-
+    public void setIsDone() {
+        this.isDone = true;
+    }
     public double getEndTimeCuttingQueue() {
         return endTimeCuttingQueue;
     }
@@ -116,4 +119,10 @@ public class Furniture {
     public void setWorkPlace(WorkPlace workPlace) {
         this.workPlace = workPlace;
     }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+
 }

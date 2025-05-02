@@ -58,7 +58,7 @@ public class ManagerPracovnikovB extends OSPABA.Manager
 
 		if (worker != null) {
 			worker.setState(WorkerBussyState.NON_BUSY.getValue());
-			freeWorkers.add(worker);
+			freeWorkers.addLast(worker);
 		}
 	}
 	//meta! userInfo="Process messages defined in code", id="0"

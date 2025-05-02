@@ -119,9 +119,27 @@ public class ManagerPohybu extends Manager
 	//meta! sender="ProcesPresunNaPracovisko", id="115", type="Finish"
 	public void processFinishProcesPresunNaPracovisko(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rPresunNaPracovisko);
 
+		if (myMessage.getWorkerForStaining() != null) {
+			myMessage.getWorkerForStaining().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForStaining());
+		} else if (myMessage.getWorkerForPainting() != null) {
+			myMessage.getWorkerForPainting().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForPainting());
+		} else if (myMessage.getWorkerForAssembly() != null) {
+			myMessage.getWorkerForAssembly().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForAssembly());
+		} else if (myMessage.getWorkerForMontage() != null) {
+			myMessage.getWorkerForMontage().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForMontage());
+		}
 
+		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(myMessage);
 	}
+
 
 
 	//meta! userInfo="Process messages defined in code", id="0"

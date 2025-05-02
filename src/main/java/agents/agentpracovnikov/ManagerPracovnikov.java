@@ -2,6 +2,7 @@ package agents.agentpracovnikov;
 
 import OSPABA.*;
 import entities.WorkerA;
+import entities.WorkerB;
 import entities.WorkerC;
 import simulation.*;
 
@@ -33,12 +34,27 @@ public class ManagerPracovnikov extends Manager
 	//meta! sender="AgentNabytku", id="415", type="Notice"
 	public void processNoticeUvolniMontaz(MessageForm message)
 	{
-
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		if(myMessage.getWorkerForMontage() instanceof WorkerC) {
+			myMessage.setCode(Mc.noticeUvolniC);
+			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
+			notice(myMessage);
+		} else if(myMessage.getWorkerForMontage() instanceof WorkerA) {
+			myMessage.setCode(Mc.noticeUvolniA);
+			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovA));
+			notice(myMessage);
+		}
 	}
 
 	//meta! sender="AgentNabytku", id="204", type="Notice"
 	public void processNoticeUvolniSkladanie(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		if(myMessage.getWorkerForAssembly() instanceof WorkerB) {
+			myMessage.setCode(Mc.noticeUvolniB);
+			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovB));
+			notice(myMessage);
+		}
 	}
 
 	//meta! sender="AgentNabytku", id="414", type="Notice"
@@ -65,6 +81,12 @@ public class ManagerPracovnikov extends Manager
 	//meta! sender="AgentNabytku", id="205", type="Notice"
 	public void processNoticeUvolniMorenie(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		if(myMessage.getWorkerForStaining() instanceof WorkerC) {
+			myMessage.setCode(Mc.noticeUvolniC);
+			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
+			notice(myMessage);
+		}
 	}
 
 

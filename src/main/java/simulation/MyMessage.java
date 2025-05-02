@@ -96,7 +96,7 @@ public class MyMessage extends MessageForm
         return workerForAssembly;
     }
 
-    public void setWorkerForAssembly(WorkerB workerForAssembly) {
+    public void setWorkerForAssembly(Worker workerForAssembly) {
         this.workerForAssembly = workerForAssembly;
     }
 
@@ -104,7 +104,7 @@ public class MyMessage extends MessageForm
         return workerForMontage;
     }
 
-    public void setWorkerForMontage(WorkerC workerForMontage) {
+    public void setWorkerForMontage(Worker workerForMontage) {
         this.workerForMontage = workerForMontage;
     }
 
