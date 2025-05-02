@@ -11,7 +11,6 @@ import java.util.LinkedList;
 public class ManagerPracovnikovA extends OSPABA.Manager {
     private LinkedList<WorkerA> freeWorkers;
 
-
     public ManagerPracovnikovA(int id, Simulation mySim, Agent myAgent) {
         super(id, mySim, myAgent);
         init();
@@ -38,7 +37,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager {
 
     //meta! sender="AgentPracovnikov", id="242", type="Request"
     public void processRVyberPracovnikaARezanie(MessageForm message) {
-        MyMessage msg = (MyMessage) message;
+        MyMessage msg = (MyMessage) message.createCopy();
 
         WorkerA worker = freeWorkers.poll();
         if (worker != null) {
@@ -55,7 +54,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager {
 
     //meta! sender="AgentPracovnikov", id="365", type="Request"
     public void processRVyberPracovnikaAMontaz(MessageForm message) {
-        MyMessage msg = (MyMessage) message;
+        MyMessage msg = (MyMessage) message.createCopy();
 
         WorkerA worker = freeWorkers.poll();
         if (worker != null) {
@@ -72,7 +71,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager {
 
     //meta! sender="AgentPracovnikov", id="239", type="Notice"
     public void processNoticeUvolniA(MessageForm message) {
-        MyMessage msg = (MyMessage) message;
+        MyMessage msg = (MyMessage) message.createCopy();
         WorkerA worker = (WorkerA) msg.getWorkerForCutting();
 
         if (worker != null) {

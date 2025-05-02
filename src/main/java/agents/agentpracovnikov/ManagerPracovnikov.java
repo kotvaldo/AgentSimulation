@@ -2,6 +2,7 @@ package agents.agentpracovnikov;
 
 import OSPABA.*;
 import entities.WorkerA;
+import entities.WorkerC;
 import simulation.*;
 
 //meta! id="5"
@@ -53,7 +54,12 @@ public class ManagerPracovnikov extends Manager
 	//meta! sender="AgentNabytku", id="126", type="Notice"
 	public void processNoticeUvolniLakovanie(MessageForm message)
 	{
-
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		if(myMessage.getWorkerForPainting() instanceof WorkerC) {
+			myMessage.setCode(Mc.noticeUvolniC);
+			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovA));
+			notice(myMessage);
+		}
 	}
 
 	//meta! sender="AgentNabytku", id="205", type="Notice"
@@ -76,11 +82,25 @@ public class ManagerPracovnikov extends Manager
 	public void processRVyberPracovnikaBRSkladanie(MessageForm message)
 	{
 		MyMessage msg = (MyMessage) message.createCopy();
+		msg.setCode(Mc.rVyberPracovnikaSkladanie);
+		msg.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(msg);
 	}
 
 	//meta! sender="AgentPracovnikovC", id="366", type="Response"
 	public void processRVyberPracovnikaCMontaz(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		if(myMessage.getWorkerForMontage() != null) {
+			myMessage.setCode(Mc.rVyberPracovnikaMontaz);
+			myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+			response(myMessage);
+		} else {
+			myMessage.setCode(Mc.rVyberPracovnikaAMontaz);
+			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovA));
+			request(myMessage);
+		}
+
 	}
 
 
@@ -88,33 +108,62 @@ public class ManagerPracovnikov extends Manager
 	//meta! sender="AgentPracovnikovC", id="248", type="Response"
 	public void processRVyberPracovnikaCMorenie(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rVyberPracovnikaMorenie);
+		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(myMessage);
 	}
 
 	//meta! sender="AgentPracovnikovC", id="379", type="Response"
 	public void processRVyberPracovnikaCLakovanie(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rVyberPracovnikaLakovanie);
+		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(myMessage);
+
 	}
 
 	//meta! sender="AgentPracovnikovA", id="365", type="Response"
 	public void processRVyberPracovnikaAMontaz(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rVyberPracovnikaMontaz);
+		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(myMessage);
 	}
 
 	//meta! sender="AgentNabytku", id="164", type="Request"
 	public void processRVyberPracovnikaLakovanie(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
+		myMessage.setCode(Mc.rVyberPracovnikaCLakovanie);
+		request(myMessage);
 	}
 	//meta! sender="AgentNabytku", id="167", type="Request"
 	public void processRVyberPracovnikaMontaz(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rVyberPracovnikaCMontaz);
+		myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
+		request(myMessage);
 	}
 	//meta! sender="AgentNabytku", id="90", type="Request"
 	public void processRVyberPracovnikaSkladanie(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rVyberPracovnikaBRSkladanie);
+		myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovB));
+		request(myMessage);
 	}
 	//meta! sender="AgentNabytku", id="162", type="Request"
 	public void processRVyberPracovnikaMorenie(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
+		myMessage.setCode(Mc.rVyberPracovnikaCMorenie);
+		request(myMessage);
 	}
 
 	//meta! sender="AgentNabytku", id="168", type="Request"

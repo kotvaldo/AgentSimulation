@@ -32,9 +32,9 @@ public class ManagerPohybu extends Manager
 		myMessage.setAddressee(myAgent().findAssistant(Id.procesPresunDoSkladu));
 		if(myMessage.getWorkerForCutting() != null) {
 			myMessage.getWorkerForCutting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
-			myMessage.setCode(Mc.start);
-			startContinualAssistant(myMessage);
 		}
+		myMessage.setCode(Mc.start);
+		startContinualAssistant(myMessage);
 	}
 
 	//meta! sender="AgentNabytku", id="385", type="Request"
@@ -42,6 +42,40 @@ public class ManagerPohybu extends Manager
 	{
 		MyMessage myMessage = (MyMessage) message.createCopy();
 		myMessage.setAddressee(myAgent().findAssistant(Id.procesPresunZoSkladu));
+		if(myMessage.getWorkerForCutting() != null) {
+			myMessage.getWorkerForCutting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+		} else if(myMessage.getWorkerForStaining() != null) {
+			myMessage.getWorkerForStaining().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+		} else if(myMessage.getWorkerForAssembly() != null) {
+			myMessage.getWorkerForAssembly().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+		} else if(myMessage.getWorkerForPainting() != null) {
+			myMessage.getWorkerForPainting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+		} else if(myMessage.getWorkerForMontage() != null) {
+			myMessage.getWorkerForMontage().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+		}
+
+		myMessage.setCode(Mc.start);
+		startContinualAssistant(myMessage);
+	}
+
+	//meta! sender="AgentNabytku", id="157", type="Request"
+	public void processRPresunNaPracovisko(MessageForm message)
+	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setAddressee(myAgent().findAssistant(Id.procesPresunNaPracovisko));
+
+		if (myMessage.getWorkerForCutting() != null) {
+			myMessage.getWorkerForCutting().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
+		} else if (myMessage.getWorkerForStaining() != null) {
+			myMessage.getWorkerForStaining().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
+		} else if (myMessage.getWorkerForAssembly() != null) {
+			myMessage.getWorkerForAssembly().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
+		} else if (myMessage.getWorkerForPainting() != null) {
+			myMessage.getWorkerForPainting().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
+		} else if (myMessage.getWorkerForMontage() != null) {
+			myMessage.getWorkerForMontage().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
+		}
+
 		myMessage.setCode(Mc.start);
 		startContinualAssistant(myMessage);
 	}
@@ -86,12 +120,9 @@ public class ManagerPohybu extends Manager
 	public void processFinishProcesPresunNaPracovisko(MessageForm message)
 	{
 
+
 	}
 
-	//meta! sender="AgentNabytku", id="157", type="Request"
-	public void processRPresunNaPracovisko(MessageForm message)
-	{
-	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)
