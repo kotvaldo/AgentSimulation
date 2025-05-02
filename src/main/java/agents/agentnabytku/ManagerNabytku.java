@@ -186,14 +186,86 @@ public class ManagerNabytku extends Manager
 		MyMessage msgForReleaseWorker = new MyMessage(msg);
 		msgForReleaseWorker.setCode(Mc.noticeUvolniRezanie);
 		msgForReleaseWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+		queueColoring.getQueue().addLast(msg);
+		msg.getWorkerForCutting().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkPlace().setActualWorkingWorker(null);
 		notice(msgForReleaseWorker);
-		/*if(!queueMontage.getQueue().isEmpty()) {
-			for(MyMessage m : queueMontage.getQueue()) {
-				if(m.getWorkerForMontage() == null) {
 
+		if(!queueMontage.getQueue().isEmpty()) {
+			for(MyMessage furnitureMsg : queueMontage.getQueue()) {
+				if(furnitureMsg.getWorkerForMontage() == null) {
+					MyMessage newMsg = new MyMessage(furnitureMsg);
+					newMsg.setCode(Mc.rVyberPracovnikaMontaz);
+					newMsg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+					request(newMsg);
+				} else if(furnitureMsg.getWorkerForMontage() != null && furnitureMsg.getWorkPlace() != null) {
+					MyMessage newMsg = new MyMessage(furnitureMsg);
+					queueMontage.getQueue().removeIf(q -> q.equals(furnitureMsg));
+					newMsg.setCode(Mc.rUrobMontaz);
+					newMsg.setAddressee(mySim().findAgent(Id.agentCinnosti));
+					request(newMsg);
 				}
 			}
-		}*/
+		}
+		if (!queueNonProcessed.getQueue().isEmpty()) {
+			for (MyMessage msgFromQueue : queueNonProcessed.getQueue()) {
+				if (msgFromQueue.getWorkerForCutting() != null && msgFromQueue.getWorkPlace() != null) {
+					System.out.println(queueNonProcessed.getQueue().size());
+					queueNonProcessed.getQueue().removeIf(m -> m.equals(msgFromQueue));
+					System.out.println(queueNonProcessed.getQueue().size());
+					msgFromQueue.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
+					msgFromQueue.getFurniture().setWorkPlace(msgFromQueue.getWorkPlace());
+					msgFromQueue.getWorkPlace().setFurniture(msgFromQueue.getFurniture());
+
+					if (msgFromQueue.getWorkerForCutting().getCurrentWorkPlace() != null) {
+						msgFromQueue.setCode(Mc.rPresunDoSkladu);
+						msgFromQueue.setAddressee(mySim().findAgent(Id.agentPohybu));
+						msgFromQueue.getWorkerForCutting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+					} else {
+						msgFromQueue.setCode(Mc.rPripravVSklade);
+						msgFromQueue.setAddressee(mySim().findAgent(Id.agentSkladu));
+						msgFromQueue.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+					}
+					request(msgFromQueue);
+					continue;
+				}
+				if (msgFromQueue.getWorkPlace() == null) {
+					MyMessage reqWorkPlace = new MyMessage(msgFromQueue);
+					reqWorkPlace.setCode(Mc.dajPracovneMiestoRezanie);
+					reqWorkPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+					request(reqWorkPlace);
+					continue;
+				}
+				if (msgFromQueue.getWorkerForCutting() == null) {
+					MyMessage reqWorker = new MyMessage(msgFromQueue);
+					reqWorker.setCode(Mc.rVyberPracovnikaRezanie);
+					reqWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+					request(reqWorker);
+					continue;
+				}
+			}
+		}
+
+
+		if (!queueColoring.getQueue().isEmpty()) {
+			for (MyMessage furnitureMsg : queueColoring.getQueue()) {
+				if (furnitureMsg.getWorkerForStaining() == null) {
+					MyMessage newMsg = new MyMessage(furnitureMsg);
+					newMsg.setCode(Mc.rVyberPracovnikaMorenie);
+					newMsg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+					request(newMsg);
+				} else if (furnitureMsg.getWorkerForStaining() != null && furnitureMsg.getWorkPlace() != null) {
+					queueColoring.getQueue().removeIf(q -> q.equals(furnitureMsg));
+					MyMessage newMsg = new MyMessage(furnitureMsg);
+					newMsg.setCode(Mc.rUrobMorenie);
+					newMsg.setAddressee(mySim().findAgent(Id.agentCinnosti));
+					request(newMsg);
+				}
+			}
+		}
+
+
+
 
 	}
 
