@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class EventSimulationGUI extends AbstractSimulationGUI {
+public class AgentSimulationGUI extends AbstractSimulationGUI {
     private JLabel label;
     private final MySimulation core;
     private AgentSimulationWorker worker;
@@ -71,7 +71,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     JLabel queueLengthLabel4;
 
 
-    public EventSimulationGUI() {
+    public AgentSimulationGUI() {
         super("Event Simulation");
         this.simulationSpeedLabel = new JLabel("Simulation Speed: ");
         label = new JLabel("Simulation Time : 0");
@@ -133,19 +133,19 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         furnitureTableModel = new FurnitureTableModel(new ArrayList<>());
 
         JTable ordersTable = new JTable(ordersTableModel);
-        ordersTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
+        ordersTable.setPreferredScrollableViewportSize(new Dimension(600, 600));
         JScrollPane ordersScroll = new JScrollPane(ordersTable);
 
         JTable workersTable = new JTable(workersTableModel);
-        workersTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
+        workersTable.setPreferredScrollableViewportSize(new Dimension(600, 600));
         JScrollPane workersScroll = new JScrollPane(workersTable);
 
         JTable workPlaceTable = new JTable(workPlacesTableModel);
-        workPlaceTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
+        workPlaceTable.setPreferredScrollableViewportSize(new Dimension(600, 600));
         JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
 
         JTable furnitureTable = new JTable(furnitureTableModel);
-        furnitureTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
+        furnitureTable.setPreferredScrollableViewportSize(new Dimension(600, 600));
         JScrollPane furnitureSroll = new JScrollPane(furnitureTable);
 
 
@@ -162,7 +162,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         tablePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
 // Nastavenie fixnej veľkosti pre každý JScrollPane
-        Dimension scrollSize = new Dimension(250, 300); // prispôsob si výšku a šírku
+        Dimension scrollSize = new Dimension(500, 300); // prispôsob si výšku a šírku
 
         ordersScroll.setPreferredSize(scrollSize);
         workersScroll.setPreferredSize(scrollSize);

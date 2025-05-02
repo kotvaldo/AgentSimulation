@@ -571,7 +571,7 @@ public class ManagerNabytku extends Manager {
         //adding toQueueColoring
         msg.getWorkPlace().setActualWorkingWorker(null);
         msg.setWorkerForCutting(null);
-        msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_2.getValue());
+        msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_STAINING.getValue());
         msg.getWorkPlace().setActivity(null);
 
         queueStaining.getQueue().addLast(msg);
@@ -599,28 +599,124 @@ public class ManagerNabytku extends Manager {
     //meta! sender="AgentCinnosti", id="286", type="Response"
     public void processRUrobMorenie(MessageForm message) {
         MyMessage msg = (MyMessage) message.createCopy();
-        msg.getWorkerForStaining().setState(WorkerBussyState.NON_BUSY.getValue());
+        MySimulation mySimulation = (MySimulation) _mySim;
         MyMessage msgForReleaseWorker = new MyMessage(msg);
+
+        msg.getWorkerForStaining().setState(WorkerBussyState.NON_BUSY.getValue());
         msg.getWorkPlace().setActualWorkingWorker(null);
-        msg.setWorkerForCutting(null);
-        msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_2.getValue());
         msg.getWorkPlace().setActivity(null);
+
+        msgForReleaseWorker.setWorkerForStaining(msg.getWorkerForStaining());
+        msgForReleaseWorker.setCode(Mc.noticeUvolniC);
+        msgForReleaseWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+        notice(msgForReleaseWorker);
+
+        msg.setWorkerForStaining(null);
+
+
+        double rand = mySimulation.getGenerators().getRealisePaintingDist().nextDouble();
+
+        if (rand < 0.15) {
+            msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_PAINTING.getValue());
+            queuePainting.getQueue().addLast(msg);
+        } else {
+            msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
+            queueAssembly.getQueue().addLast(msg);
+        }
+
+        if(!queueMontage.getQueue().isEmpty()) {
+            this.checkAllItemsQueue(this.queueMontage, OperationType.MONTAGE);
+        }
+
+        this.checkAllItemsQueue(this.queuePainting, OperationType.PAINTING);
+
+        this.checkAllItemsQueue(this.queueAssembly, OperationType.ASSEMBLY);
+
+
     }
+
 
     //meta! sender="AgentCinnosti", id="289", type="Response"
     public void processRUrobMontaz(MessageForm message) {
+
     }
 
 
     //meta! sender="AgentCinnosti", id="288", type="Response"
     public void processRUrobSkladanie(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+
+        msg.getWorkerForAssembly().setState(WorkerBussyState.NON_BUSY.getValue());
+        msg.getWorkPlace().setActualWorkingWorker(null);
+        msg.getWorkPlace().setActivity(null);
+
+        MyMessage msgForRelease = new MyMessage(msg);
+        msgForRelease.setWorkerForAssembly(msg.getWorkerForAssembly());
+        msgForRelease.setCode(Mc.noticeUvolniB);
+        msgForRelease.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+        notice(msgForRelease);
+
+        msg.setWorkerForAssembly(null);
+
+        if (msg.getFurniture().getType() == 3) {
+            msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_MONTAGE.getValue());
+            queueMontage.getQueue().addLast(msg);
+
+        } else {
+            MyMessage msgForReleaseWorkPlace = new MyMessage(msg);
+            msg.getFurniture().setIsDone();
+            msg.getFurniture().getWorkPlace().setFurniture(null);
+            msg.getFurniture().getWorkPlace().setState(WorkPlaceStateValues.NOT_WORKING.getValue());
+            msg.getFurniture().setWorkPlace(null);
+
+            msgForReleaseWorkPlace.setCode(Mc.noticeUvolniPracovneMiesto);
+            msgForReleaseWorkPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+            notice(msgForReleaseWorkPlace);
+
+            if (msg.getFurniture().getOrder().isOrderFinished()) {
+                msg.getFurniture().getOrder().setState(OrderStateValues.ORDER_DONE.getValue());
+                MyMessage orderFinishedMSG = new MyMessage(msg);
+                orderFinishedMSG.setOrder(orderFinishedMSG.getFurniture().getOrder());
+                orderFinishedMSG.setCode(Mc.noticeHotovaObjednavka);
+                orderFinishedMSG.setAddressee(mySim().findAgent(Id.agentModelu));
+                notice(orderFinishedMSG);
+            }
+        }
+
+        if (!queueMontage.getQueue().isEmpty()) {
+            this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
+        }
+        this.checkAllItemsQueue(queueAssembly, OperationType.ASSEMBLY);
 
     }
+
 
     //meta! sender="AgentCinnosti", id="287", type="Response"
     public void processRUrobLakovanie(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
 
+        MyMessage msgForRelease = new MyMessage(msg);
+
+        msg.getWorkerForPainting().setState(WorkerBussyState.NON_BUSY.getValue());
+        msg.getWorkPlace().setActualWorkingWorker(null);
+        msg.getWorkPlace().setActivity(null);
+
+        msgForRelease.setWorkerForPainting(msg.getWorkerForPainting());
+        msgForRelease.setCode(Mc.noticeUvolniC);
+        msgForRelease.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+        notice(msgForRelease);
+
+        msg.setWorkerForPainting(null);
+
+        msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
+        queueAssembly.getQueue().addLast(msg);
+
+        if (!queueMontage.getQueue().isEmpty()) {
+            this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
+        }
+        this.checkAllItemsQueue(queueAssembly, OperationType.ASSEMBLY);
     }
+
 
 
     // Prichod novej objednavky

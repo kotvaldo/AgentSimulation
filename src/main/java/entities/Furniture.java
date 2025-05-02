@@ -1,5 +1,6 @@
 package entities;
 
+import Enums.FurnitureStateValues;
 import IDGenerator.IDGenerator;
 
 public class Furniture {
@@ -55,6 +56,7 @@ public class Furniture {
     }
     public void setIsDone() {
         this.isDone = true;
+        this.state = FurnitureStateValues.FURNITURE_DONE.getValue();
     }
     public double getEndTimeCuttingQueue() {
         return endTimeCuttingQueue;

@@ -1,10 +1,10 @@
 package org.example;
 
-import GUI.EventSimulationGUI;
+import GUI.AgentSimulationGUI;
 
 public class Main {
     public static void main(String[] args) {
-        EventSimulationGUI eventSimulationGUI = new EventSimulationGUI();
-        eventSimulationGUI.setVisible(true);
+        AgentSimulationGUI agentSimulationGUI = new AgentSimulationGUI();
+        agentSimulationGUI.setVisible(true);
     }
 }

@@ -5,6 +5,7 @@ import OSPABA.*;
 import entities.WorkPlace;
 import simulation.*;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 
 //meta! id="62"
@@ -32,15 +33,17 @@ public class ManagerPracovisk extends Manager {
     private WorkPlace dajPrveVolneMiestoPodlaId() {
         return freeWorkPlaces.stream()
                 .filter(wp -> wp.getState() == WorkPlaceStateValues.NOT_WORKING.getValue())
-                .findFirst()
+                .min(Comparator.comparingInt(WorkPlace::getId))
                 .orElse(null);
     }
+
 
     private void priradPracovisko(MyMessage msg, int mcCode) {
         WorkPlace workPlace = dajPrveVolneMiestoPodlaId();
 
         if (workPlace != null) {
             workPlace.setState(WorkPlaceStateValues.ASSIGNED.getValue());
+            freeWorkPlaces.remove(workPlace);
 
             if (msg.getFurniture() != null) {
                 workPlace.setFurniture(msg.getFurniture());
@@ -50,9 +53,10 @@ public class ManagerPracovisk extends Manager {
 
         msg.setWorkPlace(workPlace);
         msg.setCode(mcCode);
-        msg.setAddressee(Id.agentNabytku);
+        msg.setAddressee(mySim().findAgent(Id.agentNabytku));
         response(msg);
     }
+
 
     //meta! sender="AgentNabytku", id="72", type="Notice"
     public void processInit(MessageForm message) {
@@ -61,8 +65,16 @@ public class ManagerPracovisk extends Manager {
     //meta! sender="AgentNabytku", id="207", type="Notice"
     public void processNoticeUvolniPracovneMiesto(MessageForm message) {
         MyMessage myMessage = (MyMessage) message.createCopy();
-        myMessage.getWorkPlace().setState(WorkPlaceStateValues.NOT_WORKING.getValue());
+
+        WorkPlace wp = myMessage.getWorkPlace();
+        wp.setState(WorkPlaceStateValues.NOT_WORKING.getValue());
+        wp.setFurniture(null);
+
+        myMessage.getFurniture().setWorkPlace(null);
+
+        freeWorkPlaces.add(wp);
     }
+
 
     // meta! jednotlivé požiadavky na pracoviská
     public void processDajPracovneMiestoRezanie(MessageForm message) {
