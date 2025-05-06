@@ -111,7 +111,14 @@ public class ManagerPohybu extends Manager
 		} else if(myMessage.getWorkerForMontage() != null) {
 			myMessage.getWorkerForMontage().setCurrentWorkPlace(myMessage.getWorkPlace());
 			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForMontage());
+		} else if(myMessage.getWorkerForStaining() != null) {
+			myMessage.getWorkerForStaining().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForStaining());
+		} else if(myMessage.getWorkerForPainting() != null) {
+			myMessage.getWorkerForPainting().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForPainting());
 		}
+
 		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
 		response(myMessage);
 	}

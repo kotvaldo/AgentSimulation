@@ -41,6 +41,8 @@ public class MyMessage extends MessageForm
 		workerForCutting = original.getWorkerForCutting();
 		workerForAssembly = original.getWorkerForAssembly();
 		workerForMontage = original.getWorkerForMontage();
+		workerForStaining = original.getWorkerForStaining();
+		workerForPainting = original.getWorkerForPainting();
 		order = original.getOrder();
 		furniture = original.getFurniture();
 		type = original.getType();

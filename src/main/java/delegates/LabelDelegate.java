@@ -1,0 +1,59 @@
+package delegates;
+
+import OSPABA.ISimDelegate;
+import OSPABA.SimState;
+import OSPABA.Simulation;
+import agents.agentnabytku.ManagerNabytku;
+import simulation.MySimulation;
+
+import javax.swing.*;
+import java.lang.classfile.Label;
+
+public class LabelDelegate implements ISimDelegate {
+
+    private final JLabel queueCutting;
+    private final JLabel queueStaining;
+    private final JLabel queuePainting;
+    private final JLabel queueAssembly;
+    private final JLabel queueMontage;
+
+    private final JLabel allOrdersLabel;
+    private final JLabel countOfFinishedOrdersLabel;
+
+    public LabelDelegate(JLabel queueCutting, JLabel queueStaining, JLabel queuePainting,
+                         JLabel queueAssembly, JLabel queueMontage,
+                         JLabel allOrdersLabel, JLabel countOfFinishedOrdersLabel) {
+        this.queueCutting = queueCutting;
+        this.queueStaining = queueStaining;
+        this.queuePainting = queuePainting;
+        this.queueAssembly = queueAssembly;
+        this.queueMontage = queueMontage;
+        this.allOrdersLabel = allOrdersLabel;
+        this.countOfFinishedOrdersLabel = countOfFinishedOrdersLabel;
+    }
+
+
+
+
+    @Override
+    public void simStateChanged(Simulation simulation, SimState simState) {
+
+    }
+
+    @Override
+    public void refresh(Simulation simulation) {
+        MySimulation mySimulation = (MySimulation) simulation;
+        ManagerNabytku managerNabytku = (ManagerNabytku) mySimulation.agentNabytku().myManager();
+
+        SwingUtilities.invokeLater(() -> {
+            queueCutting.setText("Cutting QL : " + managerNabytku.getQueueNonProcessed().getQueue().size());
+            queueStaining.setText("Staining QL : " + managerNabytku.getQueueStaining().getQueue().size());
+            queuePainting.setText("Painting QL : " + managerNabytku.getQueuePainting().getQueue().size());
+            queueAssembly.setText("Assembly QL : " + managerNabytku.getQueueAssembly().getQueue().size());
+            queueMontage.setText("Montage QL : " + managerNabytku.getQueueMontage().getQueue().size());
+            allOrdersLabel.setText("All Orders : " + mySimulation.getOrderArrayList().size());
+            countOfFinishedOrdersLabel.setText("Finished Orders : " + mySimulation.getFinishedOrders().size());
+        });
+    }
+
+}

@@ -27,6 +27,7 @@ public class WorkPlace {
             this.state = WorkPlaceStateValues.ASSIGNED.getValue();
         } else if (actualWorkingWorker == null) {
             this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
+            this.activity = "Nothing";
         }
     }
 

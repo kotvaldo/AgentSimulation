@@ -4,6 +4,7 @@ import Enums.PresetSimulationValues;
 import Enums.SimulationSpeedLimitValues;
 import GUI.Models.*;
 import Observer.Subject;
+import delegates.LabelDelegate;
 import delegates.SimulationTimeDelegate;
 import delegates.TableDelegate;
 import org.jfree.chart.ChartFactory;
@@ -65,11 +66,14 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
     private JLabel countOfFinishedOrdersLabel;
     private JLabel countOfAllOrdersLabel;
     private JPanel statisticsForSimPanel;
-    JLabel queueLengthLabel1;
-    JLabel queueLengthLabel2;
-    JLabel queueLengthLabel3;
-    JLabel queueLengthLabel4;
-
+    private JLabel queueLengthLabel1;
+    private JLabel queueLengthLabel2;
+    private JLabel queueLengthLabel3;
+    private JLabel queueLengthLabel4;
+    private JLabel queueLengthLabel5;
+    private SimulationTimeDelegate simulationTimeDelegate;
+    private TableDelegate tableDelegate;
+    private LabelDelegate slowSpeedLabelDelegate;
 
     public AgentSimulationGUI() {
         super("Event Simulation");
@@ -228,6 +232,8 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                         speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.getValue(),
                         1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue()
                 );
+            } else {
+                core.setMaxSimSpeed();
             }
             ordersScroll.setVisible(slowDownCheckBox.isSelected());
             workersScroll.setVisible(slowDownCheckBox.isSelected());
@@ -270,10 +276,22 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         this.inputPanel.add(speedSlider);
         this.inputPanel.add(replicationCountLabel);
 
-
+        tableDelegate = new TableDelegate(ordersTableModel, furnitureTableModel, workPlacesTableModel, workersTableModel);
+        simulationTimeDelegate = new SimulationTimeDelegate(label, dayCountLabel);
+        slowSpeedLabelDelegate = new LabelDelegate(
+                queueLengthLabel1, // Cutting
+                queueLengthLabel2, // Staining
+                queueLengthLabel3, // Painting
+                queueLengthLabel4, // Assembly
+                queueLengthLabel5, // Montage,
+                countOfAllOrdersLabel,
+                countOfFinishedOrdersLabel
+        );
         //delegates and observers
-        core.registerDelegate(new TableDelegate(ordersTableModel, furnitureTableModel, workPlacesTableModel, workersTableModel));
-        core.registerDelegate(new SimulationTimeDelegate(label, dayCountLabel));
+        core.registerDelegate(simulationTimeDelegate);
+        core.registerDelegate(slowSpeedLabelDelegate);
+        core.registerDelegate(tableDelegate);
+
     }
 
     @Override
@@ -320,46 +338,48 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         customPanel.setLayout(new GridBagLayout());
         customPanel.setBorder(BorderFactory.createTitledBorder("Statistics"));
 
+        // Fronty
         queueLengthLabel1 = new JLabel("Cutting QL : ");
-        queueLengthLabel2 = new JLabel("Coloring QL : ");
-        queueLengthLabel3 = new JLabel("Assembly QL : ");
-        queueLengthLabel4 = new JLabel("Montage QL : ");
+        queueLengthLabel2 = new JLabel("Staining QL : ");
+        queueLengthLabel3 = new JLabel("Painting QL : ");
+        queueLengthLabel4 = new JLabel("Assembly QL : ");
+        queueLengthLabel5 = new JLabel("Montage QL : ");
 
-        workerASpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
+        // Spinnery
+        workerASpinner = new JSpinner(new SpinnerNumberModel(10, 0, 1000, 1));
         workerBSpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
         workerCSpinner = new JSpinner(new SpinnerNumberModel(18, 0, 1000, 1));
-        workPlaceSpinner = new JSpinner(new SpinnerNumberModel(50,0,1000,1));
+        workPlaceSpinner = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 1));
 
+        // Počty pracovníkov
         countALabel = new JLabel("Count A: ");
         countBLabel = new JLabel("Count B: ");
         countCLabel = new JLabel("Count C: ");
 
+        // Využitie
         utilisationALabel = new JLabel("Utilisation A: ");
         utilisationAIntervalLabel = new JLabel("CI: ");
-        utilisationAIntervalLabel.setVisible(false);
         utilisationALabel.setVisible(false);
+        utilisationAIntervalLabel.setVisible(false);
 
         utilisationBLabel = new JLabel("Utilisation B: ");
         utilisationBIntervalLabel = new JLabel("CI: ");
-
-        utilisationBIntervalLabel.setVisible(false);
         utilisationBLabel.setVisible(false);
-
+        utilisationBIntervalLabel.setVisible(false);
 
         utilisationCLabel = new JLabel("Utilisation C: ");
         utilisationCIntervalLabel = new JLabel("CI: ");
-
-        utilisationCIntervalLabel.setVisible(false);
         utilisationCLabel.setVisible(false);
+        utilisationCIntervalLabel.setVisible(false);
 
         utilisationAllLabel = new JLabel("Utilisation All: ");
         utilisationAllIntervalLabel = new JLabel("CI: ");
-        utilisationAllIntervalLabel.setVisible(false);
         utilisationAllLabel.setVisible(false);
+        utilisationAllIntervalLabel.setVisible(false);
 
+        // Objednávky
         countOfFinishedOrdersLabel = new JLabel("Finished Orders : ");
         countOfAllOrdersLabel = new JLabel("All Orders : ");
-
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -367,7 +387,6 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         gbc.anchor = GridBagConstraints.WEST;
 
         // ---------- SPINNERS + LABELS ----------
-
         gbc.gridx = 0;
         gbc.gridy = 0;
         customPanel.add(countALabel, gbc);
@@ -393,59 +412,54 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         gbc.gridx = 1;
         customPanel.add(workPlaceSpinner, gbc);
 
-// ---------- STATS ----------
-
+        // ---------- FRONTY ----------
         gbc.gridx = 0;
         gbc.gridy = 5;
-        customPanel.add(queueLengthLabel1, gbc);
+        customPanel.add(queueLengthLabel1, gbc); // Cutting
 
         gbc.gridy = 6;
-        customPanel.add(queueLengthLabel2, gbc);
+        customPanel.add(queueLengthLabel2, gbc); // Staining
 
         gbc.gridy = 7;
-        customPanel.add(queueLengthLabel3, gbc);
+        customPanel.add(queueLengthLabel3, gbc); // Painting
 
         gbc.gridy = 8;
-        customPanel.add(queueLengthLabel4, gbc);
+        customPanel.add(queueLengthLabel4, gbc); // Assembly
 
         gbc.gridy = 9;
+        customPanel.add(queueLengthLabel5, gbc); // Montage
+
+        // ---------- OBJEDNÁVKY ----------
+        gbc.gridy = 10;
         customPanel.add(countOfAllOrdersLabel, gbc);
 
-        gbc.gridy = 10;
+        gbc.gridy = 11;
         customPanel.add(countOfFinishedOrdersLabel, gbc);
 
-// ---------- UTILISATIONS ----------
-
-        gbc.gridx = 0;
-        gbc.gridy = 10;
+        // ---------- UTILISATIONS ----------
+        gbc.gridy = 12;
         customPanel.add(utilisationALabel, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 11;
+        gbc.gridy = 13;
         customPanel.add(utilisationAIntervalLabel, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 12;
+        gbc.gridy = 14;
         customPanel.add(utilisationBLabel, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 13;
+        gbc.gridy = 15;
         customPanel.add(utilisationBIntervalLabel, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 14;
+        gbc.gridy = 16;
         customPanel.add(utilisationCLabel, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 15;
+        gbc.gridy = 17;
         customPanel.add(utilisationCIntervalLabel, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 16;
+        gbc.gridy = 18;
         customPanel.add(utilisationAllLabel, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 17;
+        gbc.gridy = 19;
         customPanel.add(utilisationAllIntervalLabel, gbc);
-        customPanel.add(utilisationAllIntervalLabel, gbc);
+
         customPanel.setVisible(true);
     }
+
 
 
     @Override

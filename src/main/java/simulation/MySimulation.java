@@ -3,6 +3,7 @@ package simulation;
 import Generation.Generators;
 import IDGenerator.IDGenerator;
 import OSPABA.*;
+import Observer.Subject;
 import Statistics.Average;
 import Statistics.QueueLength;
 import agents.agentokolia.*;
@@ -27,7 +28,18 @@ public class MySimulation extends Simulation
 	private final ArrayList<Furniture> furnitureArrayList;
 	private final Average partialTimeOfWork;
 	private final Average timeOfWorkAverage;
-	private final QueueLength queueLength;
+	private final QueueLength cuttingQueueLength;
+	private final QueueLength stainingQueueLength;
+	private final QueueLength paintingQueueLength;
+	private final QueueLength montageQueueLength;
+	private final QueueLength assemblyQueueLength;
+	private final Subject subject;
+
+	public ArrayList<Order> getFinishedOrders() {
+		return finishedOrders;
+	}
+
+	private final ArrayList<Order> finishedOrders;
 	private int countWorkerA;
 	private int countWorkerB;
 	private int countWorkerC;
@@ -49,7 +61,13 @@ public class MySimulation extends Simulation
 		furnitureArrayList = new ArrayList<>();
 		partialTimeOfWork = new Average();
 		timeOfWorkAverage = new Average();
-		queueLength = new QueueLength();
+		cuttingQueueLength = new QueueLength();
+		stainingQueueLength = new QueueLength();
+		paintingQueueLength = new QueueLength();
+		montageQueueLength = new QueueLength();
+		finishedOrders = new ArrayList<>();
+		subject = new Subject();
+		assemblyQueueLength = new QueueLength();
 		workersAArrayList = new ArrayList<>();
 		workersBArrayList = new ArrayList<>();
 		workersCArrayList = new ArrayList<>();
@@ -74,7 +92,11 @@ public class MySimulation extends Simulation
 		furnitureArrayList.clear();
 		partialTimeOfWork.clear();
 		timeOfWorkAverage.clear();
-		queueLength.clear();
+		stainingQueueLength.clear();
+		paintingQueueLength.clear();
+		montageQueueLength.clear();
+		assemblyQueueLength.clear();
+		finishedOrders.clear();
 		workersAArrayList.clear();
 		workersBArrayList.clear();
 		workersCArrayList.clear();
@@ -93,30 +115,7 @@ public class MySimulation extends Simulation
 			workPlacesArrayList.add(new WorkPlace());
 		}
 
-		/*System.out.println("Worker A: " + workersAArrayList.size());
-		System.out.println("Worker B: " + workersBArrayList.size());
-		System.out.println("Worker C: " + workersCArrayList.size());
-		System.out.println("Worker Places: " + workPlacesArrayList.size());
-*/
 		super.prepareReplication();
-
-		/*System.out.println("🟡 Počet správ vo frontoch agentov:");
-		System.out.println("AgentModelu: " + agentModelu().allMessageCount());
-
-		System.out.println("🟡 Počet správ vo frontoch agentov:");
-		System.out.println("AgentModelu: " + agentModelu().allMessageCount());
-		System.out.println("AgentOkolia: " + agentOkolia().allMessageCount());
-		System.out.println("AgentNabytku: " + agentNabytku().allMessageCount());
-		System.out.println("AgentCinnosti: " + agentCinnosti().allMessageCount());
-		System.out.println("AgentSkladu: " + agentSkladu().allMessageCount());
-		System.out.println("AgentPracovisk: " + agentPracovisk().allMessageCount());
-		System.out.println("AgentPohybu: " + agentPohybu().allMessageCount());
-		System.out.println("AgentPracovnikov: " + agentPracovnikov().allMessageCount());
-		System.out.println("AgentPracovnikovA: " + agentPracovnikovA().allMessageCount());
-		System.out.println("AgentPracovnikovB: " + agentPracovnikovB().allMessageCount());
-		System.out.println("AgentPracovnikovC: " + agentPracovnikovC().allMessageCount());
-		*/
-
 		// Reset entities, queues, local statistics, etc...
 	}
 
@@ -125,7 +124,11 @@ public class MySimulation extends Simulation
 	{
 		actualRepCount++;
 		System.out.println("Rep count : " + actualRepCount);
+		for(ISimDelegate delegate : this.delegates()) {
+			delegate.refresh(this);
+		}
 		// Collect local statistics into global, update UI, etc...
+
 		super.replicationFinished();
 	}
 
@@ -261,9 +264,6 @@ public AgentPracovnikovB agentPracovnikovB()
 		return timeOfWorkAverage;
 	}
 
-    public QueueLength getQueueLength() {
-        return queueLength;
-    }
 
     public int getCountWorkerA() {
         return countWorkerA;
@@ -297,7 +297,27 @@ public AgentPracovnikovB agentPracovnikovB()
         this.slowMode = slowMode;
     }
 
-    public int getWorkPlacesCount() {
+	public QueueLength getStainingQueueLength() {
+		return stainingQueueLength;
+	}
+
+	public QueueLength getPaintingQueueLength() {
+		return paintingQueueLength;
+	}
+
+	public QueueLength getMontageQueueLength() {
+		return montageQueueLength;
+	}
+
+	public QueueLength getAssemblyQueueLength() {
+		return assemblyQueueLength;
+	}
+
+	public int getActualRepCount() {
+		return actualRepCount;
+	}
+
+	public int getWorkPlacesCount() {
         return workPlacesCount;
     }
 
@@ -335,6 +355,10 @@ public AgentPracovnikovB agentPracovnikovB()
 
     public void setBurnInCount(int burnInCount) {
         BurnInCount = burnInCount;
+    }
+
+    public QueueLength getCuttingQueueLength() {
+        return cuttingQueueLength;
     }
 
 

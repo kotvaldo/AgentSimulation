@@ -62,18 +62,29 @@ public class ManagerPracovisk extends Manager {
     public void processInit(MessageForm message) {
     }
 
-    //meta! sender="AgentNabytku", id="207", type="Notice"
     public void processNoticeUvolniPracovneMiesto(MessageForm message) {
         MyMessage myMessage = (MyMessage) message.createCopy();
 
         WorkPlace wp = myMessage.getWorkPlace();
+
+       /* System.out.println("Uvoľňujem pracovisko ID: " + wp.getId() +
+                " | Názov: " + wp.getId() +
+                " | Aktuálny stav: " + wp.getState() +
+                " | Nábytok: " + (wp.getFurniture() != null ? wp.getFurniture().getId() : "null"));*/
+
         wp.setState(WorkPlaceStateValues.NOT_WORKING.getValue());
         wp.setFurniture(null);
 
-        myMessage.getFurniture().setWorkPlace(null);
+        if (myMessage.getFurniture() != null) {
+            //System.out.println("Odstraňujem väzbu s nábytkom ID: " + myMessage.getFurniture().getId());
+            myMessage.getFurniture().setWorkPlace(null);
+        }
 
         freeWorkPlaces.add(wp);
+
+        //System.out.println("Pracovisko ID: " + wp.getId() + " bolo pridané späť medzi voľné pracoviská.\n");
     }
+
 
 
     // meta! jednotlivé požiadavky na pracoviská

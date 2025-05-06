@@ -1,6 +1,7 @@
 package agents.agentmodelu;
 
 import OSPABA.*;
+import entities.Order;
 import simulation.*;
 
 //meta! id="1"
@@ -32,7 +33,11 @@ public class ManagerModelu extends Manager
 	//meta! sender="AgentNabytku", id="153", type="Notice"
 	public void processNoticeHotovaObjednavka(MessageForm message)
 	{
-
+		MyMessage msg = (MyMessage) message.createCopy();
+		MySimulation mySimulation = (MySimulation) mySim();
+		Order order	= msg.getFurniture().getOrder();
+		mySimulation.getFinishedOrders().add(order);
+		order.setEndTime(mySimulation.currentTime());
 	}
 
 	//meta! sender="AgentOkolia", id="328", type="Notice"

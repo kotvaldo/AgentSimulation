@@ -93,6 +93,8 @@ public class ManagerPracovnikovA extends OSPABA.Manager {
         if (worker != null) {
             worker.setState(WorkerBussyState.NON_BUSY.getValue());
             freeWorkers.addLast(worker);
+            /*System.out.println("Uvoľnený WorkerA ID: " + worker.getId());
+            System.out.println("Je volnych> " + freeWorkers.size() + " pracovnikovA");*/
         }
     }
 

@@ -3,17 +3,55 @@ package entities;
 import OSPDataStruct.SimQueue;
 import Statistics.TimeWeightedStatistic;
 import simulation.MyMessage;
+import simulation.MySimulation;
+
+import java.util.function.Predicate;
 
 public class Queue {
     private final SimQueue<MyMessage> queue;
-    private final TimeWeightedStatistic queueLength;
+    protected TimeWeightedStatistic queueLength;
+    protected MySimulation mySimulation;
 
-
-    public Queue(TimeWeightedStatistic queueLength) {
-        this.queueLength = queueLength;
+    public Queue(MySimulation mySimulation) {
         this.queue = new SimQueue<>();
+        this.queueLength = new TimeWeightedStatistic();
+        this.mySimulation = mySimulation;
     }
 
+    public void add(MyMessage myMessage) {
+        queue.add(myMessage);
+        queueLength.recordChange(mySimulation.currentTime(), queue.size());
+    }
+
+    public void addLast(MyMessage myMessage) {
+        queue.addLast(myMessage);
+        queueLength.recordChange(mySimulation.currentTime(), queue.size());
+    }
+
+    public MyMessage removeFirst() {
+        MyMessage removed = queue.removeFirst();
+        queueLength.recordChange(mySimulation.currentTime(), queue.size());
+        return removed;
+    }
+
+    public boolean removeIf(Predicate<? super MyMessage> filter) {
+        boolean removed = queue.removeIf(filter);
+        if (removed) {
+            queueLength.recordChange(mySimulation.currentTime(), queue.size());
+        }
+        return removed;
+    }
+
+    public void clear() {
+        if (!queue.isEmpty()) {
+            queue.clear();
+            queueLength.clear();
+        }
+    }
+
+    public boolean isEmpty() {
+        return queue.isEmpty();
+    }
 
     public SimQueue<MyMessage> getQueue() {
         return queue;
@@ -21,5 +59,9 @@ public class Queue {
 
     public TimeWeightedStatistic getQueueLength() {
         return queueLength;
+    }
+
+    public void clearStatistics() {
+        this.queueLength.clear();
     }
 }

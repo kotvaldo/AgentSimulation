@@ -13,12 +13,26 @@ public class Furniture {
 
     private double startTimeCuttingQueue;
     private double endTimeCuttingQueue;
-    private double startTimeColoringQueue;
-    private double endTimeColoringQueue;
+    private double startTimeStainingQueue;
+    private double endTimeStainingQueue;
+    private double startTimePaintingQueue;
+    private double endTimePaintingQueue;
     private double startTimeAssemblyQueue;
     private double endTimeAssemblyQueue;
     private double startTimeMontageQueue;
     private double endTimeMontageQueue;
+
+    private double startTimeCutting;
+    private double endTimeCutting;
+    private double startTimeStaining;
+    private double endTimeStaining;
+    private double startTimePainting;
+    private double endTimePainting;
+    private double startTimeAssembly;
+    private double endTimeAssembly;
+    private double startTimeMontage;
+    private double endTimeMontage;
+
 
     public Furniture(int type, Order order) {
         this.id = IDGenerator.getInstance().getNextFurnitureId();
@@ -45,6 +59,9 @@ public class Furniture {
 
     public void setState(int state) {
         this.state = state;
+        if(this.workPlace != null) {
+            this.workPlace.setActivity(FurnitureStateValues.getNameByValue(state));
+        }
     }
 
     public double getStartTimeCuttingQueue() {
@@ -66,20 +83,20 @@ public class Furniture {
         this.endTimeCuttingQueue = endTimeCuttingQueue;
     }
 
-    public double getStartTimeColoringQueue() {
-        return startTimeColoringQueue;
+    public double getStartTimeStainingQueue() {
+        return startTimeStainingQueue;
     }
 
-    public void setStartTimeColoringQueue(double startTimeColoringQueue) {
-        this.startTimeColoringQueue = startTimeColoringQueue;
+    public void setStartTimeStainingQueue(double startTimeStainingQueue) {
+        this.startTimeStainingQueue = startTimeStainingQueue;
     }
 
-    public double getEndTimeColoringQueue() {
-        return endTimeColoringQueue;
+    public double getEndTimeStainingQueue() {
+        return endTimeStainingQueue;
     }
 
-    public void setEndTimeColoringQueue(double endTimeColoringQueue) {
-        this.endTimeColoringQueue = endTimeColoringQueue;
+    public void setEndTimeStainingQueue(double endTimeStainingQueue) {
+        this.endTimeStainingQueue = endTimeStainingQueue;
     }
 
     public double getStartTimeAssemblyQueue() {
@@ -127,4 +144,99 @@ public class Furniture {
     }
 
 
+    public double getStartTimePaintingQueue() {
+        return startTimePaintingQueue;
+    }
+
+    public void setStartTimePaintingQueue(double startTimePaintingQueue) {
+        this.startTimePaintingQueue = startTimePaintingQueue;
+    }
+
+    public double getEndTimePaintingQueue() {
+        return endTimePaintingQueue;
+    }
+
+    public void setEndTimePaintingQueue(double endTimePaintingQueue) {
+        this.endTimePaintingQueue = endTimePaintingQueue;
+    }
+
+    public double getStartTimeCutting() {
+        return startTimeCutting;
+    }
+
+    public void setStartTimeCutting(double startTimeCutting) {
+        this.startTimeCutting = startTimeCutting;
+    }
+
+    public double getEndTimeCutting() {
+        return endTimeCutting;
+    }
+
+    public void setEndTimeCutting(double endTimeCutting) {
+        this.endTimeCutting = endTimeCutting;
+    }
+
+    public double getStartTimeStaining() {
+        return startTimeStaining;
+    }
+
+    public void setStartTimeStaining(double startTimeStaining) {
+        this.startTimeStaining = startTimeStaining;
+    }
+
+    public double getEndTimeStaining() {
+        return endTimeStaining;
+    }
+
+    public void setEndTimeStaining(double endTimeStaining) {
+        this.endTimeStaining = endTimeStaining;
+    }
+
+    public double getStartTimePainting() {
+        return startTimePainting;
+    }
+
+    public void setStartTimePainting(double startTimePainting) {
+        this.startTimePainting = startTimePainting;
+    }
+
+    public double getEndTimePainting() {
+        return endTimePainting;
+    }
+
+    public void setEndTimePainting(double endTimePainting) {
+        this.endTimePainting = endTimePainting;
+    }
+
+    public double getStartTimeAssembly() {
+        return startTimeAssembly;
+    }
+
+    public void setStartTimeAssembly(double startTimeAssembly) {
+        this.startTimeAssembly = startTimeAssembly;
+    }
+
+    public double getEndTimeAssembly() {
+        return endTimeAssembly;
+    }
+
+    public void setEndTimeAssembly(double endTimeAssembly) {
+        this.endTimeAssembly = endTimeAssembly;
+    }
+
+    public double getStartTimeMontage() {
+        return startTimeMontage;
+    }
+
+    public void setStartTimeMontage(double startTimeMontage) {
+        this.startTimeMontage = startTimeMontage;
+    }
+
+    public double getEndTimeMontage() {
+        return endTimeMontage;
+    }
+
+    public void setEndTimeMontage(double endTimeMontage) {
+        this.endTimeMontage = endTimeMontage;
+    }
 }

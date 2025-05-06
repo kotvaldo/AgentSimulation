@@ -13,17 +13,38 @@ public class ManagerNabytku extends Manager {
     private final QueueStaining queueStaining;
     private final QueueAssembly queueAssembly;
     private final QueueMontage queueMontage;
+
+    public QueueNonProcessed getQueueNonProcessed() {
+        return queueNonProcessed;
+    }
+
+    public QueueStaining getQueueStaining() {
+        return queueStaining;
+    }
+
+    public QueueAssembly getQueueAssembly() {
+        return queueAssembly;
+    }
+
+    public QueueMontage getQueueMontage() {
+        return queueMontage;
+    }
+
+    public QueuePainting getQueuePainting() {
+        return queuePainting;
+    }
+
     private final QueuePainting queuePainting;
 
     public ManagerNabytku(int id, Simulation mySim, Agent myAgent) {
         super(id, mySim, myAgent);
         init();
-        queueNonProcessed = new QueueNonProcessed(null);
-        queueStaining = new QueueStaining(null);
-        queueAssembly = new QueueAssembly(null);
-        queueMontage = new QueueMontage(null);
-        queuePainting = new QueuePainting(null);
-
+        MySimulation mySimulation = (MySimulation) mySim;
+        queueNonProcessed = new QueueNonProcessed(mySimulation);
+        queueStaining = new QueueStaining(mySimulation);
+        queueAssembly = new QueueAssembly(mySimulation);
+        queueMontage = new QueueMontage(mySimulation);
+        queuePainting = new QueuePainting(mySimulation);
     }
 
     @Override
@@ -34,11 +55,11 @@ public class ManagerNabytku extends Manager {
         if (petriNet() != null) {
             petriNet().clear();
         }
-        queueNonProcessed.getQueue().clear();
-        queueStaining.getQueue().clear();
-        queueAssembly.getQueue().clear();
-        queueMontage.getQueue().clear();
-        queuePainting.getQueue().clear();
+        queueNonProcessed.clear();
+        queueStaining.clear();
+        queueAssembly.clear();
+        queueMontage.clear();
+        queuePainting.clear();
     }
 
 
@@ -61,11 +82,15 @@ public class ManagerNabytku extends Manager {
             furnitureMsg.setWorkerForCutting(null);
             furnitureMsg.setWorkerForAssembly(null);
             furnitureMsg.setWorkerForMontage(null);
-            this.queueNonProcessed.getQueue().addLast(furnitureMsg);
+            this.queueNonProcessed.addLast(furnitureMsg);
             //System.out.println(queueNonProcessed.getQueue());
         }
-        System.out.println(queueNonProcessed.getQueue().size());
-        checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
+        //System.out.println(queueNonProcessed.getQueue().size());
+        this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
+        this.checkAllItemsQueue(queueStaining, OperationType.STAINING);
+        this.checkAllItemsQueue(queuePainting, OperationType.PAINTING);
+        this.checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
+        this.checkAllItemsQueue(queueAssembly, OperationType.ASSEMBLY);
 
     }
 
@@ -103,36 +128,50 @@ public class ManagerNabytku extends Manager {
             return;
         }
         if (msg.getWorkerForCutting() != null && msg.getWorkPlace() != null) {
+            //System.out.println("mam pracovnika na rezanie a aj workplace");
             handleCompleteCuttingPreparation(msg, queueNonProcessed);
+
         }
 
     }
 
     private void handleCompleteCuttingPreparation(MyMessage msg, Queue queue) {
+        /*System.out.println("=== [handleCompleteCuttingPreparation] ===");
+        System.out.println("Furniture ID: " + msg.getFurniture().getId());
+        System.out.println("Assigned WorkPlace ID: " + (msg.getWorkPlace() != null ? msg.getWorkPlace().getId() : "null"));
+        System.out.println("Assigned Worker ID: " + (msg.getWorkerForCutting() != null ? msg.getWorkerForCutting().getId() : "null"));*/
+
         msg.getWorkPlace().setState(WorkPlaceStateValues.ASSIGNED.getValue());
         msg.getFurniture().setWorkPlace(msg.getWorkPlace());
         msg.getWorkPlace().setFurniture(msg.getFurniture());
 
-        queue.getQueue().removeIf(m -> m.equals(msg));
+        boolean removed = queue.removeIf(m -> m.equals(msg));
+        /*System.out.println("Removed from queue: " + removed);
+        System.out.println("Queue size after removal: " + queue.getQueue().size());*/
 
         if (msg.getWorkerForCutting().getCurrentWorkPlace() != null) {
+            /*System.out.println("Worker has current workplace → bude presun do skladu.");*/
             msg.setCode(Mc.rPresunDoSkladu);
             msg.setAddressee(mySim().findAgent(Id.agentPohybu));
             msg.getWorkerForCutting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
         } else {
+           /* System.out.println("Worker nemá current workplace → ide sa rovno do prípravy v sklade.");*/
             msg.setCode(Mc.rPripravVSklade);
             msg.setAddressee(mySim().findAgent(Id.agentSkladu));
             msg.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
         }
 
+       /* System.out.println("Odosielam request s kódom: " + msg.code());
+        System.out.println("===========================================");*/
         request(msg);
     }
 
+
     private void handleCompletePreparation(MyMessage msg, Queue queue, OperationType type) {
 
-        queue.getQueue().removeIf(m -> m.equals(msg));
+        queue.removeIf(m -> m.equals(msg));
 
-        WorkPlace current = switch (type) {
+        WorkPlace currentWorkerWorkPlace = switch (type) {
             case STAINING -> msg.getWorkerForStaining().getCurrentWorkPlace();
             case PAINTING -> msg.getWorkerForPainting().getCurrentWorkPlace();
             case ASSEMBLY -> msg.getWorkerForAssembly().getCurrentWorkPlace();
@@ -140,7 +179,7 @@ public class ManagerNabytku extends Manager {
             default -> throw new IllegalArgumentException("Unsupported type in handleCompletePreparation");
         };
 
-        if (current != null && current.equals(msg.getWorkPlace())) {
+        if (currentWorkerWorkPlace != null && currentWorkerWorkPlace.equals(msg.getWorkPlace())) {
             msg.setCode(switch (type) {
                 case STAINING -> Mc.rUrobMorenie;
                 case PAINTING -> Mc.rUrobLakovanie;
@@ -149,7 +188,7 @@ public class ManagerNabytku extends Manager {
                 default -> throw new IllegalArgumentException("Unsupported type in rUrob");
             });
             msg.setAddressee(mySim().findAgent(Id.agentCinnosti));
-        } else if (current == null) {
+        } else if (currentWorkerWorkPlace == null) {
             msg.setCode(Mc.rPresunZoSkladu);
             msg.setAddressee(mySim().findAgent(Id.agentPohybu));
             setWorkerState(msg, type, WorkerBussyState.MOVING_FROM_STORAGE);
@@ -177,6 +216,7 @@ public class ManagerNabytku extends Manager {
 
 
     private void checkAllItemsQueue(Queue queue, OperationType type) {
+       // System.out.println("Kontrola fronty typu " + type + " | Počet položiek: " + queue.getQueue().size());
         Iterator<MyMessage> iterator = queue.getQueue().iterator();
         while (iterator.hasNext()) {
             MyMessage msgFromQueue = iterator.next();
@@ -290,6 +330,7 @@ public class ManagerNabytku extends Manager {
 
     private void setWorkerState(MyMessage msg, OperationType type, WorkerBussyState state) {
         switch (type) {
+
             case CUTTING -> msg.getWorkerForCutting().setState(state.getValue());
             case STAINING -> msg.getWorkerForStaining().setState(state.getValue());
             case PAINTING -> msg.getWorkerForPainting().setState(state.getValue());
@@ -574,22 +615,22 @@ public class ManagerNabytku extends Manager {
         msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_STAINING.getValue());
         msg.getWorkPlace().setActivity(null);
 
-        queueStaining.getQueue().addLast(msg);
+        queueStaining.addLast(msg);
 
         msgForReleaseWorker.setCode(Mc.noticeUvolniRezanie);
         msgForReleaseWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
         notice(msgForReleaseWorker);
 
-        if (!queueMontage.getQueue().isEmpty()) {
+        if (!queueMontage.isEmpty()) {
             checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
         }
-        if (!queueNonProcessed.getQueue().isEmpty()) {
+        if (!queueNonProcessed.isEmpty()) {
             checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
         }
-        if (!queueStaining.getQueue().isEmpty()) {
+        if (!queueStaining.isEmpty()) {
             checkAllItemsQueue(queueStaining, OperationType.STAINING);
         }
-        if (!queuePainting.getQueue().isEmpty()) {
+        if (!queuePainting.isEmpty()) {
             checkAllItemsQueue(queuePainting, OperationType.PAINTING);
         }
 
@@ -607,7 +648,7 @@ public class ManagerNabytku extends Manager {
         msg.getWorkPlace().setActivity(null);
 
         msgForReleaseWorker.setWorkerForStaining(msg.getWorkerForStaining());
-        msgForReleaseWorker.setCode(Mc.noticeUvolniC);
+        msgForReleaseWorker.setCode(Mc.noticeUvolniMorenie);
         msgForReleaseWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
         notice(msgForReleaseWorker);
 
@@ -618,19 +659,21 @@ public class ManagerNabytku extends Manager {
 
         if (rand < 0.15) {
             msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_PAINTING.getValue());
-            queuePainting.getQueue().addLast(msg);
+            queuePainting.addLast(msg);
         } else {
             msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
-            queueAssembly.getQueue().addLast(msg);
+            queueAssembly.addLast(msg);
         }
 
-        if(!queueMontage.getQueue().isEmpty()) {
+        if(!queueMontage.isEmpty()) {
             this.checkAllItemsQueue(this.queueMontage, OperationType.MONTAGE);
         }
 
-        this.checkAllItemsQueue(this.queuePainting, OperationType.PAINTING);
-
-        this.checkAllItemsQueue(this.queueAssembly, OperationType.ASSEMBLY);
+        this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
+        this.checkAllItemsQueue(queueStaining, OperationType.STAINING);
+        this.checkAllItemsQueue(queuePainting, OperationType.PAINTING);
+        this.checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
+        this.checkAllItemsQueue(queueAssembly, OperationType.ASSEMBLY);
 
 
     }
@@ -638,8 +681,49 @@ public class ManagerNabytku extends Manager {
 
     //meta! sender="AgentCinnosti", id="289", type="Response"
     public void processRUrobMontaz(MessageForm message) {
+        MyMessage msg = (MyMessage) message.createCopy();
+        MyMessage msgForRelease = new MyMessage(msg);
+        MyMessage msgForReleaseWorkPlace = new MyMessage(msg);
+
+        msg.getWorkerForMontage().setState(WorkerBussyState.NON_BUSY.getValue());
+        msg.getWorkPlace().setActualWorkingWorker(null);
+        msg.getWorkPlace().setActivity(null);
+
+        msgForRelease.setCode(Mc.noticeUvolniMontaz);
+        msgForRelease.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+        notice(msgForRelease);
+
+        msg.setWorkerForMontage(null);
+
+        msg.getFurniture().setIsDone();
+        msg.getFurniture().getWorkPlace().setFurniture(null);
+        msg.getFurniture().getWorkPlace().setState(WorkPlaceStateValues.NOT_WORKING.getValue());
+        msg.getFurniture().setWorkPlace(null);
+
+
+        msgForReleaseWorkPlace.setCode(Mc.noticeUvolniPracovneMiesto);
+        msgForReleaseWorkPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
+       // System.out.println("Uvolnujem pracovne miesto z montaze");
+        notice(msgForReleaseWorkPlace);
+
+
+        if (msg.getFurniture().getOrder().isOrderFinished()) {
+            msg.getFurniture().getOrder().setState(OrderStateValues.ORDER_DONE.getValue());
+            MyMessage orderFinishedMSG = new MyMessage(msg);
+            orderFinishedMSG.setOrder(orderFinishedMSG.getFurniture().getOrder());
+            orderFinishedMSG.setCode(Mc.noticeHotovaObjednavka);
+            orderFinishedMSG.setAddressee(mySim().findAgent(Id.agentModelu));
+            notice(orderFinishedMSG);
+        }
+
+        this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
+        this.checkAllItemsQueue(queueStaining, OperationType.STAINING);
+        this.checkAllItemsQueue(queuePainting, OperationType.PAINTING);
+        this.checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
+        this.checkAllItemsQueue(queueAssembly, OperationType.ASSEMBLY);
 
     }
+
 
 
     //meta! sender="AgentCinnosti", id="288", type="Response"
@@ -652,7 +736,7 @@ public class ManagerNabytku extends Manager {
 
         MyMessage msgForRelease = new MyMessage(msg);
         msgForRelease.setWorkerForAssembly(msg.getWorkerForAssembly());
-        msgForRelease.setCode(Mc.noticeUvolniB);
+        msgForRelease.setCode(Mc.noticeUvolniSkladanie);
         msgForRelease.setAddressee(mySim().findAgent(Id.agentPracovnikov));
         notice(msgForRelease);
 
@@ -660,7 +744,7 @@ public class ManagerNabytku extends Manager {
 
         if (msg.getFurniture().getType() == 3) {
             msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_MONTAGE.getValue());
-            queueMontage.getQueue().addLast(msg);
+            queueMontage.addLast(msg);
 
         } else {
             MyMessage msgForReleaseWorkPlace = new MyMessage(msg);
@@ -668,7 +752,7 @@ public class ManagerNabytku extends Manager {
             msg.getFurniture().getWorkPlace().setFurniture(null);
             msg.getFurniture().getWorkPlace().setState(WorkPlaceStateValues.NOT_WORKING.getValue());
             msg.getFurniture().setWorkPlace(null);
-
+            //System.out.println("Uvolnujem pracovne miesto zo skladania");
             msgForReleaseWorkPlace.setCode(Mc.noticeUvolniPracovneMiesto);
             msgForReleaseWorkPlace.setAddressee(mySim().findAgent(Id.agentPracovisk));
             notice(msgForReleaseWorkPlace);
@@ -683,11 +767,13 @@ public class ManagerNabytku extends Manager {
             }
         }
 
-        if (!queueMontage.getQueue().isEmpty()) {
+        if (!queueMontage.isEmpty()) {
             this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
         }
         this.checkAllItemsQueue(queueAssembly, OperationType.ASSEMBLY);
-
+        this.checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
+        this.checkAllItemsQueue(queuePainting, OperationType.PAINTING);
+        this.checkAllItemsQueue(queueStaining, OperationType.STAINING);
     }
 
 
@@ -702,19 +788,22 @@ public class ManagerNabytku extends Manager {
         msg.getWorkPlace().setActivity(null);
 
         msgForRelease.setWorkerForPainting(msg.getWorkerForPainting());
-        msgForRelease.setCode(Mc.noticeUvolniC);
+        msgForRelease.setCode(Mc.noticeUvolniLakovanie);
         msgForRelease.setAddressee(mySim().findAgent(Id.agentPracovnikov));
         notice(msgForRelease);
 
         msg.setWorkerForPainting(null);
 
         msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
-        queueAssembly.getQueue().addLast(msg);
+        queueAssembly.addLast(msg);
 
-        if (!queueMontage.getQueue().isEmpty()) {
+        if (!queueMontage.isEmpty()) {
             this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
         }
         this.checkAllItemsQueue(queueAssembly, OperationType.ASSEMBLY);
+        this.checkAllItemsQueue(queuePainting, OperationType.PAINTING);
+        this.checkAllItemsQueue(queueStaining, OperationType.STAINING);
+
     }
 
 
