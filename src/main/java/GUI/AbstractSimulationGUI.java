@@ -37,6 +37,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
         this.inputPanel = new JPanel();
         replicationLabel = new JLabel("Replication: ");
         burnLabel = new JLabel("Burn rep: ");
+
         burnLabel.setVisible(false);
         burnInInput.setVisible(false);
         inputPanel.add(replicationLabel);
@@ -46,15 +47,12 @@ public abstract class AbstractSimulationGUI extends JFrame {
 
         //inputPanel.add(updateFrequencyInput);
         this.setupCustomInput();
-
+        replicationsInput.setVisible(false);
         controlPanel = new JPanel();
         controlPanel.add(startButton);
         controlPanel.add(stopButton);
-
         statsPanel = new JPanel();
         statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-
-
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());

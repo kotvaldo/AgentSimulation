@@ -29,7 +29,7 @@ public class ProcesPresunNaPracovisko extends Process
 		myMessage.setCode(Mc.finish);
 		double newTime = simulation.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
 
-		if(newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.getValue()) {
+		if(newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
 			hold(newTime, myMessage);
 		}
 

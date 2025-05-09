@@ -35,7 +35,7 @@ public class ProcesPripravaVSklade extends OSPABA.Process
 		System.out.println(Utility.Utility.fromSecondsToTime(newTime + mySim().currentTime()));
 		System.out.println(msg);*/
 
-		if (newTime + mySim().currentTime() < PresetSimulationValues.END_OF_SIMULATION.getValue()) {
+		if (newTime + mySim().currentTime() < PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
 			hold(newTime, msg);
 		} else {
 			assistantFinished(msg);

@@ -19,10 +19,11 @@ public class LabelDelegate implements ISimDelegate {
 
     private final JLabel allOrdersLabel;
     private final JLabel countOfFinishedOrdersLabel;
+    private final JLabel replicationsCountLabel;
 
     public LabelDelegate(JLabel queueCutting, JLabel queueStaining, JLabel queuePainting,
                          JLabel queueAssembly, JLabel queueMontage,
-                         JLabel allOrdersLabel, JLabel countOfFinishedOrdersLabel) {
+                         JLabel allOrdersLabel, JLabel countOfFinishedOrdersLabel, JLabel replicationsCountLabel) {
         this.queueCutting = queueCutting;
         this.queueStaining = queueStaining;
         this.queuePainting = queuePainting;
@@ -30,6 +31,8 @@ public class LabelDelegate implements ISimDelegate {
         this.queueMontage = queueMontage;
         this.allOrdersLabel = allOrdersLabel;
         this.countOfFinishedOrdersLabel = countOfFinishedOrdersLabel;
+        this.replicationsCountLabel = replicationsCountLabel;
+
     }
 
 
@@ -44,16 +47,21 @@ public class LabelDelegate implements ISimDelegate {
     public void refresh(Simulation simulation) {
         MySimulation mySimulation = (MySimulation) simulation;
         ManagerNabytku managerNabytku = (ManagerNabytku) mySimulation.agentNabytku().myManager();
+        if(mySimulation.isSlowMode()) {
 
-        SwingUtilities.invokeLater(() -> {
-            queueCutting.setText("Cutting QL : " + managerNabytku.getQueueNonProcessed().getQueue().size());
-            queueStaining.setText("Staining QL : " + managerNabytku.getQueueStaining().getQueue().size());
-            queuePainting.setText("Painting QL : " + managerNabytku.getQueuePainting().getQueue().size());
-            queueAssembly.setText("Assembly QL : " + managerNabytku.getQueueAssembly().getQueue().size());
-            queueMontage.setText("Montage QL : " + managerNabytku.getQueueMontage().getQueue().size());
-            allOrdersLabel.setText("All Orders : " + mySimulation.getOrderArrayList().size());
-            countOfFinishedOrdersLabel.setText("Finished Orders : " + mySimulation.getFinishedOrders().size());
-        });
+            SwingUtilities.invokeLater(() -> {
+                queueCutting.setText("Cutting QL : " + managerNabytku.getQueueNonProcessed().getQueue().size());
+                queueStaining.setText("Staining QL : " + managerNabytku.getQueueStaining().getQueue().size());
+                queuePainting.setText("Painting QL : " + managerNabytku.getQueuePainting().getQueue().size());
+                queueAssembly.setText("Assembly QL : " + managerNabytku.getQueueAssembly().getQueue().size());
+                queueMontage.setText("Montage QL : " + managerNabytku.getQueueMontage().getQueue().size());
+                allOrdersLabel.setText("All Orders : " + mySimulation.getOrderArrayList().size());
+                countOfFinishedOrdersLabel.setText("Finished Orders : " + mySimulation.getFinishedOrders().size());
+            });
+        }
+
+         SwingUtilities.invokeLater(() -> {
+             replicationsCountLabel.setText("Replication Count : " + mySimulation.getActualRepCount());
+         });
     }
-
 }

@@ -35,7 +35,7 @@ public class ProcesRezania extends Process
 		} else if(myMessage.getFurniture().getType() == 3) {
 			newTime = simulation.getGenerators().getCuttingWardrobeDist().sample();
 		}
-		if(newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.getValue()) {
+		if(newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
 			hold(newTime, myMessage);
 		}
 	}

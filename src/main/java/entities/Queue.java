@@ -1,6 +1,7 @@
 package entities;
 
 import OSPDataStruct.SimQueue;
+import Statistics.QueueLength;
 import Statistics.TimeWeightedStatistic;
 import simulation.MyMessage;
 import simulation.MySimulation;
@@ -9,12 +10,12 @@ import java.util.function.Predicate;
 
 public class Queue {
     private final SimQueue<MyMessage> queue;
-    protected TimeWeightedStatistic queueLength;
+    protected QueueLength queueLength;
     protected MySimulation mySimulation;
 
     public Queue(MySimulation mySimulation) {
         this.queue = new SimQueue<>();
-        this.queueLength = new TimeWeightedStatistic();
+        this.queueLength = new QueueLength();
         this.mySimulation = mySimulation;
     }
 
@@ -43,11 +44,11 @@ public class Queue {
     }
 
     public void clear() {
-        if (!queue.isEmpty()) {
-            queue.clear();
-            queueLength.clear();
-        }
+        queue.clear();
+        queueLength.clear();
+        queueLength.recordChange(mySimulation.currentTime(), 0);
     }
+
 
     public boolean isEmpty() {
         return queue.isEmpty();

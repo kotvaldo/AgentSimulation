@@ -30,7 +30,7 @@ public class ProcesMontaze extends Process
 
 		double newTime = simulation.getGenerators().getMontageWardrobeDist().sample();
 
-		if (newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.getValue()) {
+		if (newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
 			hold(newTime, myMessage);
 		}
 	}

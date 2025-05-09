@@ -4,6 +4,7 @@ import Enums.PresetSimulationValues;
 import Enums.SimulationSpeedLimitValues;
 import GUI.Models.*;
 import Observer.Subject;
+import delegates.GraphDelegate;
 import delegates.LabelDelegate;
 import delegates.SimulationTimeDelegate;
 import delegates.TableDelegate;
@@ -33,6 +34,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
     private final JLabel dayCountLabel;
     private final JLabel replicationCountLabel;
     private final JCheckBox slowDownCheckBox;
+    private final JCheckBox animationCheckBox;
     private final JLabel simulationSpeedLabel;
     private JSpinner workerASpinner;
     private JSpinner workerBSpinner;
@@ -73,15 +75,21 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
     private JLabel queueLengthLabel5;
     private SimulationTimeDelegate simulationTimeDelegate;
     private TableDelegate tableDelegate;
-    private LabelDelegate slowSpeedLabelDelegate;
-
+    private final LabelDelegate slowSpeedLabelDelegate;
+    private GraphDelegate graphDelegate;
+    private JLabel workerACountValue;
+    private JLabel workerBCountValue;
+    private JLabel workerCCountValue;
+    private JLabel workplaceCountValue;
+    private JLabel replicationsCountValue;
+    private JLabel burnInValue;
     public AgentSimulationGUI() {
         super("Event Simulation");
         this.simulationSpeedLabel = new JLabel("Simulation Speed: ");
         label = new JLabel("Simulation Time : 0");
         this.replicationCountLabel = new JLabel("Replication Count : 0");
         replicationCountLabel.setVisible(true);
-        replicationsInput.setVisible(true);
+        //replicationsInput.setVisible(true);
 
 
         JPanel newOrdersPanel = new JPanel(new GridLayout(2, 1));
@@ -220,54 +228,17 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
 
         speedSlider.addChangeListener(e -> {
             SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
-            core.setSimSpeed(speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.getValue(), 1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue());
+            core.setSimSpeed(speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.asDouble(), 1.0 / PresetSimulationValues.UPDATES_PER_SECOND.asDouble());
         });
         /*  core.onReplicationWillStart(_ -> {
             core.setSimSpeed(1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue(), 1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue());
         });*/
         slowDownCheckBox = new JCheckBox("Slow Down", true);
-        slowDownCheckBox.addActionListener(e -> {
-            if (slowDownCheckBox.isSelected()) {
-                core.setSlowMode(true);
-                speedSlider.setValue(1);
-                SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(5);
-                core.setSimSpeed(
-                        speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.getValue(),
-                        1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue()
-                );
-            } else {
-                core.setMaxSimSpeed();
-                core.setSlowMode(false);
-            }
-            ordersScroll.setVisible(slowDownCheckBox.isSelected());
-            workersScroll.setVisible(slowDownCheckBox.isSelected());
-            workPlaceSroll.setVisible(slowDownCheckBox.isSelected());
-            speedSlider.setVisible(slowDownCheckBox.isSelected());
-            simulationSpeedLabel.setVisible(slowDownCheckBox.isSelected());
-            label.setVisible(slowDownCheckBox.isSelected());
-            dayCountLabel.setVisible(slowDownCheckBox.isSelected());
-            burnInInput.setVisible(!slowDownCheckBox.isSelected());
-            burnLabel.setVisible(!slowDownCheckBox.isSelected());
-            utilisationALabel.setVisible(!slowDownCheckBox.isSelected());
-            utilisationBLabel.setVisible(!slowDownCheckBox.isSelected());
-            utilisationCLabel.setVisible(!slowDownCheckBox.isSelected());
-            utilisationAllLabel.setVisible(!slowDownCheckBox.isSelected());
-            utilisationAIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
-            utilisationBIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
-            utilisationCIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
-            utilisationAllIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
-            //statisticsForSimPanel.setVisible(slowDownCheckBox.isSelected());
-            utilisationScroll.setVisible(!slowDownCheckBox.isSelected());
-            if (chartPanel != null) {
-                chartPanel.setVisible(!slowDownCheckBox.isSelected());
-            }
-            newOrdersPanel.setVisible(!slowDownCheckBox.isSelected());
-            timeOfWorkPanel.setVisible(!slowDownCheckBox.isSelected());
-
-        });
+        animationCheckBox = new JCheckBox("Animation", false);
 
         //stats
         this.statsPanel.add(slowDownCheckBox);
+        this.statsPanel.add(animationCheckBox);
         this.statsPanel.add(label);
         this.statsPanel.add(dayCountLabel);
         this.statsPanel.add(Box.createHorizontalStrut(5));
@@ -289,13 +260,67 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                 queueLengthLabel4, // Assembly
                 queueLengthLabel5, // Montage,
                 countOfAllOrdersLabel,
-                countOfFinishedOrdersLabel
+                countOfFinishedOrdersLabel,
+                replicationCountLabel
         );
+
+        GraphDelegate graphDelegate = new GraphDelegate(orderTimeSeries, intervalLower, intervalUpper, chart);
+        core.registerDelegate(graphDelegate);
         //delegates and observers
         core.registerDelegate(simulationTimeDelegate);
         core.registerDelegate(slowSpeedLabelDelegate);
         core.registerDelegate(tableDelegate);
+        slowDownCheckBox.addActionListener(e -> {
+            if (slowDownCheckBox.isSelected()) {
+                core.setSlowMode(true);
+                speedSlider.setValue(1);
+                System.out.println("SlowMode");
+                SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(5);
+                core.setSimSpeed(
+                        speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.asDouble(),
+                        1.0 / PresetSimulationValues.UPDATES_PER_SECOND.asDouble()
+                );
+                ordersTableModel.setOrders(new ArrayList<>());
+                workersTableModel.setWorkers(new ArrayList<>());
+                workPlacesTableModel.setWorkPlaces(new ArrayList<>());
+                furnitureTableModel.setFurniture(new ArrayList<>());
+            } else {
+                core.setMaxSimSpeed();
+                System.out.println("SlowMode turned off");
+                core.setSlowMode(false);
+                ordersTableModel.setOrders(new ArrayList<>());
+                workersTableModel.setWorkers(new ArrayList<>());
+                workPlacesTableModel.setWorkPlaces(new ArrayList<>());
+                furnitureTableModel.setFurniture(new ArrayList<>());
+            }
 
+            /*ordersScroll.setVisible(slowDownCheckBox.isSelected());
+            workersScroll.setVisible(slowDownCheckBox.isSelected());
+            workPlaceSroll.setVisible(slowDownCheckBox.isSelected());*/
+            speedSlider.setVisible(slowDownCheckBox.isSelected());
+            simulationSpeedLabel.setVisible(slowDownCheckBox.isSelected());
+            label.setVisible(slowDownCheckBox.isSelected());
+            dayCountLabel.setVisible(slowDownCheckBox.isSelected());
+            //burnInInput.setVisible(!slowDownCheckBox.isSelected());
+            //burnLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationALabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationBLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationCLabel.setVisible(!slowDownCheckBox.isSelected());
+            scrollPane.setVisible(slowDownCheckBox.isSelected());
+            utilisationAllLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationAIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationBIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationCIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationAllIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
+            //statisticsForSimPanel.setVisible(slowDownCheckBox.isSelected());
+            utilisationScroll.setVisible(!slowDownCheckBox.isSelected());
+            if (chartPanel != null) {
+                chartPanel.setVisible(!slowDownCheckBox.isSelected());
+            }
+            newOrdersPanel.setVisible(!slowDownCheckBox.isSelected());
+            timeOfWorkPanel.setVisible(!slowDownCheckBox.isSelected());
+
+        });
     }
 
     @Override
@@ -317,15 +342,12 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                 dataset
         );
 
-        XYPlot plot = chart.getXYPlot();
-
-        plot.getRangeAxis().setAutoRange(true);
-        plot.getDomainAxis().setAutoRange(true);
 
         chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(800, 400));
+        chartPanel.setPreferredSize(new Dimension(800, 600));
         centerPanel.add(chartPanel);
         chartPanel.setVisible(false);
+
     }
 
 
@@ -342,25 +364,57 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         customPanel.setLayout(new GridBagLayout());
         customPanel.setBorder(BorderFactory.createTitledBorder("Statistics"));
 
-        // Fronty
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+
+        // ==== KONFIGURÁCIA Z PRESET SIMULATION VALUES ====
+        workerACountValue = new JLabel("Workers A: ");
+        workerBCountValue = new JLabel("Workers B: ");
+        workerCCountValue = new JLabel("Workers C: ");
+        workplaceCountValue = new JLabel("Workplaces: ");
+        replicationsCountValue = new JLabel("Replications: ");
+        burnInValue = new JLabel("Burn-in count: ");
+
+        customPanel.add(workerACountValue, gbc);
+        customPanel.add(workerBCountValue, gbc);
+        customPanel.add(workerCCountValue, gbc);
+        customPanel.add(workplaceCountValue, gbc);
+        customPanel.add(replicationsCountValue, gbc);
+        customPanel.add(burnInValue, gbc);
+
+        // Oddeľovač
+        customPanel.add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
+
+        // ==== FRONTY ====
         queueLengthLabel1 = new JLabel("Cutting QL : ");
         queueLengthLabel2 = new JLabel("Staining QL : ");
         queueLengthLabel3 = new JLabel("Painting QL : ");
         queueLengthLabel4 = new JLabel("Assembly QL : ");
         queueLengthLabel5 = new JLabel("Montage QL : ");
 
-        // Spinnery
-        workerASpinner = new JSpinner(new SpinnerNumberModel(10, 0, 1000, 1));
-        workerBSpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
-        workerCSpinner = new JSpinner(new SpinnerNumberModel(18, 0, 1000, 1));
-        workPlaceSpinner = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 1));
+        customPanel.add(queueLengthLabel1, gbc);
+        customPanel.add(queueLengthLabel2, gbc);
+        customPanel.add(queueLengthLabel3, gbc);
+        customPanel.add(queueLengthLabel4, gbc);
+        customPanel.add(queueLengthLabel5, gbc);
 
-        // Počty pracovníkov
-        countALabel = new JLabel("Count A: ");
-        countBLabel = new JLabel("Count B: ");
-        countCLabel = new JLabel("Count C: ");
+        // Oddeľovač
+        customPanel.add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
 
-        // Využitie
+        // ==== OBJEDNÁVKY ====
+        countOfAllOrdersLabel = new JLabel("All Orders : ");
+        countOfFinishedOrdersLabel = new JLabel("Finished Orders : ");
+
+        customPanel.add(countOfAllOrdersLabel, gbc);
+        customPanel.add(countOfFinishedOrdersLabel, gbc);
+
+        // Oddeľovač
+        customPanel.add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
+
+        // ==== VYUŽITIE ====
         utilisationALabel = new JLabel("Utilisation A: ");
         utilisationAIntervalLabel = new JLabel("CI: ");
         utilisationALabel.setVisible(false);
@@ -381,88 +435,18 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         utilisationAllLabel.setVisible(false);
         utilisationAllIntervalLabel.setVisible(false);
 
-        // Objednávky
-        countOfFinishedOrdersLabel = new JLabel("Finished Orders : ");
-        countOfAllOrdersLabel = new JLabel("All Orders : ");
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-
-        // ---------- SPINNERS + LABELS ----------
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        customPanel.add(countALabel, gbc);
-        gbc.gridx = 1;
-        customPanel.add(workerASpinner, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        customPanel.add(countBLabel, gbc);
-        gbc.gridx = 1;
-        customPanel.add(workerBSpinner, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        customPanel.add(countCLabel, gbc);
-        gbc.gridx = 1;
-        customPanel.add(workerCSpinner, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        JLabel countWorkPlaceLabel = new JLabel("Count WorkPlaces: ");
-        customPanel.add(countWorkPlaceLabel, gbc);
-        gbc.gridx = 1;
-        customPanel.add(workPlaceSpinner, gbc);
-
-        // ---------- FRONTY ----------
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        customPanel.add(queueLengthLabel1, gbc); // Cutting
-
-        gbc.gridy = 6;
-        customPanel.add(queueLengthLabel2, gbc); // Staining
-
-        gbc.gridy = 7;
-        customPanel.add(queueLengthLabel3, gbc); // Painting
-
-        gbc.gridy = 8;
-        customPanel.add(queueLengthLabel4, gbc); // Assembly
-
-        gbc.gridy = 9;
-        customPanel.add(queueLengthLabel5, gbc); // Montage
-
-        // ---------- OBJEDNÁVKY ----------
-        gbc.gridy = 10;
-        customPanel.add(countOfAllOrdersLabel, gbc);
-
-        gbc.gridy = 11;
-        customPanel.add(countOfFinishedOrdersLabel, gbc);
-
-        // ---------- UTILISATIONS ----------
-        gbc.gridy = 12;
         customPanel.add(utilisationALabel, gbc);
-        gbc.gridy = 13;
         customPanel.add(utilisationAIntervalLabel, gbc);
-
-        gbc.gridy = 14;
         customPanel.add(utilisationBLabel, gbc);
-        gbc.gridy = 15;
         customPanel.add(utilisationBIntervalLabel, gbc);
-
-        gbc.gridy = 16;
         customPanel.add(utilisationCLabel, gbc);
-        gbc.gridy = 17;
         customPanel.add(utilisationCIntervalLabel, gbc);
-
-        gbc.gridy = 18;
         customPanel.add(utilisationAllLabel, gbc);
-        gbc.gridy = 19;
         customPanel.add(utilisationAllIntervalLabel, gbc);
 
         customPanel.setVisible(true);
     }
+
 
 
 
@@ -482,22 +466,45 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                     furnitureTableModel.setFurniture(new ArrayList<>());
                 });
 
-                int replicationCount = Integer.parseInt(replicationsInput.getText());
+                int workersA = PresetSimulationValues.WORKERS_A_COUNT.asInteger();
+                int workersB = PresetSimulationValues.WORKERS_B_COUNT.asInteger();
+                int workersC = PresetSimulationValues.WORKERS_C_COUNT.asInteger();
+                int workplaces = PresetSimulationValues.WORKPLACES_COUNT.asInteger();
+                int replications = PresetSimulationValues.REPLICATIONS_COUNT.asInteger();
+                int burnIn = PresetSimulationValues.BURN_IN_COUNT.asInteger();
+
+                workerACountValue.setText("Workers A: " + workersA);
+                workerBCountValue.setText("Workers B: " + workersB);
+                workerCCountValue.setText("Workers C: " + workersC);
+                workplaceCountValue.setText("Workplaces: " + workplaces);
+                replicationsCountValue.setText("Replications: " + replications);
+                burnInValue.setText("Burn-in count: " + burnIn);
+
+
+                int replicationCount = PresetSimulationValues.REPLICATIONS_COUNT.asInteger();
                 // System.out.println("replication count: " + replicationCount);
 
-                int burnInCount = 0;
+                int burnInCount = PresetSimulationValues.BURN_IN_COUNT.asInteger();
                 core.setReplicationsCount(replicationCount);
-                SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
-                core.setSimSpeed(
-                        speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.getValue(),
-                        1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue()
-                );
-
-                core.setCountWorkerA((Integer) workerASpinner.getValue());
-                core.setCountWorkerB((Integer) workerBSpinner.getValue());
-                core.setCountWorkerC((Integer) workerCSpinner.getValue());
                 core.setBurnInCount(burnInCount);
-                core.setWorkPlacesCount((Integer) workPlaceSpinner.getValue());
+
+                if(slowDownCheckBox.isSelected()) {
+                    core.setSlowMode(true);
+                    SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
+                    core.setSimSpeed(
+                            speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.asDouble(),
+                            1.0 / PresetSimulationValues.UPDATES_PER_SECOND.asDouble()
+                    );
+                } else {
+                    core.setSlowMode(false);
+                    core.setMaxSimSpeed();
+                }
+
+
+                core.setCountWorkerA(PresetSimulationValues.WORKERS_A_COUNT.asInteger());
+                core.setCountWorkerB(PresetSimulationValues.WORKERS_B_COUNT.asInteger());
+                core.setCountWorkerC(PresetSimulationValues.WORKERS_C_COUNT.asInteger());
+                core.setWorkPlacesCount(PresetSimulationValues.WORKPLACES_COUNT.asInteger());
 
                 worker = new AgentSimulationWorker();
                 worker.execute();
@@ -530,7 +537,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
     private class AgentSimulationWorker extends SwingWorker<Void, Void> {
         @Override
         protected Void doInBackground() {
-            core.simulate(core.getReplicationsCount(), PresetSimulationValues.END_OF_SIMULATION.getValue());
+            core.simulate(core.getReplicationsCount(), PresetSimulationValues.END_OF_SIMULATION.asDouble());
             return null;
         }
 

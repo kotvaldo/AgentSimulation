@@ -1,5 +1,6 @@
 package entities;
 
+import Enums.WorkerBussyState;
 import IDGenerator.IDGenerator;
 import Statistics.Utilisation;
 
@@ -71,7 +72,8 @@ public class Worker {
     public void clear() {
         furniture = null;
         currentWorkPlace = null;
-        state = 0;
+        state = WorkerBussyState.NON_BUSY.getValue();
+        utilisation.clear();
 
     }
 }

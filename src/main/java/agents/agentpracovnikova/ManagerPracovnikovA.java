@@ -44,7 +44,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		if (!freeWorkers.isEmpty()) {
 			worker = freeWorkers.removeFirst();
 		}
-		System.out.println("Free workersA in Cutting: " + freeWorkers.size());
+		//System.out.println("Free workersA in Cutting: " + freeWorkers.size());
 		if (worker != null) {
 			worker.setState(WorkerBussyState.ASSIGNED.getValue());
 			msg.setWorkerForCutting(worker);
@@ -73,7 +73,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		} else {
 			msg.setWorkerForMontage(null);
 		}
-		System.out.println("Free workersA in Montage: " + freeWorkers.size());
+		//System.out.println("Free workersA in Montage: " + freeWorkers.size());
 		msg.setCode(Mc.rVyberPracovnikaAMontaz);
 		msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
 		response(msg);
@@ -96,7 +96,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 			freeWorkers.addLast(worker);
             /*System.out.println("Uvoľnený WorkerA ID: " + worker.getId());
             System.out.println("Je volnych> " + freeWorkers.size() + " pracovnikovA");*/
-			System.out.println("Free workersA in release: " + freeWorkers.size());
+			//System.out.println("Free workersA in release: " + freeWorkers.size());
 		}
 	}
 

@@ -35,7 +35,7 @@ public class ProcesSkladania extends Process
 			default -> 0.0;
 		};
 
-		if (newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.getValue()) {
+		if (newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
 			hold(newTime, myMessage);
 		}
 	}

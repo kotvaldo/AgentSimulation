@@ -346,7 +346,7 @@ public class ManagerNabytku extends OSPABA.Manager
 
 		int freeWorkplaces = this.freeWorkplaces.size();
 
-		return Math.max(freeWorkers, freeWorkplaces);
+		return Math.min(freeWorkers, freeWorkplaces);
 	}
 
 	private void setWorkerState(MyMessage msg, OperationType type, WorkerBussyState state) {
@@ -573,7 +573,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		double rand = mySimulation.getGenerators().getRealisePaintingDist().nextDouble();
 
 		if (rand < 0.15) {
-			System.out.println("rand = " + rand);
+			//System.out.println("rand = " + rand);
 			msg.setWorkerForPainting(msg.getWorkerForStaining());
 			msg.setWorkerForStaining(null);
 			msg.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());

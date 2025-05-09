@@ -24,7 +24,7 @@ public class Order {
         this.arrivalTime = arrivalTime;
         furnitureList = new ArrayList<>();
         this.state = OrderStateValues.ORDER_NEW.getValue();
-        this.endTime = 0.0;
+        this.endTime = -1;
         this.timeOfWorkAverage = timeOfWorkAverage;
     }
 
