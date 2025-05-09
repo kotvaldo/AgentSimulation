@@ -111,10 +111,6 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         core = new MySimulation();
         dayCountLabel = new JLabel("Day : 0");
         //callback UI refresh
-        core.onRefreshUI(core -> {
-
-            subject.notifyObservers();
-        });
 
         core.onSimulationDidFinish(sim -> {
             System.out.println("Simulácia skončila!");
@@ -131,8 +127,6 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                 core.pauseSimulation();
                 paused = true;
             }
-
-
 
         });
         core.setSlowMode(true);

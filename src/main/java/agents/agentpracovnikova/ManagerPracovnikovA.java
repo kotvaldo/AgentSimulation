@@ -31,7 +31,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		freeWorkers = new LinkedList<>();
 
 		for (WorkerA worker : sim.getWorkersAArrayList()) {
-			worker.setState(WorkerBussyState.NON_BUSY.getValue());
+			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 			freeWorkers.add(worker);
 		}
 	}
@@ -46,7 +46,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		}
 		//System.out.println("Free workersA in Cutting: " + freeWorkers.size());
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue());
+			worker.setState(WorkerBussyState.ASSIGNED.getValue(), mySim().currentTime());
 			msg.setWorkerForCutting(worker);
 		} else {
 			msg.setWorkerForCutting(null);
@@ -68,7 +68,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		}
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue());
+			worker.setState(WorkerBussyState.ASSIGNED.getValue(), mySim().currentTime());
 			msg.setWorkerForMontage(worker);
 		} else {
 			msg.setWorkerForMontage(null);
@@ -92,7 +92,7 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		}
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.NON_BUSY.getValue());
+			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 			freeWorkers.addLast(worker);
             /*System.out.println("Uvoľnený WorkerA ID: " + worker.getId());
             System.out.println("Je volnych> " + freeWorkers.size() + " pracovnikovA");*/

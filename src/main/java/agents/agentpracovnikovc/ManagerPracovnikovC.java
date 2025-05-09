@@ -32,7 +32,7 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 		freeWorkers = new LinkedList<>();
 
 		for (WorkerC worker : sim.getWorkersCArrayList()) {
-			worker.setState(WorkerBussyState.NON_BUSY.getValue());
+			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 			freeWorkers.add(worker);
 		}
 	}
@@ -47,7 +47,7 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 		}
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue());
+			worker.setState(WorkerBussyState.ASSIGNED.getValue(), mySim().currentTime());
 			msg.setWorkerForMontage(worker);
 		} else {
 			msg.setWorkerForMontage(null);
@@ -69,7 +69,7 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 		}
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue());
+			worker.setState(WorkerBussyState.ASSIGNED.getValue(), mySim().currentTime());
 			msg.setWorkerForStaining(worker);
 		} else {
 			msg.setWorkerForStaining(null);
@@ -91,7 +91,7 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 		}
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue());
+			worker.setState(WorkerBussyState.ASSIGNED.getValue(), mySim().currentTime());
 			msg.setWorkerForPainting(worker);
 		} else {
 			msg.setWorkerForPainting(null);
@@ -117,7 +117,7 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 		}
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.NON_BUSY.getValue());
+			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 			freeWorkers.addLast(worker);
 		}
 	}

@@ -32,7 +32,16 @@ public class MySimulation extends Simulation {
     private final Average paintingQueueLengthAverage;
     private final Average montageQueueLengthAverage;
     private final Average assemblyQueueLengthAverage;
-    private final Subject subject;
+    private final ArrayList<Average> workersAUtilisationAverage;
+    private final ArrayList<Average> workersBUtilisationAverage;
+    private final ArrayList<Average> workersCUtilisationAverage;
+    private final Average finishedOrdersAverage;
+    private final Average allOrdersAverage;
+    private final Average utilisationAll;
+    private final Average utilisationA;
+    private final Average utilisationB;
+    private final Average utilisationC;
+
 
     public ArrayList<Order> getFinishedOrders() {
         return finishedOrders;
@@ -58,14 +67,23 @@ public class MySimulation extends Simulation {
         this.generators = new Generators();
         orderArrayList = new ArrayList<>();
         furnitureArrayList = new ArrayList<>();
+        utilisationAll = new Average();
+        utilisationA = new Average();
+        utilisationB = new Average();
+        utilisationC = new Average();
+
         partialTimeOfWork = new Average();
         timeOfWorkAverage = new Average();
         cuttingQueueLengthAverage = new Average();
         stainingQueueLengthAverage = new Average();
         paintingQueueLengthAverage = new Average();
+        allOrdersAverage = new Average();
+        finishedOrdersAverage = new Average();
         montageQueueLengthAverage = new Average();
         finishedOrders = new ArrayList<>();
-        subject = new Subject();
+        workersAUtilisationAverage = new ArrayList<>();
+        workersBUtilisationAverage = new ArrayList<>();
+        workersCUtilisationAverage = new ArrayList<>();
         assemblyQueueLengthAverage = new Average();
         workersAArrayList = new ArrayList<>();
         workersBArrayList = new ArrayList<>();
@@ -82,6 +100,9 @@ public class MySimulation extends Simulation {
         IDGenerator.getInstance().clearGenerators();
         timeOfWorkAverage.clear();
         cuttingQueueLengthAverage.clear();
+        workersAUtilisationAverage.clear();
+        workersBUtilisationAverage.clear();
+        workersCUtilisationAverage.clear();
         stainingQueueLengthAverage.clear();
         paintingQueueLengthAverage.clear();
         montageQueueLengthAverage.clear();
@@ -89,16 +110,25 @@ public class MySimulation extends Simulation {
         workersAArrayList.clear();
         workersBArrayList.clear();
         workersCArrayList.clear();
+        utilisationAll.clear();
+        utilisationA.clear();
+        utilisationB.clear();
+        utilisationC.clear();
         workPlacesArrayList.clear();
+        finishedOrdersAverage.clear();
+        allOrdersAverage.clear();
 
         for (int i = 0; i < countWorkerA; i++) {
             workersAArrayList.add(new WorkerA());
+            workersAUtilisationAverage.add(new Average());
         }
         for (int i = 0; i < countWorkerB; i++) {
             workersBArrayList.add(new WorkerB());
+            workersBUtilisationAverage.add(new Average());
         }
         for (int i = 0; i < countWorkerC; i++) {
             workersCArrayList.add(new WorkerC());
+            workersCUtilisationAverage.add(new Average());
         }
 
         for (int i = 0; i < workPlacesCount; i++) {
@@ -117,6 +147,9 @@ public class MySimulation extends Simulation {
         partialTimeOfWork.clear();
         finishedOrders.clear();
         IDGenerator.getInstance().clearGenerators();
+        for (Average avg : workersAUtilisationAverage) avg.clear();
+        for (Average avg : workersBUtilisationAverage) avg.clear();
+        for (Average avg : workersCUtilisationAverage) avg.clear();
         for (int i = 0; i < countWorkerA; i++) {
             workersAArrayList.get(i).clear();
         }
@@ -141,11 +174,64 @@ public class MySimulation extends Simulation {
         ManagerNabytku managerNabytku = (ManagerNabytku) agentNabytku().myManager();
         timeOfWorkAverage.add(partialTimeOfWork.mean());
 
+
         this.cuttingQueueLengthAverage.add(managerNabytku.getQueueNonProcessed().getQueueLength().getMean());
         this.assemblyQueueLengthAverage.add(managerNabytku.getQueueAssembly().getQueueLength().getMean());
         this.stainingQueueLengthAverage.add(managerNabytku.getQueueStaining().getQueueLength().getMean());
         this.paintingQueueLengthAverage.add(managerNabytku.getQueuePainting().getQueueLength().getMean());
         this.montageQueueLengthAverage.add(managerNabytku.getQueueMontage().getQueueLength().getMean());
+        finishedOrdersAverage.add(finishedOrders.size());
+        allOrdersAverage.add(orderArrayList.size());
+
+        for (int i = 0; i < workersAArrayList.size(); i++) {
+            double utilisation = workersAArrayList.get(i).getUtilisation().getMean();
+            workersAUtilisationAverage.get(i).add(utilisation);
+        }
+
+        for (int i = 0; i < workersBArrayList.size(); i++) {
+            double utilisation = workersBArrayList.get(i).getUtilisation().getMean();
+            workersBUtilisationAverage.get(i).add(utilisation);
+        }
+
+        for (int i = 0; i < workersCArrayList.size(); i++) {
+            double utilisation = workersCArrayList.get(i).getUtilisation().getMean();
+            workersCUtilisationAverage.get(i).add(utilisation);
+        }
+
+        // Celkový súčet všetkých vyťažeností (pre všetkých pracovníkov A, B, C)
+        double sumAll = 0;
+        double sumA = 0;
+        double sumB = 0;
+        double sumC = 0;
+
+        for (WorkerA workerA : workersAArrayList) {
+            double u = workerA.getUtilisation().getMean();
+            sumA += u;
+        }
+        for (WorkerB workerB : workersBArrayList) {
+            double u = workerB.getUtilisation().getMean();
+            sumB += u;
+        }
+        for (WorkerC workerC : workersCArrayList) {
+            double u = workerC.getUtilisation().getMean();
+            sumC += u;
+        }
+
+        int totalWorkers = workersAArrayList.size() + workersBArrayList.size() + workersCArrayList.size();
+
+        if (totalWorkers > 0) {
+            utilisationAll.add((sumA + sumB + sumC) / totalWorkers);
+        }
+        if (!workersAArrayList.isEmpty()) {
+            utilisationA.add(sumA / workersAArrayList.size());
+        }
+        if (!workersBArrayList.isEmpty()) {
+            utilisationB.add(sumB / workersBArrayList.size());
+        }
+        if (!workersCArrayList.isEmpty()) {
+            utilisationC.add(sumC / workersCArrayList.size());
+        }
+
 
         if (!slowMode) {
             for (ISimDelegate delegate : this.delegates()) {
@@ -177,7 +263,6 @@ public class MySimulation extends Simulation {
         setAgentPracovnikovC(new AgentPracovnikovC(Id.agentPracovnikovC, this, agentPracovnikov()));
         setAgentPracovnikovA(new AgentPracovnikovA(Id.agentPracovnikovA, this, agentPracovnikov()));
         setAgentPracovnikovB(new AgentPracovnikovB(Id.agentPracovnikovB, this, agentPracovnikov()));
-
     }
 
     private AgentModelu _agentModelu;
@@ -245,6 +330,18 @@ public class MySimulation extends Simulation {
     public AgentPracovnikov agentPracovnikov() {
         return _agentPracovnikov;
     }
+    public ArrayList<Average> getWorkersAUtilisationAverage() {
+        return workersAUtilisationAverage;
+    }
+
+    public ArrayList<Average> getWorkersBUtilisationAverage() {
+        return workersBUtilisationAverage;
+    }
+
+    public ArrayList<Average> getWorkersCUtilisationAverage() {
+        return workersCUtilisationAverage;
+    }
+
 
     public void setAgentPracovnikov(AgentPracovnikov agentPracovnikov) {
         _agentPracovnikov = agentPracovnikov;
@@ -349,6 +446,22 @@ public class MySimulation extends Simulation {
         return assemblyQueueLengthAverage;
     }
 
+    public Average getUtilisationAll() {
+        return utilisationAll;
+    }
+
+    public Average getUtilisationA() {
+        return utilisationA;
+    }
+
+    public Average getUtilisationB() {
+        return utilisationB;
+    }
+
+    public Average getUtilisationC() {
+        return utilisationC;
+    }
+
     public int getActualRepCount() {
         return actualRepCount;
     }
@@ -396,7 +509,5 @@ public class MySimulation extends Simulation {
     public Average getCuttingQueueLengthAverage() {
         return cuttingQueueLengthAverage;
     }
-
-
     //meta! tag="end"
 }

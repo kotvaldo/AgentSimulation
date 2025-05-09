@@ -159,12 +159,12 @@ public class ManagerNabytku extends OSPABA.Manager
 		if (msg.getWorkerForCutting().getCurrentWorkPlace() != null) {
 			msg.setCode(Mc.rPresunDoSkladu);
 			msg.setAddressee(mySim().findAgent(Id.agentPohybu));
-			msg.getWorkerForCutting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+			msg.getWorkerForCutting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue(), mySim().currentTime());
 		} else {
 
 			msg.setCode(Mc.rPripravVSklade);
 			msg.setAddressee(mySim().findAgent(Id.agentSkladu));
-			msg.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+			msg.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue(), mySim().currentTime());
 		}
 
 		request(msg);
@@ -211,7 +211,7 @@ public class ManagerNabytku extends OSPABA.Manager
 	public void processRPripravVSklade(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
 		msg.setCode(Mc.rPresunZoSkladu);
-		msg.getWorkerForCutting().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue());
+		msg.getWorkerForCutting().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue(), mySim().currentTime());
 		msg.setAddressee(_mySim.findAgent(Id.agentPohybu));
 		request(msg);
 	}
@@ -352,11 +352,11 @@ public class ManagerNabytku extends OSPABA.Manager
 	private void setWorkerState(MyMessage msg, OperationType type, WorkerBussyState state) {
 		switch (type) {
 
-			case CUTTING -> msg.getWorkerForCutting().setState(state.getValue());
-			case STAINING -> msg.getWorkerForStaining().setState(state.getValue());
-			case PAINTING -> msg.getWorkerForPainting().setState(state.getValue());
-			case ASSEMBLY -> msg.getWorkerForAssembly().setState(state.getValue());
-			case MONTAGE -> msg.getWorkerForMontage().setState(state.getValue());
+			case CUTTING -> msg.getWorkerForCutting().setState(state.getValue(), mySim().currentTime());
+			case STAINING -> msg.getWorkerForStaining().setState(state.getValue(), mySim().currentTime());
+			case PAINTING -> msg.getWorkerForPainting().setState(state.getValue(), mySim().currentTime());
+			case ASSEMBLY -> msg.getWorkerForAssembly().setState(state.getValue(), mySim().currentTime());
+			case MONTAGE -> msg.getWorkerForMontage().setState(state.getValue(), mySim().currentTime());
 		}
 	}
 	private boolean hasWorkerForType(MyMessage msg, OperationType type) {
@@ -530,7 +530,7 @@ public class ManagerNabytku extends OSPABA.Manager
 	public void processRUrobRezanie(MessageForm message) {
 
 		MyMessage msg = (MyMessage) message.createCopy();
-		msg.getWorkerForCutting().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkerForCutting().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		MyMessage msgForReleaseWorker = new MyMessage(msg);
 		//adding toQueueColoring
 		msg.getWorkPlace().setActualWorkingWorker(null);
@@ -564,7 +564,7 @@ public class ManagerNabytku extends OSPABA.Manager
 	public void processRUrobMorenie(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
 		MySimulation mySimulation = (MySimulation) _mySim;
-		msg.getWorkerForStaining().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkerForStaining().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		msg.getWorkPlace().setActualWorkingWorker(null);
 		msg.getWorkPlace().setActivity(null);
 
@@ -609,7 +609,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		MyMessage msg = (MyMessage) message.createCopy();
 		MyMessage msgForRelease = new MyMessage(msg);
 
-		msg.getWorkerForMontage().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkerForMontage().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		msg.getWorkPlace().setActualWorkingWorker(null);
 		msg.getWorkPlace().setActivity(null);
 
@@ -645,7 +645,7 @@ public class ManagerNabytku extends OSPABA.Manager
 	public void processRUrobSkladanie(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
 
-		msg.getWorkerForAssembly().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkerForAssembly().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		msg.getWorkPlace().setActualWorkingWorker(null);
 		msg.getWorkPlace().setActivity(null);
 
@@ -693,7 +693,7 @@ public class ManagerNabytku extends OSPABA.Manager
 
 		MyMessage msgForRelease = new MyMessage(msg);
 
-		msg.getWorkerForPainting().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkerForPainting().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		msg.getWorkPlace().setActualWorkingWorker(null);
 		msg.getWorkPlace().setActivity(null);
 

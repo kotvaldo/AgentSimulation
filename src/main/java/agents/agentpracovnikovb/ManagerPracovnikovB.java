@@ -31,7 +31,7 @@ public class ManagerPracovnikovB extends OSPABA.Manager
 		freeWorkers = new LinkedList<>();
 
 		for (WorkerB worker : sim.getWorkersBArrayList()) {
-			worker.setState(WorkerBussyState.NON_BUSY.getValue());
+			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 			freeWorkers.add(worker);
 		}
 	}
@@ -45,7 +45,7 @@ public class ManagerPracovnikovB extends OSPABA.Manager
 		}
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue());
+			worker.setState(WorkerBussyState.ASSIGNED.getValue(), mySim().currentTime());
 			msg.setWorkerForAssembly(worker);
 		} else {
 			msg.setWorkerForAssembly(null);
@@ -63,7 +63,7 @@ public class ManagerPracovnikovB extends OSPABA.Manager
 		WorkerB worker = (WorkerB) msg.getWorkerForAssembly();
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.NON_BUSY.getValue());
+			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 			freeWorkers.addLast(worker);
 		}
 	}

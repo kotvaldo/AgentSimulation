@@ -39,7 +39,7 @@ public class ManagerCinnosti extends Manager
 		MySimulation mySimulation = (MySimulation)mySim();
 		msg.getFurniture().setStartTimeCutting(mySimulation.currentTime());
 
-		msg.getWorkerForCutting().setState(WorkerBussyState.BUSY.getValue());
+		msg.getWorkerForCutting().setState(WorkerBussyState.BUSY.getValue(), mySim().currentTime());
 		msg.getFurniture().setState(FurnitureStateValues.CUTTING.getValue());
 		msg.getWorkPlace().setActualWorkingWorker(msg.getWorkerForCutting());
 		msg.setCode(Mc.start);
@@ -52,7 +52,7 @@ public class ManagerCinnosti extends Manager
 		MyMessage msg = (MyMessage) message.createCopy();
 		MySimulation mySimulation = (MySimulation) mySim();
 		msg.getFurniture().setStartTimeAssembly(mySimulation.currentTime());
-		msg.getWorkerForAssembly().setState(WorkerBussyState.BUSY.getValue());
+		msg.getWorkerForAssembly().setState(WorkerBussyState.BUSY.getValue(), mySim().currentTime());
 		msg.getFurniture().setState(FurnitureStateValues.ASSEMBLY.getValue());
 		msg.getWorkPlace().setActualWorkingWorker(msg.getWorkerForAssembly());
 		msg.setCode(Mc.start);
@@ -64,7 +64,7 @@ public class ManagerCinnosti extends Manager
 		MyMessage msg = (MyMessage) message.createCopy();
 		MySimulation mySimulation = (MySimulation) mySim();
 		msg.getFurniture().setStartTimeStaining(mySimulation.currentTime());
-		msg.getWorkerForStaining().setState(WorkerBussyState.BUSY.getValue());
+		msg.getWorkerForStaining().setState(WorkerBussyState.BUSY.getValue(), mySim().currentTime());
 		msg.getFurniture().setState(FurnitureStateValues.STAINING.getValue());
 		msg.getWorkPlace().setActualWorkingWorker(msg.getWorkerForStaining());
 		msg.setCode(Mc.start);
@@ -78,7 +78,7 @@ public class ManagerCinnosti extends Manager
 		MyMessage msg = (MyMessage) message.createCopy();
 		MySimulation mySimulation = (MySimulation) mySim();
 		msg.getFurniture().setStartTimeMontage(mySimulation.currentTime());
-		msg.getWorkerForMontage().setState(WorkerBussyState.BUSY.getValue());
+		msg.getWorkerForMontage().setState(WorkerBussyState.BUSY.getValue(), mySim().currentTime());
 		msg.getFurniture().setState(FurnitureStateValues.MONTAGE.getValue());
 		msg.getWorkPlace().setActualWorkingWorker(msg.getWorkerForMontage());
 		msg.setCode(Mc.start);
@@ -93,7 +93,7 @@ public class ManagerCinnosti extends Manager
 		MyMessage msg = (MyMessage) message.createCopy();
 		MySimulation mySimulation = (MySimulation) mySim();
 		msg.getFurniture().setStartTimePainting(mySimulation.currentTime());
-		msg.getWorkerForPainting().setState(WorkerBussyState.BUSY.getValue());
+		msg.getWorkerForPainting().setState(WorkerBussyState.BUSY.getValue(), mySim().currentTime());
 		msg.getFurniture().setState(FurnitureStateValues.PAINTING.getValue());
 		msg.getWorkPlace().setActualWorkingWorker(msg.getWorkerForPainting());
 		msg.setCode(Mc.start);
@@ -108,7 +108,7 @@ public class ManagerCinnosti extends Manager
 		MySimulation mySimulation = (MySimulation) mySim();
 		msg.getFurniture().setEndTimeCutting(mySimulation.currentTime());
 		msg.getWorkPlace().setActualWorkingWorker(null);
-		msg.getWorkerForCutting().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkerForCutting().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		msg.setCode(Mc.rUrobRezanie);
 		msg.setAddressee(mySim().findAgent(Id.agentNabytku));
 		response(msg);
@@ -120,7 +120,7 @@ public class ManagerCinnosti extends Manager
 		MySimulation mySimulation = (MySimulation) mySim();
 		msg.getFurniture().setEndTimeAssembly(mySimulation.currentTime());
 		msg.getWorkPlace().setActualWorkingWorker(null);
-		msg.getWorkerForAssembly().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkerForAssembly().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		msg.setCode(Mc.rUrobSkladanie);
 		msg.setAddressee(mySim().findAgent(Id.agentNabytku));
 		response(msg);
@@ -132,7 +132,7 @@ public class ManagerCinnosti extends Manager
 		MySimulation mySimulation = (MySimulation) mySim();
 		msg.getFurniture().setEndTimeStaining(mySimulation.currentTime());
 		msg.getWorkPlace().setActualWorkingWorker(null);
-		msg.getWorkerForStaining().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkerForStaining().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		msg.setCode(Mc.rUrobMorenie);
 		msg.setAddressee(mySim().findAgent(Id.agentNabytku));
 		response(msg);
@@ -144,7 +144,7 @@ public class ManagerCinnosti extends Manager
 		MySimulation mySimulation = (MySimulation) mySim();
 		msg.getFurniture().setEndTimePainting(mySimulation.currentTime());
 		msg.getWorkPlace().setActualWorkingWorker(null);
-		msg.getWorkerForPainting().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkerForPainting().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		msg.setCode(Mc.rUrobLakovanie);
 		msg.setAddressee(mySim().findAgent(Id.agentNabytku));
 		response(msg);
@@ -156,7 +156,7 @@ public class ManagerCinnosti extends Manager
 		MySimulation mySimulation = (MySimulation) mySim();
 		msg.getFurniture().setEndTimeMontage(mySimulation.currentTime());
 		msg.getWorkPlace().setActualWorkingWorker(null);
-		msg.getWorkerForMontage().setState(WorkerBussyState.NON_BUSY.getValue());
+		msg.getWorkerForMontage().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		msg.setCode(Mc.rUrobMontaz);
 		msg.setAddressee(mySim().findAgent(Id.agentNabytku));
 		response(msg);

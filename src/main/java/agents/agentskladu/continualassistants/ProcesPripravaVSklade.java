@@ -27,7 +27,7 @@ public class ProcesPripravaVSklade extends OSPABA.Process
 		MyMessage msg = (MyMessage) message.createCopy();
 
 		if (msg.getWorkerForCutting() != null) {
-			msg.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+			msg.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue(), _mySim.currentTime());
 		}
 		msg.setCode(Mc.finish);
 		double newTime = ((MySimulation) mySim()).getGenerators().getTimeSpentInStorageDist().sample();

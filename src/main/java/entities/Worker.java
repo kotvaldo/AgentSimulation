@@ -24,12 +24,25 @@ public class Worker {
         return state;
     }
 
-    public void setState(int state) {
-        this.state = state;
-        if (state == 0) {
-            furniture = null;
+    public void setState(int newState, double currentTime) {
+        int oldMappedValue = this.state == WorkerBussyState.NON_BUSY.getValue() ? 0 : 1;
+        int newMappedValue = newState == WorkerBussyState.NON_BUSY.getValue() ? 0 : 1;
+
+        if (this.state != newState) {
+            if (oldMappedValue != newMappedValue) {
+                utilisation.recordChange(currentTime, newMappedValue);
+            }
+
+            this.state = newState;
+
+            if (newState == WorkerBussyState.NON_BUSY.getValue()) {
+                furniture = null;
+            }
         }
     }
+
+
+
 
     public int getId() {
         return id;

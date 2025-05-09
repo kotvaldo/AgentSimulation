@@ -43,7 +43,7 @@ public class ManagerSkladu extends Manager
 	public void processRPripravVSklade(MessageForm message)
 	{
 		MyMessage msg = (MyMessage) message.createCopy();
-		msg.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+		msg.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue(), mySim().currentTime());
 		msg.setCode(Mc.start);
 		msg.setAddressee(myAgent().findAssistant(Id.procesPripravaVSklade));
 		startContinualAssistant(msg);
