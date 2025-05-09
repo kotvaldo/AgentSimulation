@@ -87,4 +87,11 @@ public class WorkPlace {
         WorkPlace workplace = (WorkPlace) obj;
         return id == workplace.id;
     }
+    public void clear() {
+        this.furniture = null;
+        this.actualWorkingWorker = null;
+        this.activity = "Nothing";
+        this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
+    }
+
 }

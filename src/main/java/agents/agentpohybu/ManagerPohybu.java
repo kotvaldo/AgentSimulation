@@ -43,15 +43,15 @@ public class ManagerPohybu extends Manager
 		MyMessage myMessage = (MyMessage) message.createCopy();
 		myMessage.setAddressee(myAgent().findAssistant(Id.procesPresunZoSkladu));
 		if(myMessage.getWorkerForCutting() != null) {
-			myMessage.getWorkerForCutting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+			myMessage.getWorkerForCutting().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue());
 		} else if(myMessage.getWorkerForStaining() != null) {
-			myMessage.getWorkerForStaining().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+			myMessage.getWorkerForStaining().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue());
 		} else if(myMessage.getWorkerForAssembly() != null) {
-			myMessage.getWorkerForAssembly().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+			myMessage.getWorkerForAssembly().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue());
 		} else if(myMessage.getWorkerForPainting() != null) {
-			myMessage.getWorkerForPainting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+			myMessage.getWorkerForPainting().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue());
 		} else if(myMessage.getWorkerForMontage() != null) {
-			myMessage.getWorkerForMontage().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+			myMessage.getWorkerForMontage().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue());
 		}
 
 		myMessage.setCode(Mc.start);

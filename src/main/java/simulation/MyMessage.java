@@ -92,31 +92,33 @@ public class MyMessage extends MessageForm
 			return false;
 
 		return this.getFurniture().getId() == other.getFurniture().getId();
+
 	}
 
-    public Worker getWorkerForAssembly() {
-        return workerForAssembly;
-    }
 
-    public void setWorkerForAssembly(Worker workerForAssembly) {
-        this.workerForAssembly = workerForAssembly;
-    }
+	public Worker getWorkerForAssembly() {
+		return workerForAssembly;
+	}
 
-    public Worker getWorkerForMontage() {
-        return workerForMontage;
-    }
+	public void setWorkerForAssembly(Worker workerForAssembly) {
+		this.workerForAssembly = workerForAssembly;
+	}
 
-    public void setWorkerForMontage(Worker workerForMontage) {
-        this.workerForMontage = workerForMontage;
-    }
+	public Worker getWorkerForMontage() {
+		return workerForMontage;
+	}
 
-    public Integer getType() {
-        return type;
-    }
+	public void setWorkerForMontage(Worker workerForMontage) {
+		this.workerForMontage = workerForMontage;
+	}
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 	@Override
 	public String toString() {
 		return "MyMessage{" +
@@ -131,20 +133,20 @@ public class MyMessage extends MessageForm
 	}
 
 
-    public Worker getWorkerForPainting() {
-        return workerForPainting;
-    }
+	public Worker getWorkerForPainting() {
+		return workerForPainting;
+	}
 
-    public void setWorkerForPainting(Worker workerForPainting) {
-        this.workerForPainting = workerForPainting;
-    }
+	public void setWorkerForPainting(Worker workerForPainting) {
+		this.workerForPainting = workerForPainting;
+	}
 
 
-    public Worker getWorkerForStaining() {
-        return workerForStaining;
-    }
+	public Worker getWorkerForStaining() {
+		return workerForStaining;
+	}
 
-    public void setWorkerForStaining(Worker workerForStaining) {
-        this.workerForStaining = workerForStaining;
-    }
+	public void setWorkerForStaining(Worker workerForStaining) {
+		this.workerForStaining = workerForStaining;
+	}
 }

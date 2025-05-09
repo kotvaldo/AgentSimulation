@@ -10,7 +10,8 @@ public class Furniture {
     private int state;
     private WorkPlace workPlace;
     private boolean isDone = false;
-
+    private double totalTime = -1;
+    private double startTime;
     private double startTimeCuttingQueue;
     private double endTimeCuttingQueue;
     private double startTimeStainingQueue;
@@ -22,23 +23,23 @@ public class Furniture {
     private double startTimeMontageQueue;
     private double endTimeMontageQueue;
 
-    private double startTimeCutting;
-    private double endTimeCutting;
-    private double startTimeStaining;
-    private double endTimeStaining;
-    private double startTimePainting;
-    private double endTimePainting;
-    private double startTimeAssembly;
-    private double endTimeAssembly;
-    private double startTimeMontage;
-    private double endTimeMontage;
-
+    private double startTimeCutting = -1;
+    private double endTimeCutting = -1;
+    private double startTimeStaining = -1;
+    private double endTimeStaining = -1;
+    private double startTimePainting = -1;
+    private double endTimePainting = -1;
+    private double startTimeAssembly = -1;
+    private double endTimeAssembly = -1;
+    private double startTimeMontage = -1;
+    private double endTimeMontage = -1;
 
     public Furniture(int type, Order order) {
         this.id = IDGenerator.getInstance().getNextFurnitureId();
         this.type = type;
         this.order = order;
         this.workPlace = null;
+        this.startTime = order.getArrivalTime();
     }
 
     public int getType() {
@@ -71,9 +72,10 @@ public class Furniture {
     public void setStartTimeCuttingQueue(double startTimeCuttingQueue) {
         this.startTimeCuttingQueue = startTimeCuttingQueue;
     }
-    public void setIsDone() {
+    public void setIsDone(double endTime) {
         this.isDone = true;
         this.state = FurnitureStateValues.FURNITURE_DONE.getValue();
+        this.totalTime = endTime - this.startTime;
     }
     public double getEndTimeCuttingQueue() {
         return endTimeCuttingQueue;
@@ -238,5 +240,13 @@ public class Furniture {
 
     public void setEndTimeMontage(double endTimeMontage) {
         this.endTimeMontage = endTimeMontage;
+    }
+
+    public double getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(double totalTime) {
+        this.totalTime = totalTime;
     }
 }

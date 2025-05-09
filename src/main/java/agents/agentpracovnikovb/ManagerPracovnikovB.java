@@ -11,20 +11,22 @@ import java.util.LinkedList;
 public class ManagerPracovnikovB extends OSPABA.Manager
 {
 	private LinkedList<WorkerB> freeWorkers;
-
-	public ManagerPracovnikovB(int id, Simulation mySim, Agent myAgent) {
+	public ManagerPracovnikovB(int id, Simulation mySim, Agent myAgent)
+	{
 		super(id, mySim, myAgent);
 		init();
 	}
 
 	@Override
-	public void prepareReplication() {
+	public void prepareReplication()
+	{
 		super.prepareReplication();
+		// Setup component for the next replication
 
-		if (petriNet() != null) {
+		if (petriNet() != null)
+		{
 			petriNet().clear();
 		}
-
 		MySimulation sim = (MySimulation) _mySim;
 		freeWorkers = new LinkedList<>();
 
@@ -83,12 +85,12 @@ public class ManagerPracovnikovB extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.noticeUvolniB:
-			processNoticeUvolniB(message);
-		break;
-
 		case Mc.rVyberPracovnikaBRSkladanie:
 			processRVyberPracovnikaBRSkladanie(message);
+		break;
+
+		case Mc.noticeUvolniB:
+			processNoticeUvolniB(message);
 		break;
 
 		default:

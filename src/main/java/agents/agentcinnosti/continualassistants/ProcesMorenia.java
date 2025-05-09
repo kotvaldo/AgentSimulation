@@ -7,7 +7,7 @@ import agents.agentcinnosti.*;
 import OSPABA.Process;
 
 //meta! id="278"
-public class ProcesMorenia extends OSPABA.Process
+public class ProcesMorenia extends Process
 {
 	public ProcesMorenia(int id, Simulation mySim, CommonAgent myAgent)
 	{

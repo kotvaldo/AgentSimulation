@@ -64,4 +64,20 @@ public class Queue {
     public void clearStatistics() {
         this.queueLength.clear();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Queue contents:\n");
+
+        for (MyMessage msg : queue) {
+            int furnitureId = msg.getFurniture() != null ? msg.getFurniture().getId() : -1;
+            String hasWorker = msg.getWorkerForCutting() != null ? "Worker=YES" : "Worker=NO";
+            String hasWorkPlace = msg.getWorkPlace() != null ? "WorkPlace=YES" : "WorkPlace=NO";
+
+            sb.append(String.format("FurnitureID=%d | %s | %s%n", furnitureId, hasWorker, hasWorkPlace));
+        }
+
+        return sb.toString();
+    }
+
 }

@@ -149,8 +149,9 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
 
         JTable furnitureTable = new JTable(furnitureTableModel);
-        furnitureTable.setPreferredScrollableViewportSize(new Dimension(600, 600));
+        furnitureTable.setPreferredScrollableViewportSize(new Dimension(1500, 600)); // napr. viac ako 1000
         JScrollPane furnitureSroll = new JScrollPane(furnitureTable);
+        furnitureSroll.setPreferredSize(new Dimension(1500, 300)); // rovnaká alebo väčšia šírka
 
 
         utilisationTableModel = new UtilisationTableModel(
@@ -185,6 +186,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         tablePanel.add(furnitureSroll);
 
         JScrollPane scrollPane = new JScrollPane(tablePanel);
+        scrollPane.setPreferredSize(new Dimension(1800, 600));
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 
@@ -226,6 +228,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         slowDownCheckBox = new JCheckBox("Slow Down", true);
         slowDownCheckBox.addActionListener(e -> {
             if (slowDownCheckBox.isSelected()) {
+                core.setSlowMode(true);
                 speedSlider.setValue(1);
                 SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(5);
                 core.setSimSpeed(
@@ -234,6 +237,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                 );
             } else {
                 core.setMaxSimSpeed();
+                core.setSlowMode(false);
             }
             ordersScroll.setVisible(slowDownCheckBox.isSelected());
             workersScroll.setVisible(slowDownCheckBox.isSelected());

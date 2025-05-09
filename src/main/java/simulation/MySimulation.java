@@ -1,5 +1,7 @@
 package simulation;
 
+import Enums.PresetSimulationValues;
+import Enums.SimulationSpeedLimitValues;
 import Generation.Generators;
 import IDGenerator.IDGenerator;
 import OSPABA.*;
@@ -15,10 +17,10 @@ import agents.agentpracovnikovb.*;
 import agents.agentpracovnikova.*;
 import agents.agentmodelu.*;
 import agents.agentpracovnikov.*;
-import agents.agentpracovisk.*;
 import agents.agentpracovnikovc.*;
 import entities.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class MySimulation extends Simulation
@@ -56,6 +58,7 @@ public class MySimulation extends Simulation
 
 	public MySimulation()
 	{
+		this._simEndTime = PresetSimulationValues.END_OF_SIMULATION.getValue();
 		this.generators = new Generators();
 		orderArrayList = new ArrayList<>();
 		furnitureArrayList = new ArrayList<>();
@@ -101,7 +104,7 @@ public class MySimulation extends Simulation
 		workersBArrayList.clear();
 		workersCArrayList.clear();
 		workPlacesArrayList.clear();
-
+		IDGenerator.getInstance().clearGenerators();
 		for (int i = 0; i < countWorkerA; i++) {
 			workersAArrayList.add(new WorkerA());
 		}
@@ -124,9 +127,13 @@ public class MySimulation extends Simulation
 	{
 		actualRepCount++;
 		System.out.println("Rep count : " + actualRepCount);
-		for(ISimDelegate delegate : this.delegates()) {
-			delegate.refresh(this);
+		if(!slowMode) {
+			for(ISimDelegate delegate : this.delegates()) {
+				SwingUtilities.invokeLater(() -> delegate.refresh(this));
+
+			}
 		}
+
 		// Collect local statistics into global, update UI, etc...
 
 		super.replicationFinished();
@@ -147,7 +154,6 @@ public class MySimulation extends Simulation
 		setAgentNabytku(new AgentNabytku(Id.agentNabytku, this, agentModelu()));
 		setAgentCinnosti(new AgentCinnosti(Id.agentCinnosti, this, agentNabytku()));
 		setAgentSkladu(new AgentSkladu(Id.agentSkladu, this, agentNabytku()));
-		setAgentPracovisk(new AgentPracovisk(Id.agentPracovisk, this, agentNabytku()));
 		setAgentPohybu(new AgentPohybu(Id.agentPohybu, this, agentNabytku()));
 		setAgentPracovnikov(new AgentPracovnikov(Id.agentPracovnikov, this, agentNabytku()));
 		setAgentPracovnikovC(new AgentPracovnikovC(Id.agentPracovnikovC, this, agentPracovnikov()));
@@ -158,7 +164,7 @@ public class MySimulation extends Simulation
 
 	private AgentModelu _agentModelu;
 
-public AgentModelu agentModelu()
+	public AgentModelu agentModelu()
 	{ return _agentModelu; }
 
 	public void setAgentModelu(AgentModelu agentModelu)
@@ -166,7 +172,7 @@ public AgentModelu agentModelu()
 
 	private AgentOkolia _agentOkolia;
 
-public AgentOkolia agentOkolia()
+	public AgentOkolia agentOkolia()
 	{ return _agentOkolia; }
 
 	public void setAgentOkolia(AgentOkolia agentOkolia)
@@ -174,7 +180,7 @@ public AgentOkolia agentOkolia()
 
 	private AgentNabytku _agentNabytku;
 
-public AgentNabytku agentNabytku()
+	public AgentNabytku agentNabytku()
 	{ return _agentNabytku; }
 
 	public void setAgentNabytku(AgentNabytku agentNabytku)
@@ -182,7 +188,7 @@ public AgentNabytku agentNabytku()
 
 	private AgentCinnosti _agentCinnosti;
 
-public AgentCinnosti agentCinnosti()
+	public AgentCinnosti agentCinnosti()
 	{ return _agentCinnosti; }
 
 	public void setAgentCinnosti(AgentCinnosti agentCinnosti)
@@ -190,23 +196,15 @@ public AgentCinnosti agentCinnosti()
 
 	private AgentSkladu _agentSkladu;
 
-public AgentSkladu agentSkladu()
+	public AgentSkladu agentSkladu()
 	{ return _agentSkladu; }
 
 	public void setAgentSkladu(AgentSkladu agentSkladu)
 	{_agentSkladu = agentSkladu; }
 
-	private AgentPracovisk _agentPracovisk;
-
-public AgentPracovisk agentPracovisk()
-	{ return _agentPracovisk; }
-
-	public void setAgentPracovisk(AgentPracovisk agentPracovisk)
-	{_agentPracovisk = agentPracovisk; }
-
 	private AgentPohybu _agentPohybu;
 
-public AgentPohybu agentPohybu()
+	public AgentPohybu agentPohybu()
 	{ return _agentPohybu; }
 
 	public void setAgentPohybu(AgentPohybu agentPohybu)
@@ -214,7 +212,7 @@ public AgentPohybu agentPohybu()
 
 	private AgentPracovnikov _agentPracovnikov;
 
-public AgentPracovnikov agentPracovnikov()
+	public AgentPracovnikov agentPracovnikov()
 	{ return _agentPracovnikov; }
 
 	public void setAgentPracovnikov(AgentPracovnikov agentPracovnikov)
@@ -222,7 +220,7 @@ public AgentPracovnikov agentPracovnikov()
 
 	private AgentPracovnikovC _agentPracovnikovC;
 
-public AgentPracovnikovC agentPracovnikovC()
+	public AgentPracovnikovC agentPracovnikovC()
 	{ return _agentPracovnikovC; }
 
 	public void setAgentPracovnikovC(AgentPracovnikovC agentPracovnikovC)
@@ -230,7 +228,7 @@ public AgentPracovnikovC agentPracovnikovC()
 
 	private AgentPracovnikovA _agentPracovnikovA;
 
-public AgentPracovnikovA agentPracovnikovA()
+	public AgentPracovnikovA agentPracovnikovA()
 	{ return _agentPracovnikovA; }
 
 	public void setAgentPracovnikovA(AgentPracovnikovA agentPracovnikovA)
@@ -238,7 +236,7 @@ public AgentPracovnikovA agentPracovnikovA()
 
 	private AgentPracovnikovB _agentPracovnikovB;
 
-public AgentPracovnikovB agentPracovnikovB()
+	public AgentPracovnikovB agentPracovnikovB()
 	{ return _agentPracovnikovB; }
 
 	public void setAgentPracovnikovB(AgentPracovnikovB agentPracovnikovB)
@@ -265,37 +263,37 @@ public AgentPracovnikovB agentPracovnikovB()
 	}
 
 
-    public int getCountWorkerA() {
-        return countWorkerA;
-    }
+	public int getCountWorkerA() {
+		return countWorkerA;
+	}
 
-    public void setCountWorkerA(int countWorkerA) {
-        this.countWorkerA = countWorkerA;
-    }
+	public void setCountWorkerA(int countWorkerA) {
+		this.countWorkerA = countWorkerA;
+	}
 
-    public int getCountWorkerB() {
-        return countWorkerB;
-    }
+	public int getCountWorkerB() {
+		return countWorkerB;
+	}
 
-    public void setCountWorkerB(int countWorkerB) {
-        this.countWorkerB = countWorkerB;
-    }
+	public void setCountWorkerB(int countWorkerB) {
+		this.countWorkerB = countWorkerB;
+	}
 
-    public int getCountWorkerC() {
-        return countWorkerC;
-    }
+	public int getCountWorkerC() {
+		return countWorkerC;
+	}
 
-    public void setCountWorkerC(int countWorkerC) {
-        this.countWorkerC = countWorkerC;
-    }
+	public void setCountWorkerC(int countWorkerC) {
+		this.countWorkerC = countWorkerC;
+	}
 
-    public boolean isSlowMode() {
-        return slowMode;
-    }
+	public boolean isSlowMode() {
+		return slowMode;
+	}
 
-    public void setSlowMode(boolean slowMode) {
-        this.slowMode = slowMode;
-    }
+	public void setSlowMode(boolean slowMode) {
+		this.slowMode = slowMode;
+	}
 
 	public QueueLength getStainingQueueLength() {
 		return stainingQueueLength;
@@ -318,49 +316,49 @@ public AgentPracovnikovB agentPracovnikovB()
 	}
 
 	public int getWorkPlacesCount() {
-        return workPlacesCount;
-    }
+		return workPlacesCount;
+	}
 
-    public void setWorkPlacesCount(int workPlacesCount) {
-        this.workPlacesCount = workPlacesCount;
-    }
+	public void setWorkPlacesCount(int workPlacesCount) {
+		this.workPlacesCount = workPlacesCount;
+	}
 
-    public ArrayList<WorkPlace> getWorkPlacesArrayList() {
-        return workPlacesArrayList;
-    }
+	public ArrayList<WorkPlace> getWorkPlacesArrayList() {
+		return workPlacesArrayList;
+	}
 
-    public ArrayList<WorkerC> getWorkersCArrayList() {
-        return workersCArrayList;
-    }
+	public ArrayList<WorkerC> getWorkersCArrayList() {
+		return workersCArrayList;
+	}
 
-    public ArrayList<WorkerB> getWorkersBArrayList() {
-        return workersBArrayList;
-    }
+	public ArrayList<WorkerB> getWorkersBArrayList() {
+		return workersBArrayList;
+	}
 
-    public ArrayList<WorkerA> getWorkersAArrayList() {
-        return workersAArrayList;
-    }
+	public ArrayList<WorkerA> getWorkersAArrayList() {
+		return workersAArrayList;
+	}
 
-    public int getReplicationsCount() {
-        return replicationsCount;
-    }
+	public int getReplicationsCount() {
+		return replicationsCount;
+	}
 
-    public void setReplicationsCount(int replicationsCount) {
-        this.replicationsCount = replicationsCount;
-    }
+	public void setReplicationsCount(int replicationsCount) {
+		this.replicationsCount = replicationsCount;
+	}
 
-    public int getBurnInCount() {
-        return BurnInCount;
-    }
+	public int getBurnInCount() {
+		return BurnInCount;
+	}
 
-    public void setBurnInCount(int burnInCount) {
-        BurnInCount = burnInCount;
-    }
+	public void setBurnInCount(int burnInCount) {
+		BurnInCount = burnInCount;
+	}
 
-    public QueueLength getCuttingQueueLength() {
-        return cuttingQueueLength;
-    }
+	public QueueLength getCuttingQueueLength() {
+		return cuttingQueueLength;
+	}
 
 
-    //meta! tag="end"
+	//meta! tag="end"
 }

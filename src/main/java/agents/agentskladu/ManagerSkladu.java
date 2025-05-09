@@ -5,7 +5,7 @@ import OSPABA.*;
 import simulation.*;
 
 //meta! id="118"
-public class ManagerSkladu extends OSPABA.Manager
+public class ManagerSkladu extends Manager
 {
 	public ManagerSkladu(int id, Simulation mySim, Agent myAgent)
 	{

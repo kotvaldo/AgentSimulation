@@ -5,7 +5,7 @@ import simulation.*;
 import agents.agentskladu.continualassistants.*;
 
 //meta! id="118"
-public class AgentSkladu extends OSPABA.Agent
+public class AgentSkladu extends Agent
 {
 	public AgentSkladu(int id, Simulation mySim, Agent parent)
 	{
