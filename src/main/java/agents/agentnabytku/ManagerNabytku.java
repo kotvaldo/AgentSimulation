@@ -79,6 +79,40 @@ public class ManagerNabytku extends OSPABA.Manager
 	}
 
 
+
+	public void tryToReassignWorkerA(WorkerA worker) {
+		if(!queueMontage.isEmpty()) {
+			MyMessage myMessage = queueMontage.getFirst();
+			myMessage.setWorkerForMontage(worker);
+			sendToMontage(myMessage);
+			return;
+		}
+		if(!queueNonProcessed.isEmpty()) {
+			MyMessage myMessage = queueNonProcessed.getFirst();
+			myMessage.setWorkerForCutting(worker);
+			WorkPlace wp = tryAssignFreeWorkplace();
+			if(wp == null) {
+				return;
+			}
+			myMessage.setWorkPlace(wp);
+			sendToCutting(myMessage);
+			return;
+		}
+
+		MyMessage returnWorkerA = new MyMessage(mySim());
+		returnWorkerA.setWorkerForCutting(worker);
+		returnWorkerA.setAddressee(Id.agentPracovnikov);
+		returnWorkerA.setCode(Mc.noticeUvolniRezanie);
+
+	}
+	public void tryToReassignWorkerB(WorkerB worker) {
+
+	}
+
+	public void tryToReassignWorkerC(WorkerC worker) {
+
+	}
+
 	public void tryToReassignCutting(MyMessage myMessage) {
 		if(myMessage.getWorkerForCutting() != null) {
 			WorkPlace wp = tryAssignFreeWorkplace();
@@ -87,7 +121,10 @@ public class ManagerNabytku extends OSPABA.Manager
 			}
 			myMessage.setWorkPlace(wp);
 			sendToCutting(myMessage);
-			tryToReassignCutting(queueNonProcessed.getFirst());
+			if(!queueNonProcessed.isEmpty()) {
+				tryToReassignCutting(queueNonProcessed.getFirst());
+			}
+
 			return;
 		}
 
@@ -95,42 +132,125 @@ public class ManagerNabytku extends OSPABA.Manager
 		myMessage.setAddressee(Id.agentPracovnikov);
 
 		request(myMessage);
-
 	}
 
 	public void tryToReassignStaining(MyMessage myMessage) {
-
-
+		myMessage.setCode(Mc.rVyberPracovnikaMorenie);
+		myMessage.setAddressee(Id.agentPracovnikov);
+		request(myMessage);
 	}
-	public void tryToReassignAssembly(MyMessage myMessage) {
 
+	public void tryToReassignAssembly(MyMessage myMessage) {
+		myMessage.setCode(Mc.rVyberPracovnikaSkladanie);
+		myMessage.setAddressee(Id.agentPracovnikov);
+		request(myMessage);
 
 	}
 	public void tryToReassignMontage(MyMessage myMessage) {
-
-
+		myMessage.setCode(Mc.rVyberPracovnikaMontaz);
+		myMessage.setAddressee(Id.agentPracovnikov);
+		request(myMessage);
 	}
 	public void sendToCutting(MyMessage myMessage) {
 		if(myMessage.getWorkerForCutting() == null && myMessage.getWorkPlace() == null) {
 			throw new IllegalStateException("Tuto sa nemôže dostať");
 		}
-		queueNonProcessed.removeIf()
-		myMessage.getWorkPlace().setState(WorkPlaceStateValues.WORKING.getValue());
-		myMessage.getFurniture().setWorkPlace(myMessage.getWorkPlace());
+		queueNonProcessed.removeIf(msg ->
+				msg.getFurniture() != null && msg.getFurniture().getId() == myMessage.getFurniture().getId()
+		);
+
+		MyMessage newMessage = new MyMessage(myMessage);
+		if(myMessage.getWorkerForCutting().getCurrentWorkPlace() == null) {
+			newMessage.setCode(Mc.rPripravVSklade);
+			newMessage.setAddressee(Id.agentSkladu);
+		} else {
+			newMessage.setCode(Mc.rPresunDoSkladu);
+			newMessage.setAddressee(Id.agentPohybu);
+		}
+		request(newMessage);
 
 	}
 
 	public void sendToStaining(MyMessage myMessage) {
+		if(myMessage.getWorkerForStaining() == null && myMessage.getWorkPlace() == null) {
+			throw new IllegalStateException("Tuto sa nemôže dostať");
+		}
+		queueStaining.removeIf(msg ->
+				msg.getFurniture() != null && msg.getFurniture().getId() == myMessage.getFurniture().getId()
+		);
+		MyMessage newMessage = new MyMessage(myMessage);
+		WorkPlace current = myMessage.getWorkerForStaining().getCurrentWorkPlace();
+		WorkPlace target = myMessage.getFurniture().getWorkPlace();
 
+		if (current == null) {
+			newMessage.setCode(Mc.rPresunZoSkladu);
+			newMessage.setAddressee(Id.agentPohybu);
+		} else if (!current.equals(target)) {
+			newMessage.setCode(Mc.rPresunNaPracovisko);
+			newMessage.setAddressee(Id.agentPohybu);
+		} else {
+			newMessage.setCode(Mc.rUrobMorenie);
+			newMessage.setAddressee(Id.agentCinnosti);
+		}
+
+		request(newMessage);
 	}
 
 	public void sendToAssembly(MyMessage myMessage) {
+		if (myMessage.getWorkerForAssembly() == null || myMessage.getWorkPlace() == null) {
+			throw new IllegalStateException("Chýba worker alebo workplace pri skladaní");
+		}
 
+		queueAssembly.removeIf(msg ->
+				msg.getFurniture() != null && msg.getFurniture().getId() == myMessage.getFurniture().getId()
+		);
+
+		MyMessage newMessage = new MyMessage(myMessage);
+		WorkPlace current = myMessage.getWorkerForAssembly().getCurrentWorkPlace();
+		WorkPlace target = myMessage.getFurniture().getWorkPlace();
+
+		if (current == null) {
+			newMessage.setCode(Mc.rPresunZoSkladu);
+			newMessage.setAddressee(Id.agentPohybu);
+		} else if (!current.equals(target)) {
+			newMessage.setCode(Mc.rPresunNaPracovisko);
+			newMessage.setAddressee(Id.agentPohybu);
+		} else {
+			newMessage.setCode(Mc.rUrobSkladanie);
+			newMessage.setAddressee(Id.agentCinnosti);
+		}
+
+		request(newMessage);
 	}
+
 
 	public void sendToMontage(MyMessage myMessage) {
+		if (myMessage.getWorkerForMontage() == null || myMessage.getWorkPlace() == null) {
+			throw new IllegalStateException("Chýba worker alebo workplace pri montáži");
+		}
 
+		queueMontage.removeIf(msg ->
+				msg.getFurniture() != null && msg.getFurniture().getId() == myMessage.getFurniture().getId()
+		);
+
+		MyMessage newMessage = new MyMessage(myMessage);
+		WorkPlace current = myMessage.getWorkerForMontage().getCurrentWorkPlace();
+		WorkPlace target = myMessage.getFurniture().getWorkPlace();
+
+		if (current == null) {
+			newMessage.setCode(Mc.rPresunZoSkladu);
+			newMessage.setAddressee(Id.agentPohybu);
+		} else if (!current.equals(target)) {
+			newMessage.setCode(Mc.rPresunNaPracovisko);
+			newMessage.setAddressee(Id.agentPohybu);
+		} else {
+			newMessage.setCode(Mc.rUrobMontaz);
+			newMessage.setAddressee(Id.agentCinnosti);
+		}
+
+		request(newMessage);
 	}
+
 
 
 	public WorkPlace tryAssignFreeWorkplace() {
@@ -165,7 +285,9 @@ public class ManagerNabytku extends OSPABA.Manager
 			this.queueNonProcessed.addLast(furnitureMsg);
 		}
 
-		tryToReassignCutting(queueNonProcessed.getFirst());
+		if(!queueNonProcessed.isEmpty()) {
+			tryToReassignCutting(queueNonProcessed.getFirst());
+		}
 
 	}
 
@@ -175,7 +297,6 @@ public class ManagerNabytku extends OSPABA.Manager
 		if(msg.getWorkerForCutting() == null) {
 			return;
 		}
-		tryToReassignCutting(queueNonProcessed.getFirst());
 
 		WorkPlace wp = tryAssignFreeWorkplace();
 		if (wp == null) {
@@ -184,9 +305,49 @@ public class ManagerNabytku extends OSPABA.Manager
 		msg.setWorkPlace(wp);
 
 		sendToCutting(msg);
+
+		if(!queueNonProcessed.isEmpty()) {
+			tryToReassignCutting(queueNonProcessed.getFirst());
+		}
+
+	}
+
+// Pracovnici Response agent Pracovnikov
+
+	//meta! sender="AgentPracovnikov", id="XXX", type="Response"
+	public void processRVyberPracovnikaLakovanie(MessageForm message) {
+		MyMessage msg = (MyMessage) message.createCopy();
+
+
 	}
 
 
+	//meta! sender="AgentPracovnikov", id="XXX", type="Response"
+	public void processRVyberPracovnikaMorenie(MessageForm message) {
+		MyMessage msg = (MyMessage) message.createCopy();
+		if(msg.getWorkerForStaining() == null) {
+			return;
+		}
+
+
+	}
+
+
+	//meta! sender="AgentPracovnikov", id="XXX", type="Response"
+	public void processRVyberPracovnikaSkladanie(MessageForm message) {
+		MyMessage msg = (MyMessage) message.createCopy();
+
+
+	}
+
+
+
+	//meta! sender="AgentPracovnikov", id="XXX", type="Response"
+	public void processRVyberPracovnikaMontaz(MessageForm message) {
+		MyMessage msg = (MyMessage) message.createCopy();
+
+
+	}
 
 	//Sklad
 	//meta! sender="AgentSkladu", id="324", type="Response"
@@ -197,8 +358,6 @@ public class ManagerNabytku extends OSPABA.Manager
 		msg.setAddressee(_mySim.findAgent(Id.agentPohybu));
 		request(msg);
 	}
-
-
 
 	//pohyb
 	//meta! sender="AgentPohybu", id="138", type="Response"
@@ -254,100 +413,6 @@ public class ManagerNabytku extends OSPABA.Manager
 
 
 
-	// Pracovnici Response agent Pracovnikov
-
-	//meta! sender="AgentPracovnikov", id="XXX", type="Response"
-	public void processRVyberPracovnikaLakovanie(MessageForm message) {
-		MyMessage msg = (MyMessage) message.createCopy();
-
-		queuePainting.getQueue().stream()
-				.filter(q -> q.equals(msg))
-				.findFirst()
-				.ifPresent(found -> {
-					found.setWorkerForPainting(msg.getWorkerForPainting());
-					if (found.getWorkPlace() == null) {
-						WorkPlace wp = tryAssignFreeWorkplace();
-						if (wp != null) {
-							found.setWorkPlace(wp);
-							found.getFurniture().setWorkPlace(wp);
-						}
-					}
-					if (found.getWorkerForPainting() != null && found.getWorkPlace() != null) {
-						handleCompletePreparation(found, queuePainting, OperationType.PAINTING);
-					}
-				});
-	}
-
-
-	//meta! sender="AgentPracovnikov", id="XXX", type="Response"
-	public void processRVyberPracovnikaMorenie(MessageForm message) {
-		MyMessage msg = (MyMessage) message.createCopy();
-
-		queueStaining.stream()
-				.filter(q -> q.equals(msg))
-				.findFirst()
-				.ifPresent(found -> {
-					found.setWorkerForStaining(msg.getWorkerForStaining());
-					if (found.getWorkPlace() == null) {
-						WorkPlace wp = tryAssignFreeWorkplace();
-						if (wp != null) {
-							found.setWorkPlace(wp);
-							found.getFurniture().setWorkPlace(wp);
-						}
-					}
-					if (found.getWorkerForStaining() != null && found.getWorkPlace() != null) {
-						handleCompletePreparation(found, queueStaining, OperationType.STAINING);
-					}
-				});
-	}
-
-
-	//meta! sender="AgentPracovnikov", id="XXX", type="Response"
-	public void processRVyberPracovnikaSkladanie(MessageForm message) {
-		MyMessage msg = (MyMessage) message.createCopy();
-
-		queueAssembly.getQueue().stream()
-				.filter(q -> q.equals(msg))
-				.findFirst()
-				.ifPresent(found -> {
-					found.setWorkerForAssembly(msg.getWorkerForAssembly());
-					if (found.getWorkPlace() == null) {
-						WorkPlace wp = tryAssignFreeWorkplace();
-						if (wp != null) {
-							found.setWorkPlace(wp);
-							found.getFurniture().setWorkPlace(wp);
-						}
-					}
-					if (found.getWorkerForAssembly() != null && found.getWorkPlace() != null) {
-						handleCompletePreparation(found, queueAssembly, OperationType.ASSEMBLY);
-					}
-				});
-	}
-
-
-
-	//meta! sender="AgentPracovnikov", id="XXX", type="Response"
-	public void processRVyberPracovnikaMontaz(MessageForm message) {
-		MyMessage msg = (MyMessage) message.createCopy();
-
-		queueMontage.getQueue().stream()
-				.filter(q -> q.equals(msg))
-				.findFirst()
-				.ifPresent(found -> {
-					found.setWorkerForMontage(msg.getWorkerForMontage());
-					if (found.getWorkPlace() == null) {
-						WorkPlace wp = tryAssignFreeWorkplace();
-						if (wp != null) {
-							found.setWorkPlace(wp);
-							found.getFurniture().setWorkPlace(wp);
-						}
-					}
-					if (found.getWorkerForMontage() != null && found.getWorkPlace() != null) {
-						handleCompletePreparation(found, queueMontage, OperationType.MONTAGE);
-					}
-				});
-	}
-
 
 
 	//Cinnosti
@@ -356,33 +421,12 @@ public class ManagerNabytku extends OSPABA.Manager
 	public void processRUrobRezanie(MessageForm message) {
 
 		MyMessage msg = (MyMessage) message.createCopy();
-		msg.getWorkerForCutting().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
-		MyMessage msgForReleaseWorker = new MyMessage(msg);
-		//adding toQueueColoring
-		msg.getWorkPlace().setActualWorkingWorker(null);
+		Worker previousWorkerFromCutting = msg.getWorkerForCutting();
 		msg.setWorkerForCutting(null);
-		msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_STAINING.getValue());
-		msg.getWorkPlace().setActivity(null);
-
 		queueStaining.addLast(msg);
+		tryToReassignStaining(queueStaining.getFirst());
 
-		msgForReleaseWorker.setCode(Mc.noticeUvolniRezanie);
-		msgForReleaseWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
-		notice(msgForReleaseWorker);
-
-		if (!queueMontage.isEmpty()) {
-			checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
-		}
-		if (!queueNonProcessed.isEmpty()) {
-			checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
-		}
-		if (!queueStaining.isEmpty()) {
-			checkAllItemsQueue(queueStaining, OperationType.STAINING);
-		}
-		if (!queuePainting.isEmpty()) {
-			checkAllItemsQueue(queuePainting, OperationType.PAINTING);
-		}
-
+		tryToReassignWorkerA((WorkerA) previousWorkerFromCutting);
 
 	}
 
@@ -390,41 +434,7 @@ public class ManagerNabytku extends OSPABA.Manager
 	public void processRUrobMorenie(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
 		MySimulation mySimulation = (MySimulation) _mySim;
-		msg.getWorkerForStaining().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
-		msg.getWorkPlace().setActualWorkingWorker(null);
-		msg.getWorkPlace().setActivity(null);
 
-
-
-		double rand = mySimulation.getGenerators().getRealisePaintingDist().nextDouble();
-
-		if (rand < 0.15) {
-			//System.out.println("rand = " + rand);
-			msg.setWorkerForPainting(msg.getWorkerForStaining());
-			msg.setWorkerForStaining(null);
-			msg.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());
-			msg.setCode(Mc.rUrobLakovanie);
-			msg.setAddressee(mySim().findAgent(Id.agentCinnosti));
-			request(msg);
-		} else {
-			MyMessage msgForReleaseWorker = new MyMessage(msg);
-			msgForReleaseWorker.setWorkerForStaining(msg.getWorkerForStaining());
-			msgForReleaseWorker.setCode(Mc.noticeUvolniMorenie);
-			msgForReleaseWorker.setAddressee(mySim().findAgent(Id.agentPracovnikov));
-			notice(msgForReleaseWorker);
-
-			msg.setWorkerForStaining(null);
-			msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
-			queueAssembly.addLast(msg);
-		}
-
-		if(!queueMontage.isEmpty()) {
-			this.checkAllItemsQueue(this.queueMontage, OperationType.MONTAGE);
-		}
-
-		this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
-		this.checkAllItemsQueue(queueStaining, OperationType.STAINING);
-		this.checkAllItemsQueue(queuePainting, OperationType.PAINTING);
 
 	}
 
@@ -433,36 +443,6 @@ public class ManagerNabytku extends OSPABA.Manager
 	// Použitie v processRUrobMontaz
 	public void processRUrobMontaz(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
-		MyMessage msgForRelease = new MyMessage(msg);
-
-		msg.getWorkerForMontage().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
-		msg.getWorkPlace().setActualWorkingWorker(null);
-		msg.getWorkPlace().setActivity(null);
-
-		msgForRelease.setCode(Mc.noticeUvolniMontaz);
-		msgForRelease.setAddressee(mySim().findAgent(Id.agentPracovnikov));
-		notice(msgForRelease);
-
-		msg.setWorkerForMontage(null);
-
-		msg.getFurniture().setIsDone(mySim().currentTime());
-		msg.getFurniture().getWorkPlace().setFurniture(null);
-		releaseWorkPlace(msg.getFurniture().getWorkPlace());
-		msg.getFurniture().setWorkPlace(null);
-
-		if (msg.getFurniture().getOrder().isOrderFinished()) {
-			msg.getFurniture().getOrder().setState(OrderStateValues.ORDER_DONE.getValue());
-			MyMessage orderFinishedMSG = new MyMessage(msg);
-			orderFinishedMSG.setOrder(orderFinishedMSG.getFurniture().getOrder());
-			orderFinishedMSG.setCode(Mc.noticeHotovaObjednavka);
-			orderFinishedMSG.setAddressee(mySim().findAgent(Id.agentModelu));
-			notice(orderFinishedMSG);
-		}
-
-		this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
-		this.checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
-		this.checkAllItemsQueue(queueStaining, OperationType.STAINING);
-		this.checkAllItemsQueue(queuePainting, OperationType.PAINTING);
 	}
 
 
@@ -471,45 +451,7 @@ public class ManagerNabytku extends OSPABA.Manager
 	public void processRUrobSkladanie(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
 
-		msg.getWorkerForAssembly().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
-		msg.getWorkPlace().setActualWorkingWorker(null);
-		msg.getWorkPlace().setActivity(null);
 
-		MyMessage msgForRelease = new MyMessage(msg);
-		msgForRelease.setWorkerForAssembly(msg.getWorkerForAssembly());
-		msgForRelease.setCode(Mc.noticeUvolniSkladanie);
-		msgForRelease.setAddressee(mySim().findAgent(Id.agentPracovnikov));
-		notice(msgForRelease);
-
-		msg.setWorkerForAssembly(null);
-
-		if (msg.getFurniture().getType() == 3) {
-			msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_MONTAGE.getValue());
-			queueMontage.addLast(msg);
-
-		} else {
-			msg.getFurniture().setIsDone(mySim().currentTime());
-			msg.getFurniture().getWorkPlace().setFurniture(null);
-			releaseWorkPlace(msg.getFurniture().getWorkPlace());
-			msg.getFurniture().setWorkPlace(null);
-
-			if (msg.getFurniture().getOrder().isOrderFinished()) {
-				msg.getFurniture().getOrder().setState(OrderStateValues.ORDER_DONE.getValue());
-				MyMessage orderFinishedMSG = new MyMessage(msg);
-				orderFinishedMSG.setOrder(orderFinishedMSG.getFurniture().getOrder());
-				orderFinishedMSG.setCode(Mc.noticeHotovaObjednavka);
-				orderFinishedMSG.setAddressee(mySim().findAgent(Id.agentModelu));
-				notice(orderFinishedMSG);
-			}
-		}
-
-		if (!queueMontage.isEmpty()) {
-			this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
-		}
-		this.checkAllItemsQueue(queueAssembly, OperationType.ASSEMBLY);
-		this.checkAllItemsQueue(queueNonProcessed, OperationType.CUTTING);
-		this.checkAllItemsQueue(queuePainting, OperationType.PAINTING);
-		this.checkAllItemsQueue(queueStaining, OperationType.STAINING);
 	}
 
 
@@ -517,28 +459,7 @@ public class ManagerNabytku extends OSPABA.Manager
 	public void processRUrobLakovanie(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
 
-		MyMessage msgForRelease = new MyMessage(msg);
 
-		msg.getWorkerForPainting().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
-		msg.getWorkPlace().setActualWorkingWorker(null);
-		msg.getWorkPlace().setActivity(null);
-
-		msgForRelease.setWorkerForPainting(msg.getWorkerForPainting());
-		msgForRelease.setCode(Mc.noticeUvolniLakovanie);
-		msgForRelease.setAddressee(mySim().findAgent(Id.agentPracovnikov));
-		notice(msgForRelease);
-
-		msg.setWorkerForPainting(null);
-
-		msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
-		queueAssembly.addLast(msg);
-
-		if (!queueMontage.isEmpty()) {
-			this.checkAllItemsQueue(queueMontage, OperationType.MONTAGE);
-		}
-		this.checkAllItemsQueue(queueAssembly, OperationType.ASSEMBLY);
-		this.checkAllItemsQueue(queuePainting, OperationType.PAINTING);
-		this.checkAllItemsQueue(queueStaining, OperationType.STAINING);
 
 	}
 

@@ -50,11 +50,11 @@ public class LabelDelegate implements ISimDelegate {
         if(mySimulation.isSlowMode()) {
 
             SwingUtilities.invokeLater(() -> {
-                queueCutting.setText("Cutting QL : " + managerNabytku.getQueueNonProcessed().getQueue().size());
-                queueStaining.setText("Staining QL : " + managerNabytku.getQueueStaining().getQueue().size());
-                queuePainting.setText("Painting QL : " + managerNabytku.getQueuePainting().getQueue().size());
-                queueAssembly.setText("Assembly QL : " + managerNabytku.getQueueAssembly().getQueue().size());
-                queueMontage.setText("Montage QL : " + managerNabytku.getQueueMontage().getQueue().size());
+                queueCutting.setText("Cutting QL : " + managerNabytku.getQueueNonProcessed().size());
+                queueStaining.setText("Staining QL : " + managerNabytku.getQueueStaining().size());
+                queuePainting.setText("Painting QL : " + managerNabytku.getQueuePainting().size());
+                queueAssembly.setText("Assembly QL : " + managerNabytku.getQueueAssembly().size());
+                queueMontage.setText("Montage QL : " + managerNabytku.getQueueMontage().size());
                 allOrdersLabel.setText("All Orders : " + mySimulation.getOrderArrayList().size());
                 countOfFinishedOrdersLabel.setText("Finished Orders : " + mySimulation.getFinishedOrders().size());
             });
