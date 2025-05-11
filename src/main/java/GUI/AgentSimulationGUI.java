@@ -259,6 +259,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         );
 
         GraphDelegate graphDelegate = new GraphDelegate(orderTimeSeries, intervalLower, intervalUpper, chart);
+
         core.registerDelegate(graphDelegate);
         //delegates and observers
         core.registerDelegate(simulationTimeDelegate);

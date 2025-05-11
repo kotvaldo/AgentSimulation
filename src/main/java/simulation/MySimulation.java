@@ -238,7 +238,43 @@ public class MySimulation extends Simulation {
                 delegate.refresh(this);
             }
         }
-        //System.out.println("Average work : " + timeOfWorkAverage.mean());
+        System.out.println("=== Štatistiky replikácie " + actualRepCount + " ===");
+        System.out.printf("Priemerný čas výroby: %.2f%n", timeOfWorkAverage.mean());
+        System.out.printf("Priemerný počet dokončených objednávok: %.2f%n", finishedOrdersAverage.mean());
+        System.out.printf("Priemerný počet všetkých objednávok: %.2f%n", allOrdersAverage.mean());
+        System.out.println();
+
+        System.out.printf("Priemerná vyťaženosť všetkých pracovníkov: %.2f%%%n", utilisationAll.mean() * 100);
+        System.out.printf("Priemerná vyťaženosť pracovníkov A: %.2f%%%n", utilisationA.mean() * 100);
+        System.out.printf("Priemerná vyťaženosť pracovníkov B: %.2f%%%n", utilisationB.mean() * 100);
+        System.out.printf("Priemerná vyťaženosť pracovníkov C: %.2f%%%n", utilisationC.mean() * 100);
+        System.out.println();
+
+        System.out.printf("Priemerná dĺžka frontu - Rezanie: %.2f%n", cuttingQueueLengthAverage.mean());
+        System.out.printf("Priemerná dĺžka frontu - Morenie: %.2f%n", stainingQueueLengthAverage.mean());
+        System.out.printf("Priemerná dĺžka frontu - Maľovanie: %.2f%n", paintingQueueLengthAverage.mean());
+        System.out.printf("Priemerná dĺžka frontu - Montáž: %.2f%n", montageQueueLengthAverage.mean());
+        System.out.printf("Priemerná dĺžka frontu - Kompletizácia: %.2f%n", assemblyQueueLengthAverage.mean());
+        System.out.println();
+
+        System.out.println("Vyťaženosť jednotlivých pracovníkov A:");
+        for (int i = 0; i < workersAUtilisationAverage.size(); i++) {
+            System.out.printf("  Pracovník A%d: %.2f%%%n", i + 1, workersAUtilisationAverage.get(i).mean() * 100);
+        }
+        System.out.println();
+
+        System.out.println("Vyťaženosť jednotlivých pracovníkov B:");
+        for (int i = 0; i < workersBUtilisationAverage.size(); i++) {
+            System.out.printf("  Pracovník B%d: %.2f%%%n", i + 1, workersBUtilisationAverage.get(i).mean() * 100);
+        }
+        System.out.println();
+
+        System.out.println("Vyťaženosť jednotlivých pracovníkov C:");
+        for (int i = 0; i < workersCUtilisationAverage.size(); i++) {
+            System.out.printf("  Pracovník C%d: %.2f%%%n", i + 1, workersCUtilisationAverage.get(i).mean() * 100);
+        }
+        System.out.println();
+
 
         // Collect local statistics into global, update UI, etc...
 

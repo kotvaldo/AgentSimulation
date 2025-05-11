@@ -8,54 +8,47 @@ import simulation.MySimulation;
 
 import java.util.function.Predicate;
 
-public class Queue {
-    private final SimQueue<MyMessage> queue;
+public class Queue extends SimQueue<MyMessage> {
     protected QueueLength queueLength;
     protected MySimulation mySimulation;
 
     public Queue(MySimulation mySimulation) {
-        this.queue = new SimQueue<>();
         this.queueLength = new QueueLength();
         this.mySimulation = mySimulation;
     }
 
-    public void add(MyMessage myMessage) {
-        queue.add(myMessage);
-        queueLength.recordChange(mySimulation.currentTime(), queue.size());
-    }
-
+    @Override
     public void addLast(MyMessage myMessage) {
-        queue.addLast(myMessage);
-        queueLength.recordChange(mySimulation.currentTime(), queue.size());
+        super.addLast(myMessage);
+        queueLength.recordChange(mySimulation.currentTime(), size());
     }
 
+    @Override
     public MyMessage removeFirst() {
-        MyMessage removed = queue.removeFirst();
-        queueLength.recordChange(mySimulation.currentTime(), queue.size());
+        MyMessage removed = super.removeFirst();
+        queueLength.recordChange(mySimulation.currentTime(), size());
         return removed;
     }
 
+    @Override
     public boolean removeIf(Predicate<? super MyMessage> filter) {
-        boolean removed = queue.removeIf(filter);
+        boolean removed = super.removeIf(filter);
         if (removed) {
-            queueLength.recordChange(mySimulation.currentTime(), queue.size());
+            queueLength.recordChange(mySimulation.currentTime(), size());
         }
         return removed;
     }
 
+    @Override
     public void clear() {
-        queue.clear();
+        super.clear(); // Dôležité na vymazanie obsahu queue
         queueLength.clear();
         queueLength.recordChange(mySimulation.currentTime(), 0);
     }
 
-
+    @Override
     public boolean isEmpty() {
-        return queue.isEmpty();
-    }
-
-    public SimQueue<MyMessage> getQueue() {
-        return queue;
+        return super.isEmpty();
     }
 
     public TimeWeightedStatistic getQueueLength() {
@@ -70,7 +63,7 @@ public class Queue {
     public String toString() {
         StringBuilder sb = new StringBuilder("Queue contents:\n");
 
-        for (MyMessage msg : queue) {
+        for (MyMessage msg : this) {
             int furnitureId = msg.getFurniture() != null ? msg.getFurniture().getId() : -1;
             String hasWorker = msg.getWorkerForCutting() != null ? "Worker=YES" : "Worker=NO";
             String hasWorkPlace = msg.getWorkPlace() != null ? "WorkPlace=YES" : "WorkPlace=NO";
@@ -80,5 +73,4 @@ public class Queue {
 
         return sb.toString();
     }
-
 }

@@ -3,50 +3,29 @@ package simulation;
 import OSPABA.*;
 import entities.*;
 
-public class MyMessage extends MessageForm
-{
+public class MyMessage extends MessageForm {
 	private Order order;
 	private Furniture furniture;
-	private WorkPlace workPlace;
-	private Worker workerForCutting;
-	private Worker workerForAssembly;
-	private Worker workerForMontage;
-	private Worker workerForPainting;
-	private Worker workerForStaining;
-	private Integer type = null;
 
-	public MyMessage(Simulation mySim)
-	{
+	public MyMessage(Simulation mySim) {
 		super(mySim);
 	}
 
-	public MyMessage(MyMessage original)
-	{
+	public MyMessage(MyMessage original) {
 		super(original);
-		// copy() is called in superclass
 	}
 
 	@Override
-	public MessageForm createCopy()
-	{
+	public MessageForm createCopy() {
 		return new MyMessage(this);
 	}
 
 	@Override
-	protected void copy(MessageForm message)
-	{
+	protected void copy(MessageForm message) {
 		super.copy(message);
-		MyMessage original = (MyMessage)message;
-		workPlace = original.getWorkPlace();
-		workerForCutting = original.getWorkerForCutting();
-		workerForAssembly = original.getWorkerForAssembly();
-		workerForMontage = original.getWorkerForMontage();
-		workerForStaining = original.getWorkerForStaining();
-		workerForPainting = original.getWorkerForPainting();
-		order = original.getOrder();
-		furniture = original.getFurniture();
-		type = original.getType();
-
+		MyMessage original = (MyMessage) message;
+		this.order = original.getOrder();
+		this.furniture = original.getFurniture();
 	}
 
 	public Order getOrder() {
@@ -65,20 +44,53 @@ public class MyMessage extends MessageForm
 		this.furniture = furniture;
 	}
 
+	// Delegované workeri cez furniture
+	public Worker getWorkerForCutting() {
+		return furniture != null ? furniture.getWorkerForCutting() : null;
+	}
+
+	public void setWorkerForCutting(Worker worker) {
+		if (furniture != null) furniture.setWorkerForCutting(worker);
+	}
+
+	public Worker getWorkerForAssembly() {
+		return furniture != null ? furniture.getWorkerForAssembly() : null;
+	}
+
+	public void setWorkerForAssembly(Worker worker) {
+		if (furniture != null) furniture.setWorkerForAssembly(worker);
+	}
+
+	public Worker getWorkerForMontage() {
+		return furniture != null ? furniture.getWorkerForMontage() : null;
+	}
+
+	public void setWorkerForMontage(Worker worker) {
+		if (furniture != null) furniture.setWorkerForMontage(worker);
+	}
+
+	public Worker getWorkerForPainting() {
+		return furniture != null ? furniture.getWorkerForPainting() : null;
+	}
+
+	public void setWorkerForPainting(Worker worker) {
+		if (furniture != null) furniture.setWorkerForPainting(worker);
+	}
+
+	public Worker getWorkerForStaining() {
+		return furniture != null ? furniture.getWorkerForStaining() : null;
+	}
+
+	public void setWorkerForStaining(Worker worker) {
+		if (furniture != null) furniture.setWorkerForStaining(worker);
+	}
+
 	public WorkPlace getWorkPlace() {
-		return workPlace;
+		return furniture != null ? furniture.getWorkPlace() : null;
 	}
 
 	public void setWorkPlace(WorkPlace workPlace) {
-		this.workPlace = workPlace;
-	}
-
-	public Worker getWorkerForCutting() {
-		return workerForCutting;
-	}
-
-	public void setWorkerForCutting(Worker workerForCutting) {
-		this.workerForCutting = workerForCutting;
+		if (furniture != null) furniture.setWorkPlace(workPlace);
 	}
 
 	@Override
@@ -88,37 +100,11 @@ public class MyMessage extends MessageForm
 
 		MyMessage other = (MyMessage) obj;
 
-		if (this.getFurniture() == null || other.getFurniture() == null)
-			return false;
+		if (this.furniture == null || other.furniture == null) return false;
 
-		return this.getFurniture().getId() == other.getFurniture().getId();
-
+		return this.furniture.getId() == other.furniture.getId();
 	}
 
-
-	public Worker getWorkerForAssembly() {
-		return workerForAssembly;
-	}
-
-	public void setWorkerForAssembly(Worker workerForAssembly) {
-		this.workerForAssembly = workerForAssembly;
-	}
-
-	public Worker getWorkerForMontage() {
-		return workerForMontage;
-	}
-
-	public void setWorkerForMontage(Worker workerForMontage) {
-		this.workerForMontage = workerForMontage;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
 	@Override
 	public String toString() {
 		return "MyMessage{" +
@@ -130,23 +116,5 @@ public class MyMessage extends MessageForm
 				", addressee=" + addressee() +
 				", time=" + mySim().currentTime() +
 				'}';
-	}
-
-
-	public Worker getWorkerForPainting() {
-		return workerForPainting;
-	}
-
-	public void setWorkerForPainting(Worker workerForPainting) {
-		this.workerForPainting = workerForPainting;
-	}
-
-
-	public Worker getWorkerForStaining() {
-		return workerForStaining;
-	}
-
-	public void setWorkerForStaining(Worker workerForStaining) {
-		this.workerForStaining = workerForStaining;
 	}
 }

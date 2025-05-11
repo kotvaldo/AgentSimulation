@@ -34,6 +34,13 @@ public class Furniture {
     private double startTimeMontage = -1;
     private double endTimeMontage = -1;
 
+    private Worker workerForCutting;
+    private Worker workerForAssembly;
+    private Worker workerForMontage;
+    private Worker workerForPainting;
+    private Worker workerForStaining;
+
+
     public Furniture(int type, Order order) {
         this.id = IDGenerator.getInstance().getNextFurnitureId();
         this.type = type;
@@ -248,5 +255,45 @@ public class Furniture {
 
     public void setTotalTime(double totalTime) {
         this.totalTime = totalTime;
+    }
+
+    public Worker getWorkerForCutting() {
+        return workerForCutting;
+    }
+
+    public void setWorkerForCutting(Worker workerForCutting) {
+        this.workerForCutting = workerForCutting;
+    }
+
+    public Worker getWorkerForAssembly() {
+        return workerForAssembly;
+    }
+
+    public void setWorkerForAssembly(Worker workerForAssembly) {
+        this.workerForAssembly = workerForAssembly;
+    }
+
+    public Worker getWorkerForMontage() {
+        return workerForMontage;
+    }
+
+    public void setWorkerForMontage(Worker workerForMontage) {
+        this.workerForMontage = workerForMontage;
+    }
+
+    public Worker getWorkerForPainting() {
+        return workerForPainting;
+    }
+
+    public void setWorkerForPainting(Worker workerForPainting) {
+        this.workerForPainting = workerForPainting;
+    }
+
+    public Worker getWorkerForStaining() {
+        return workerForStaining;
+    }
+
+    public void setWorkerForStaining(Worker workerForStaining) {
+        this.workerForStaining = workerForStaining;
     }
 }
