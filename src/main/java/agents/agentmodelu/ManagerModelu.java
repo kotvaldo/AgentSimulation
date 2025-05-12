@@ -35,7 +35,7 @@ public class ManagerModelu extends Manager
 	{
 		MyMessage msg = (MyMessage) message.createCopy();
 		MySimulation mySimulation = (MySimulation) mySim();
-		Order order	= msg.getFurniture().getOrder();
+		Order order	= msg.getOrder();
 		mySimulation.getFinishedOrders().add(order);
 		order.setEndTime(mySimulation.currentTime());
 	}

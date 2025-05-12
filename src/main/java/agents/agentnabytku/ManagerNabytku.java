@@ -93,6 +93,11 @@ public class ManagerNabytku extends OSPABA.Manager
 			myMessage.setWorkerForCutting(worker);
 			WorkPlace wp = tryAssignFreeWorkplace();
 			if(wp == null) {
+				MyMessage returnWorkerA = new MyMessage(mySim());
+				returnWorkerA.setWorkerForRelease(worker);
+				returnWorkerA.setAddressee(Id.agentPracovnikov);
+				returnWorkerA.setCode(Mc.noticeUvolniRezanie);
+				notice(returnWorkerA);
 				return;
 			}
 			myMessage.setWorkPlace(wp);
@@ -297,12 +302,25 @@ public class ManagerNabytku extends OSPABA.Manager
 	}
 
 	public void releaseWorkPlace(WorkPlace wp) {
-		if (wp != null) {
-			wp.setState(WorkPlaceStateValues.NOT_WORKING.getValue());
-			wp.clear();
-			freeWorkplaces.add(wp);
+		if (wp == null) return;
+
+		wp.setState(WorkPlaceStateValues.NOT_WORKING.getValue());
+
+		if (!queueNonProcessed.isEmpty()) {
+			MyMessage msg = queueNonProcessed.getFirst();
+			if (msg != null && msg.getWorkerForCutting() != null) {
+				msg = queueNonProcessed.removeFirst();
+				msg.setWorkPlace(wp);
+				wp.setState(WorkPlaceStateValues.ASSIGNED.getValue());
+				sendToCutting(msg);
+				return;
+			}
 		}
+
+		wp.clear();
+		freeWorkplaces.add(wp);
 	}
+
 
 	public void processNoticeSpracujObjednavku(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
@@ -536,13 +554,14 @@ public class ManagerNabytku extends OSPABA.Manager
 			releaseWorkPlace(msg.getWorkPlace());
 			msg.getWorkPlace().clear();
 			msg.getFurniture().setWorkPlace(null);
-			/*if(msg.getFurniture().getOrder().isOrderFinished()) {
+			Order order = msg.getOrder();
+			if(order.isOrderFinished()) {
 				MyMessage msg2 = new MyMessage(mySim());
 				msg2.setCode(Mc.noticeHotovaObjednavka);
 				msg2.setAddressee(mySim().findAgent(Id.agentModelu));
-				msg2.setOrder(msg.getOrder());
+				msg2.setOrder(order);
 				notice(msg2);
-			}*/
+			}
 
 		}
 		tryToReassignWorkerB((WorkerB) previousWorkerFromAssembly);
@@ -566,14 +585,13 @@ public class ManagerNabytku extends OSPABA.Manager
 		releaseWorkPlace(msg.getWorkPlace());
 		msg.getFurniture().setWorkPlace(null);
 
-
-		/*if(msg.getFurniture().getOrder().isOrderFinished()) {
+		if(msg.getFurniture().getOrder().isOrderFinished()) {
 			MyMessage msg2 = new MyMessage(mySim());
 			msg2.setCode(Mc.noticeHotovaObjednavka);
 			msg2.setAddressee(mySim().findAgent(Id.agentModelu));
 			msg2.setOrder(msg.getFurniture().getOrder());
 			notice(msg2);
-		}*/
+		}
 	}
 
 

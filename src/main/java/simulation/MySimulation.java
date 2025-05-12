@@ -238,7 +238,7 @@ public class MySimulation extends Simulation {
                 delegate.refresh(this);
             }
         }
-        System.out.println("=== Štatistiky replikácie " + actualRepCount + " ===");
+       /* System.out.println("=== Štatistiky replikácie " + actualRepCount + " ===");
         System.out.printf("Priemerný čas výroby: %.2f%n", timeOfWorkAverage.mean());
         System.out.printf("Priemerný počet dokončených objednávok: %.2f%n", finishedOrdersAverage.mean());
         System.out.printf("Priemerný počet všetkých objednávok: %.2f%n", allOrdersAverage.mean());
@@ -274,7 +274,7 @@ public class MySimulation extends Simulation {
             System.out.printf("  Pracovník C%d: %.2f%%%n", i + 1, workersCUtilisationAverage.get(i).mean() * 100);
         }
         System.out.println();
-
+*/
 
         // Collect local statistics into global, update UI, etc...
 
@@ -464,6 +464,9 @@ public class MySimulation extends Simulation {
 
     public void setSlowMode(boolean slowMode) {
         this.slowMode = slowMode;
+        if(!slowMode) {
+            setMaxSimSpeed();
+        }
     }
 
     public Average getStainingQueueLengthAverage() {

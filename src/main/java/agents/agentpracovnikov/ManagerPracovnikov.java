@@ -45,7 +45,7 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	public void processNoticeUvolniLakovanie(MessageForm message)
 	{
 		MyMessage myMessage = (MyMessage) message.createCopy();
-		if (myMessage.getWorkerForPainting() instanceof WorkerC) {
+		if (myMessage.getWorkerForRelease() instanceof WorkerC) {
 			myMessage.setCode(Mc.noticeUvolniC);
 			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovC)); // správny agent
 			notice(myMessage);
@@ -56,11 +56,11 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	public void processNoticeUvolniMontaz(MessageForm message)
 	{
 		MyMessage myMessage = (MyMessage) message.createCopy();
-		if (myMessage.getWorkerForMontage() instanceof WorkerC) {
+		if (myMessage.getWorkerForRelease() instanceof WorkerC) {
 			myMessage.setCode(Mc.noticeUvolniC);
 			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
 			notice(myMessage);
-		} else if (myMessage.getWorkerForMontage() instanceof WorkerA) {
+		} else if (myMessage.getWorkerForRelease() instanceof WorkerA) {
 			myMessage.setCode(Mc.noticeUvolniA);
 			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovA));
 			notice(myMessage);
@@ -70,7 +70,7 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	public void processNoticeUvolniRezanie(MessageForm message)
 	{
 		MyMessage myMessage = (MyMessage) message.createCopy();
-		if (myMessage.getWorkerForCutting() instanceof WorkerA) {
+		if (myMessage.getWorkerForRelease() instanceof WorkerA) {
 			myMessage.setCode(Mc.noticeUvolniA);
 			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovA));
 			notice(myMessage);
@@ -81,7 +81,7 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	public void processNoticeUvolniMorenie(MessageForm message)
 	{
 		MyMessage myMessage = (MyMessage) message.createCopy();
-		if (myMessage.getWorkerForStaining() instanceof WorkerC) {
+		if (myMessage.getWorkerForRelease() instanceof WorkerC) {
 			myMessage.setCode(Mc.noticeUvolniC);
 			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovC));
 			notice(myMessage);
