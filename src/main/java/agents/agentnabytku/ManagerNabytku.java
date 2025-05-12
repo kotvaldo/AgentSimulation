@@ -477,9 +477,7 @@ public class ManagerNabytku extends OSPABA.Manager
 
 		queueStaining.addLast(msg);
 		tryToReassignStaining(queueStaining.getFirst());
-
 		tryToReassignWorkerA((WorkerA) previousWorkerFromCutting);
-
 	}
 
 	//meta! sender="AgentCinnosti", id="286", type="Response"
@@ -538,13 +536,13 @@ public class ManagerNabytku extends OSPABA.Manager
 			releaseWorkPlace(msg.getWorkPlace());
 			msg.getWorkPlace().clear();
 			msg.getFurniture().setWorkPlace(null);
-			if(msg.getFurniture().getOrder().isOrderFinished()) {
+			/*if(msg.getFurniture().getOrder().isOrderFinished()) {
 				MyMessage msg2 = new MyMessage(mySim());
 				msg2.setCode(Mc.noticeHotovaObjednavka);
 				msg2.setAddressee(mySim().findAgent(Id.agentModelu));
 				msg2.setOrder(msg.getOrder());
 				notice(msg2);
-			}
+			}*/
 
 		}
 		tryToReassignWorkerB((WorkerB) previousWorkerFromAssembly);
@@ -566,16 +564,16 @@ public class ManagerNabytku extends OSPABA.Manager
 
 		msg.getFurniture().setIsDone(_mySim.currentTime());
 		releaseWorkPlace(msg.getWorkPlace());
-		msg.getWorkPlace().clear();
 		msg.getFurniture().setWorkPlace(null);
 
-		if(msg.getFurniture().getOrder().isOrderFinished()) {
+
+		/*if(msg.getFurniture().getOrder().isOrderFinished()) {
 			MyMessage msg2 = new MyMessage(mySim());
 			msg2.setCode(Mc.noticeHotovaObjednavka);
 			msg2.setAddressee(mySim().findAgent(Id.agentModelu));
-			msg2.setOrder(msg.getOrder());
+			msg2.setOrder(msg.getFurniture().getOrder());
 			notice(msg2);
-		}
+		}*/
 	}
 
 

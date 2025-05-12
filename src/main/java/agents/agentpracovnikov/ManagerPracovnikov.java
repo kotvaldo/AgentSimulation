@@ -34,7 +34,7 @@ public class ManagerPracovnikov extends OSPABA.Manager
 	public void processNoticeUvolniSkladanie(MessageForm message)
 	{
 		MyMessage myMessage = (MyMessage) message.createCopy();
-		if (myMessage.getWorkerForAssembly() instanceof WorkerB) {
+		if (myMessage.getWorkerForRelease() instanceof WorkerB) {
 			myMessage.setCode(Mc.noticeUvolniB);
 			myMessage.setAddressee(mySim().findAgent(Id.agentPracovnikovB));
 			notice(myMessage);

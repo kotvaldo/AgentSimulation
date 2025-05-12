@@ -27,6 +27,7 @@ public class MyMessage extends MessageForm {
 		MyMessage original = (MyMessage) message;
 		this.order = original.getOrder();
 		this.furniture = original.getFurniture();
+		this.workerForRelease = original.getWorkerForRelease();
 	}
 
 	public Order getOrder() {
