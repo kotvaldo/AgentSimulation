@@ -4,10 +4,7 @@ import Enums.PresetSimulationValues;
 import Enums.SimulationSpeedLimitValues;
 import GUI.Models.*;
 import Observer.Subject;
-import delegates.GraphDelegate;
-import delegates.LabelDelegate;
-import delegates.SimulationTimeDelegate;
-import delegates.TableDelegate;
+import delegates.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -83,6 +80,9 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
     private JLabel workplaceCountValue;
     private JLabel replicationsCountValue;
     private JLabel burnInValue;
+    private FastMLabelDelegate fastMLabelDelegate;
+    private final WorkerAverageUtilisationTableModel workerAverageUtilisationTableModel;
+    private JTable workerUtilisationTable;
     public AgentSimulationGUI() {
         super("Event Simulation");
         this.simulationSpeedLabel = new JLabel("Simulation Speed: ");
@@ -164,13 +164,26 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         JScrollPane utilisationScroll = new JScrollPane(utilisationTable);
         utilisationScroll.setVisible(false);
 
+        workerAverageUtilisationTableModel = new WorkerAverageUtilisationTableModel(
+                core.getWorkersAUtilisationAverage(),
+                core.getWorkersBUtilisationAverage(),
+                core.getWorkersCUtilisationAverage());
+
+        workerUtilisationTable = new JTable(workerAverageUtilisationTableModel);
+        workerUtilisationTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
+        JScrollPane workerUtilisationScroll = new JScrollPane(workerUtilisationTable);
+        workerUtilisationScroll.setPreferredSize(new Dimension(600, 300));
+        centerPanel.add(workerUtilisationScroll);
+        workerUtilisationScroll.setVisible(false);
+
+
         JPanel tablePanel = new JPanel();
         tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.X_AXIS));
         tablePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        tablePanel.add(Box.createHorizontalStrut(10));
 
-// Nastavenie fixnej veľkosti pre každý JScrollPane
-        Dimension scrollSize = new Dimension(500, 300); // prispôsob si výšku a šírku
 
+        Dimension scrollSize = new Dimension(500, 300);
         ordersScroll.setPreferredSize(scrollSize);
         workersScroll.setPreferredSize(scrollSize);
         workPlaceSroll.setPreferredSize(scrollSize);
@@ -192,14 +205,10 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 
-        scrollPane.setPreferredSize(new Dimension(1000, 600)); // prispôsob si výšku panelu
-
-// Pridaj do hlavného panelu (napr. centerPanel)
-        this.centerPanel.add(scrollPane, BorderLayout.CENTER); // ak používaš BorderLayout
+        scrollPane.setPreferredSize(new Dimension(1000, 600));
 
 
-        //statistic for simulation run
-
+        this.centerPanel.add(scrollPane, BorderLayout.CENTER);
 
         speedSlider = new JSlider(1, 9, 1);
         speedSlider.setPaintTicks(true);
@@ -223,10 +232,11 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         speedSlider.addChangeListener(e -> {
             SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
             core.setSimSpeed(speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.asDouble(), 1.0 / PresetSimulationValues.UPDATES_PER_SECOND.asDouble());
+            core.onReplicationWillStart(_ -> {
+                core.setSimSpeed(speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.asDouble(), 1.0 / PresetSimulationValues.UPDATES_PER_SECOND.asDouble());
+            });
         });
-        /*  core.onReplicationWillStart(_ -> {
-            core.setSimSpeed(1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue(), 1.0 / PresetSimulationValues.UPDATES_PER_SECOND.getValue());
-        });*/
+
         slowDownCheckBox = new JCheckBox("Slow Down", true);
         animationCheckBox = new JCheckBox("Animation", false);
 
@@ -258,13 +268,32 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                 replicationCountLabel
         );
 
-        GraphDelegate graphDelegate = new GraphDelegate(orderTimeSeries, intervalLower, intervalUpper, chart);
+        graphDelegate = new GraphDelegate(orderTimeSeries, intervalLower, intervalUpper, chart);
+        fastMLabelDelegate = new FastMLabelDelegate(
+                utilisationALabel,
+                utilisationBLabel,
+                utilisationCLabel,
+                utilisationAllLabel,
+                utilisationAIntervalLabel,
+                utilisationBIntervalLabel,
+                utilisationCIntervalLabel,
+                utilisationAllIntervalLabel,
+                countOfFinishedOrdersLabel,
+                countOfAllOrdersLabel,
+                queueLengthLabel1,
+                queueLengthLabel2,
+                queueLengthLabel4,
+                queueLengthLabel5,
+                workerAverageUtilisationTableModel
+
+        );
 
         core.registerDelegate(graphDelegate);
         //delegates and observers
         core.registerDelegate(simulationTimeDelegate);
         core.registerDelegate(slowSpeedLabelDelegate);
         core.registerDelegate(tableDelegate);
+        core.registerDelegate(fastMLabelDelegate);
         slowDownCheckBox.addActionListener(e -> {
             if (slowDownCheckBox.isSelected()) {
                 core.setSlowMode(true);
@@ -275,6 +304,12 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                         speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.asDouble(),
                         1.0 / PresetSimulationValues.UPDATES_PER_SECOND.asDouble()
                 );
+                core.onReplicationWillStart(_ -> {
+                    core.setSimSpeed(
+                            speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.asDouble(),
+                            1.0 / PresetSimulationValues.UPDATES_PER_SECOND.asDouble()
+                    );
+                });
                 ordersTableModel.setOrders(new ArrayList<>());
                 workersTableModel.setWorkers(new ArrayList<>());
                 workPlacesTableModel.setWorkPlaces(new ArrayList<>());
@@ -287,17 +322,16 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                 workersTableModel.setWorkers(new ArrayList<>());
                 workPlacesTableModel.setWorkPlaces(new ArrayList<>());
                 furnitureTableModel.setFurniture(new ArrayList<>());
+                core.onReplicationWillStart(_ -> {
+                    core.setMaxSimSpeed();
+                });
             }
 
-            /*ordersScroll.setVisible(slowDownCheckBox.isSelected());
-            workersScroll.setVisible(slowDownCheckBox.isSelected());
-            workPlaceSroll.setVisible(slowDownCheckBox.isSelected());*/
+            workerUtilisationScroll.setVisible(!slowDownCheckBox.isSelected());
             speedSlider.setVisible(slowDownCheckBox.isSelected());
             simulationSpeedLabel.setVisible(slowDownCheckBox.isSelected());
             label.setVisible(slowDownCheckBox.isSelected());
             dayCountLabel.setVisible(slowDownCheckBox.isSelected());
-            //burnInInput.setVisible(!slowDownCheckBox.isSelected());
-            //burnLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationALabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationBLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationCLabel.setVisible(!slowDownCheckBox.isSelected());
@@ -339,7 +373,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
 
 
         chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(800, 600));
+        chartPanel.setPreferredSize(new Dimension(800, 400));
         centerPanel.add(chartPanel);
         chartPanel.setVisible(false);
 

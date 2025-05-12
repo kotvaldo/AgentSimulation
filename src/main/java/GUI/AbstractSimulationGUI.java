@@ -58,8 +58,6 @@ public abstract class AbstractSimulationGUI extends JFrame {
         topPanel.setLayout(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.NORTH);
         topPanel.add(statsPanel, BorderLayout.SOUTH);
-
-
         setupCustomPanel();
 
         //getContentPane().add(new ChartPanel(chart), BorderLayout.CENTER);
@@ -90,8 +88,5 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected abstract void setupCustomPanel();
     protected abstract void startSimulation();
     protected abstract void stopSimulation();
-
-
-
 
 }

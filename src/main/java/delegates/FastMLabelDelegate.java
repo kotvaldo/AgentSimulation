@@ -1,11 +1,14 @@
 package delegates;
 
+import GUI.Models.WorkerAverageUtilisationTableModel;
 import OSPABA.ISimDelegate;
 import OSPABA.SimState;
 import OSPABA.Simulation;
+import Statistics.Average;
 import simulation.MySimulation;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class FastMLabelDelegate implements ISimDelegate {
 
@@ -19,6 +22,14 @@ public class FastMLabelDelegate implements ISimDelegate {
     private final JLabel utilisationCIntervalLabel;
     private final JLabel utilisationAllIntervalLabel;
 
+    private final JLabel finishedOrdersLabel;
+    private final JLabel allOrdersLabel;
+    private final JLabel cuttingQLLabel;
+    private final JLabel stainingQLLabel;
+    private final JLabel assemblyQLLabel;
+    private final JLabel montageQLLabel;
+
+    private final WorkerAverageUtilisationTableModel workerAverageUtilisationTableModel;
     public FastMLabelDelegate(JLabel utilisationALabel,
                               JLabel utilisationBLabel,
                               JLabel utilisationCLabel,
@@ -26,7 +37,15 @@ public class FastMLabelDelegate implements ISimDelegate {
                               JLabel utilisationAIntervalLabel,
                               JLabel utilisationBIntervalLabel,
                               JLabel utilisationCIntervalLabel,
-                              JLabel utilisationAllIntervalLabel) {
+                              JLabel utilisationAllIntervalLabel,
+                              JLabel finishedOrdersLabel,
+                              JLabel allOrdersLabel,
+                              JLabel cuttingQLLabel,
+                              JLabel stainingQLLabel,
+                              JLabel assemblyQLLabel,
+                              JLabel montageQLLabel,
+                              WorkerAverageUtilisationTableModel workerAverageUtilisationTableModel
+                              ) {
         this.utilisationALabel = utilisationALabel;
         this.utilisationBLabel = utilisationBLabel;
         this.utilisationCLabel = utilisationCLabel;
@@ -35,6 +54,14 @@ public class FastMLabelDelegate implements ISimDelegate {
         this.utilisationBIntervalLabel = utilisationBIntervalLabel;
         this.utilisationCIntervalLabel = utilisationCIntervalLabel;
         this.utilisationAllIntervalLabel = utilisationAllIntervalLabel;
+        this.allOrdersLabel = allOrdersLabel;
+        this.finishedOrdersLabel = finishedOrdersLabel;
+        this.cuttingQLLabel = cuttingQLLabel;
+        this.stainingQLLabel = stainingQLLabel;
+        this.assemblyQLLabel = assemblyQLLabel;
+        this.montageQLLabel = montageQLLabel;
+        this.workerAverageUtilisationTableModel = workerAverageUtilisationTableModel;
+
     }
 
     @Override
@@ -47,15 +74,32 @@ public class FastMLabelDelegate implements ISimDelegate {
 
         if(!mySim.isSlowMode()) {
             SwingUtilities.invokeLater(() -> {
-                utilisationALabel.setText(String.format("%.4f", mySim.getUtilisationA().mean()));
-                utilisationBLabel.setText(String.format("%.4f", mySim.getUtilisationB().mean()));
-                utilisationCLabel.setText(String.format("%.4f", mySim.getUtilisationC().mean()));
-                utilisationAllLabel.setText(String.format("%.4f", mySim.getUtilisationAll().mean()));
+                utilisationALabel.setText("Utilisation A: " + String.format("%.4f", mySim.getUtilisationA().mean()));
+                utilisationAIntervalLabel.setText("CI: " + mySim.getUtilisationA().confidenceInterval());
 
-                utilisationAIntervalLabel.setText(mySim.getUtilisationA().confidenceInterval());
-                utilisationBIntervalLabel.setText(mySim.getUtilisationB().confidenceInterval());
-                utilisationCIntervalLabel.setText(mySim.getUtilisationC().confidenceInterval());
-                utilisationAllIntervalLabel.setText(mySim.getUtilisationAll().confidenceInterval());
+                utilisationBLabel.setText("Utilisation B: " + String.format("%.4f", mySim.getUtilisationB().mean()));
+                utilisationBIntervalLabel.setText("CI: " + mySim.getUtilisationB().confidenceInterval());
+
+                utilisationCLabel.setText("Utilisation C: " + String.format("%.4f", mySim.getUtilisationC().mean()));
+                utilisationCIntervalLabel.setText("CI: " + mySim.getUtilisationC().confidenceInterval());
+
+                utilisationAllLabel.setText("Utilisation All: " + String.format("%.4f", mySim.getUtilisationAll().mean()));
+                utilisationAllIntervalLabel.setText("CI: " + mySim.getUtilisationAll().confidenceInterval());
+
+                finishedOrdersLabel.setText("Finished Orders: " + String.format("%.4f", mySim.getFinishedOrdersAverage().mean()));
+                allOrdersLabel.setText("All Orders: " + String.format("%.4f", mySim.getAllOrdersAverage().mean()));
+
+                cuttingQLLabel.setText("Cutting QL : " + String.format("%.4f", mySim.getCuttingQueueLengthAverage().mean()));
+                stainingQLLabel.setText("Staining QL : " + String.format("%.4f", mySim.getStainingQueueLengthAverage().mean()));
+                assemblyQLLabel.setText("Assembly QL : " + String.format("%.4f", mySim.getAssemblyQueueLengthAverage().mean()));
+                montageQLLabel.setText("Montage QL : " + String.format("%.4f", mySim.getMontageQueueLengthAverage().mean()));
+
+               /* ArrayList<Average> workersAUtilisationAverage = new ArrayList<>(mySim.getWorkersAUtilisationAverage());
+                ArrayList<Average> workersBUtilisationAverage = new ArrayList<>(mySim.getWorkersBUtilisationAverage());
+                ArrayList<Average> workersCUtilisationAverage = new ArrayList<>(mySim.getWorkersCUtilisationAverage());
+
+                workerAverageUtilisationTableModel.setNewData(workersAUtilisationAverage, workersBUtilisationAverage, workersCUtilisationAverage);*/
+                workerAverageUtilisationTableModel.fireTableDataChanged();
             });
         }
 

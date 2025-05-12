@@ -36,6 +36,15 @@ public class MySimulation extends Simulation {
     private final ArrayList<Average> workersBUtilisationAverage;
     private final ArrayList<Average> workersCUtilisationAverage;
     private final Average finishedOrdersAverage;
+
+    public Average getFinishedOrdersAverage() {
+        return finishedOrdersAverage;
+    }
+
+    public Average getAllOrdersAverage() {
+        return allOrdersAverage;
+    }
+
     private final Average allOrdersAverage;
     private final Average utilisationAll;
     private final Average utilisationA;
@@ -256,8 +265,8 @@ public class MySimulation extends Simulation {
         System.out.printf("Priemerná dĺžka frontu - Montáž: %.2f%n", montageQueueLengthAverage.mean());
         System.out.printf("Priemerná dĺžka frontu - Kompletizácia: %.2f%n", assemblyQueueLengthAverage.mean());
         System.out.println();
-
-        System.out.println("Vyťaženosť jednotlivých pracovníkov A:");
+*/
+       /* System.out.println("Vyťaženosť jednotlivých pracovníkov A:");
         for (int i = 0; i < workersAUtilisationAverage.size(); i++) {
             System.out.printf("  Pracovník A%d: %.2f%%%n", i + 1, workersAUtilisationAverage.get(i).mean() * 100);
         }
@@ -273,8 +282,7 @@ public class MySimulation extends Simulation {
         for (int i = 0; i < workersCUtilisationAverage.size(); i++) {
             System.out.printf("  Pracovník C%d: %.2f%%%n", i + 1, workersCUtilisationAverage.get(i).mean() * 100);
         }
-        System.out.println();
-*/
+        System.out.println();*/
 
         // Collect local statistics into global, update UI, etc...
 
