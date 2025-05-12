@@ -6,6 +6,7 @@ import entities.*;
 public class MyMessage extends MessageForm {
 	private Order order;
 	private Furniture furniture;
+	private Worker workerForRelease;
 
 	public MyMessage(Simulation mySim) {
 		super(mySim);
@@ -117,4 +118,12 @@ public class MyMessage extends MessageForm {
 				", time=" + mySim().currentTime() +
 				'}';
 	}
+
+    public Worker getWorkerForRelease() {
+        return workerForRelease;
+    }
+
+    public void setWorkerForRelease(Worker workerForRelease) {
+        this.workerForRelease = workerForRelease;
+    }
 }

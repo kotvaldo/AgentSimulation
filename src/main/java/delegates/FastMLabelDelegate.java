@@ -45,16 +45,19 @@ public class FastMLabelDelegate implements ISimDelegate {
     public void refresh(Simulation simulation) {
         MySimulation mySim = (MySimulation) simulation;
 
-        SwingUtilities.invokeLater(() -> {
-            utilisationALabel.setText(String.format("%.4f", mySim.getUtilisationA().mean()));
-            utilisationBLabel.setText(String.format("%.4f", mySim.getUtilisationB().mean()));
-            utilisationCLabel.setText(String.format("%.4f", mySim.getUtilisationC().mean()));
-            utilisationAllLabel.setText(String.format("%.4f", mySim.getUtilisationAll().mean()));
+        if(!mySim.isSlowMode()) {
+            SwingUtilities.invokeLater(() -> {
+                utilisationALabel.setText(String.format("%.4f", mySim.getUtilisationA().mean()));
+                utilisationBLabel.setText(String.format("%.4f", mySim.getUtilisationB().mean()));
+                utilisationCLabel.setText(String.format("%.4f", mySim.getUtilisationC().mean()));
+                utilisationAllLabel.setText(String.format("%.4f", mySim.getUtilisationAll().mean()));
 
-            utilisationAIntervalLabel.setText(mySim.getUtilisationA().confidenceInterval());
-            utilisationBIntervalLabel.setText(mySim.getUtilisationB().confidenceInterval());
-            utilisationCIntervalLabel.setText(mySim.getUtilisationC().confidenceInterval());
-            utilisationAllIntervalLabel.setText(mySim.getUtilisationAll().confidenceInterval());
-        });
+                utilisationAIntervalLabel.setText(mySim.getUtilisationA().confidenceInterval());
+                utilisationBIntervalLabel.setText(mySim.getUtilisationB().confidenceInterval());
+                utilisationCIntervalLabel.setText(mySim.getUtilisationC().confidenceInterval());
+                utilisationAllIntervalLabel.setText(mySim.getUtilisationAll().confidenceInterval());
+            });
+        }
+
     }
 }

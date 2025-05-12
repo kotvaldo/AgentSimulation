@@ -81,6 +81,7 @@ public class ManagerNabytku extends OSPABA.Manager
 
 
 	public void tryToReassignWorkerA(WorkerA worker) {
+		//System.out.println("Reassigning worker " + worker);
 		if(!queueMontage.isEmpty()) {
 			MyMessage myMessage = queueMontage.getFirst();
 			myMessage.setWorkerForMontage(worker);
@@ -100,17 +101,46 @@ public class ManagerNabytku extends OSPABA.Manager
 		}
 
 		MyMessage returnWorkerA = new MyMessage(mySim());
-		returnWorkerA.setWorkerForCutting(worker);
+		returnWorkerA.setWorkerForRelease(worker);
 		returnWorkerA.setAddressee(Id.agentPracovnikov);
 		returnWorkerA.setCode(Mc.noticeUvolniRezanie);
+		notice(returnWorkerA);
 
 	}
 	public void tryToReassignWorkerB(WorkerB worker) {
+		if(!queueAssembly.isEmpty()) {
+			MyMessage myMessage = queueAssembly.getFirst();
+			myMessage.setWorkerForAssembly(worker);
+			sendToAssembly(myMessage);
+			return;
+		}
 
+		MyMessage returnWorkerB = new MyMessage(mySim());
+		returnWorkerB.setWorkerForRelease(worker);
+		returnWorkerB.setAddressee(Id.agentPracovnikov);
+		returnWorkerB.setCode(Mc.noticeUvolniSkladanie);
+		notice(returnWorkerB);
 	}
 
 	public void tryToReassignWorkerC(WorkerC worker) {
+		if(!queueMontage.isEmpty()) {
+			MyMessage myMessage = queueMontage.getFirst();
+			myMessage.setWorkerForMontage(worker);
+			sendToMontage(myMessage);
+			return;
+		}
+		if(!queueStaining.isEmpty()) {
+			MyMessage myMessage = queueStaining.getFirst();
+			myMessage.setWorkerForStaining(worker);
+			sendToStaining(myMessage);
+			return;
+		}
 
+		MyMessage returnWorkerC = new MyMessage(mySim());
+		returnWorkerC.setWorkerForRelease(worker);
+		returnWorkerC.setAddressee(Id.agentPracovnikov);
+		returnWorkerC.setCode(Mc.noticeUvolniMorenie);
+		notice(returnWorkerC);
 	}
 
 	public void tryToReassignCutting(MyMessage myMessage) {
@@ -121,10 +151,6 @@ public class ManagerNabytku extends OSPABA.Manager
 			}
 			myMessage.setWorkPlace(wp);
 			sendToCutting(myMessage);
-			if(!queueNonProcessed.isEmpty()) {
-				tryToReassignCutting(queueNonProcessed.getFirst());
-			}
-
 			return;
 		}
 
@@ -135,24 +161,28 @@ public class ManagerNabytku extends OSPABA.Manager
 	}
 
 	public void tryToReassignStaining(MyMessage myMessage) {
-		myMessage.setCode(Mc.rVyberPracovnikaMorenie);
-		myMessage.setAddressee(Id.agentPracovnikov);
-		request(myMessage);
+		MyMessage newMessage = new MyMessage(myMessage);
+		newMessage.setCode(Mc.rVyberPracovnikaMorenie);
+		newMessage.setAddressee(Id.agentPracovnikov);
+		request(newMessage);
 	}
 
 	public void tryToReassignAssembly(MyMessage myMessage) {
-		myMessage.setCode(Mc.rVyberPracovnikaSkladanie);
-		myMessage.setAddressee(Id.agentPracovnikov);
-		request(myMessage);
+		MyMessage newMessage = new MyMessage(myMessage);
+		newMessage.setCode(Mc.rVyberPracovnikaSkladanie);
+		newMessage.setAddressee(Id.agentPracovnikov);
+		request(newMessage);
 
 	}
 	public void tryToReassignMontage(MyMessage myMessage) {
-		myMessage.setCode(Mc.rVyberPracovnikaMontaz);
-		myMessage.setAddressee(Id.agentPracovnikov);
-		request(myMessage);
+		MyMessage newMessage = new MyMessage(myMessage);
+		newMessage.setCode(Mc.rVyberPracovnikaMontaz);
+		newMessage.setAddressee(Id.agentPracovnikov);
+		request(newMessage);
 	}
 	public void sendToCutting(MyMessage myMessage) {
 		if(myMessage.getWorkerForCutting() == null && myMessage.getWorkPlace() == null) {
+			System.out.println("Chýba worker alebo workplace pri Cutting");
 			throw new IllegalStateException("Tuto sa nemôže dostať");
 		}
 		queueNonProcessed.removeIf(msg ->
@@ -160,6 +190,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		);
 
 		MyMessage newMessage = new MyMessage(myMessage);
+		newMessage.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());
 		if(myMessage.getWorkerForCutting().getCurrentWorkPlace() == null) {
 			newMessage.setCode(Mc.rPripravVSklade);
 			newMessage.setAddressee(Id.agentSkladu);
@@ -173,6 +204,7 @@ public class ManagerNabytku extends OSPABA.Manager
 
 	public void sendToStaining(MyMessage myMessage) {
 		if(myMessage.getWorkerForStaining() == null && myMessage.getWorkPlace() == null) {
+			System.out.println("Chýba worker alebo workplace pri staining");
 			throw new IllegalStateException("Tuto sa nemôže dostať");
 		}
 		queueStaining.removeIf(msg ->
@@ -181,6 +213,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		MyMessage newMessage = new MyMessage(myMessage);
 		WorkPlace current = myMessage.getWorkerForStaining().getCurrentWorkPlace();
 		WorkPlace target = myMessage.getFurniture().getWorkPlace();
+		newMessage.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());
 
 		if (current == null) {
 			newMessage.setCode(Mc.rPresunZoSkladu);
@@ -192,12 +225,12 @@ public class ManagerNabytku extends OSPABA.Manager
 			newMessage.setCode(Mc.rUrobMorenie);
 			newMessage.setAddressee(Id.agentCinnosti);
 		}
-
 		request(newMessage);
 	}
 
 	public void sendToAssembly(MyMessage myMessage) {
 		if (myMessage.getWorkerForAssembly() == null || myMessage.getWorkPlace() == null) {
+			System.out.print("Chýba worker alebo workplace pri skladaní");
 			throw new IllegalStateException("Chýba worker alebo workplace pri skladaní");
 		}
 
@@ -208,6 +241,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		MyMessage newMessage = new MyMessage(myMessage);
 		WorkPlace current = myMessage.getWorkerForAssembly().getCurrentWorkPlace();
 		WorkPlace target = myMessage.getFurniture().getWorkPlace();
+		newMessage.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());
 
 		if (current == null) {
 			newMessage.setCode(Mc.rPresunZoSkladu);
@@ -226,6 +260,7 @@ public class ManagerNabytku extends OSPABA.Manager
 
 	public void sendToMontage(MyMessage myMessage) {
 		if (myMessage.getWorkerForMontage() == null || myMessage.getWorkPlace() == null) {
+			System.out.println("Chýba worker alebo workplace pri montage");
 			throw new IllegalStateException("Chýba worker alebo workplace pri montáži");
 		}
 
@@ -236,7 +271,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		MyMessage newMessage = new MyMessage(myMessage);
 		WorkPlace current = myMessage.getWorkerForMontage().getCurrentWorkPlace();
 		WorkPlace target = myMessage.getFurniture().getWorkPlace();
-
+		newMessage.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());
 		if (current == null) {
 			newMessage.setCode(Mc.rPresunZoSkladu);
 			newMessage.setAddressee(Id.agentPohybu);
@@ -328,7 +363,11 @@ public class ManagerNabytku extends OSPABA.Manager
 		if(msg.getWorkerForStaining() == null) {
 			return;
 		}
+		sendToStaining(msg);
 
+		/*if(!queueStaining.isEmpty()) {
+			tryToReassignStaining(queueStaining.getFirst());
+		}*/
 
 	}
 
@@ -336,8 +375,13 @@ public class ManagerNabytku extends OSPABA.Manager
 	//meta! sender="AgentPracovnikov", id="XXX", type="Response"
 	public void processRVyberPracovnikaSkladanie(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
-
-
+		if(msg.getWorkerForAssembly() == null) {
+			return;
+		}
+		sendToAssembly(msg);
+		/*if(!queueAssembly.isEmpty()) {
+			tryToReassignAssembly(queueAssembly.getFirst());
+		}*/
 	}
 
 
@@ -345,8 +389,13 @@ public class ManagerNabytku extends OSPABA.Manager
 	//meta! sender="AgentPracovnikov", id="XXX", type="Response"
 	public void processRVyberPracovnikaMontaz(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
-
-
+		if(msg.getWorkerForMontage() == null) {
+			return;
+		}
+		sendToMontage(msg);
+		/*if(!queueMontage.isEmpty()) {
+			tryToReassignMontage(queueMontage.getFirst());
+		}*/
 	}
 
 	//Sklad
@@ -423,6 +472,9 @@ public class ManagerNabytku extends OSPABA.Manager
 		MyMessage msg = (MyMessage) message.createCopy();
 		Worker previousWorkerFromCutting = msg.getWorkerForCutting();
 		msg.setWorkerForCutting(null);
+
+		msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_STAINING.getValue());
+
 		queueStaining.addLast(msg);
 		tryToReassignStaining(queueStaining.getFirst());
 
@@ -434,23 +486,22 @@ public class ManagerNabytku extends OSPABA.Manager
 	public void processRUrobMorenie(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
 		MySimulation mySimulation = (MySimulation) _mySim;
+		if(mySimulation.getGenerators().getRealisePaintingDist().nextDouble() < 0.15) {
+			Worker workerForPainting = msg.getWorkerForStaining();
+			msg.setWorkerForStaining(null);
+			msg.setWorkerForPainting(workerForPainting);
+			msg.setCode(Mc.rUrobLakovanie);
+			msg.setAddressee(mySim().findAgent(Id.agentCinnosti));
+			request(msg);
+		} else {
+			Worker previousWorkerFromStaining = msg.getWorkerForStaining();
+			msg.setWorkerForStaining(null);
+			queueAssembly.addLast(msg);
+			msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
 
-
-	}
-
-
-	//meta! sender="AgentCinnosti", id="289", type="Response"
-	// Použitie v processRUrobMontaz
-	public void processRUrobMontaz(MessageForm message) {
-		MyMessage msg = (MyMessage) message.createCopy();
-	}
-
-
-
-	//meta! sender="AgentCinnosti", id="288", type="Response"
-	public void processRUrobSkladanie(MessageForm message) {
-		MyMessage msg = (MyMessage) message.createCopy();
-
+			tryToReassignWorkerC((WorkerC) previousWorkerFromStaining);
+			tryToReassignAssembly(queueAssembly.getFirst());
+		}
 
 	}
 
@@ -458,10 +509,77 @@ public class ManagerNabytku extends OSPABA.Manager
 	//meta! sender="AgentCinnosti", id="287", type="Response"
 	public void processRUrobLakovanie(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
+		Worker previousWorkerFromPainting = msg.getWorkerForPainting();
+		msg.setWorkerForPainting(null);
+		queueAssembly.addLast(msg);
+		msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
 
+		tryToReassignWorkerC((WorkerC) previousWorkerFromPainting);
+		if(!queueAssembly.isEmpty()) {
+			tryToReassignAssembly(queueAssembly.getFirst());
+
+		}
 
 
 	}
+
+	//meta! sender="AgentCinnosti", id="288", type="Response"
+	public void processRUrobSkladanie(MessageForm message) {
+		MyMessage msg = (MyMessage) message.createCopy();
+		Worker previousWorkerFromAssembly = msg.getWorkerForAssembly();
+		msg.setWorkerForAssembly(null);
+
+		if(msg.getFurniture().getType() == 3) {
+			queueMontage.addLast(msg);
+			msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_MONTAGE.getValue());
+			tryToReassignMontage(queueMontage.getFirst());
+		} else {
+			msg.getFurniture().setIsDone(_mySim.currentTime());
+			releaseWorkPlace(msg.getWorkPlace());
+			msg.getWorkPlace().clear();
+			msg.getFurniture().setWorkPlace(null);
+			if(msg.getFurniture().getOrder().isOrderFinished()) {
+				MyMessage msg2 = new MyMessage(mySim());
+				msg2.setCode(Mc.noticeHotovaObjednavka);
+				msg2.setAddressee(mySim().findAgent(Id.agentModelu));
+				msg2.setOrder(msg.getOrder());
+				notice(msg2);
+			}
+
+		}
+		tryToReassignWorkerB((WorkerB) previousWorkerFromAssembly);
+	}
+
+
+	//meta! sender="AgentCinnosti", id="289", type="Response"
+	// Použitie v processRUrobMontaz
+	public void processRUrobMontaz(MessageForm message) {
+		MyMessage msg = (MyMessage) message.createCopy();
+		Worker previousWorkerForMontage = msg.getWorkerForMontage();
+		msg.setWorkerForMontage(null);
+
+		if(previousWorkerForMontage instanceof WorkerA) {
+			tryToReassignWorkerA((WorkerA) previousWorkerForMontage);
+		} else if(previousWorkerForMontage instanceof WorkerC) {
+			tryToReassignWorkerC((WorkerC) previousWorkerForMontage);
+		}
+
+		msg.getFurniture().setIsDone(_mySim.currentTime());
+		releaseWorkPlace(msg.getWorkPlace());
+		msg.getWorkPlace().clear();
+		msg.getFurniture().setWorkPlace(null);
+
+		if(msg.getFurniture().getOrder().isOrderFinished()) {
+			MyMessage msg2 = new MyMessage(mySim());
+			msg2.setCode(Mc.noticeHotovaObjednavka);
+			msg2.setAddressee(mySim().findAgent(Id.agentModelu));
+			msg2.setOrder(msg.getOrder());
+			notice(msg2);
+		}
+	}
+
+
+
 
 
 	//meta! userInfo="Process messages defined in code", id="0"

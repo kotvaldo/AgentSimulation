@@ -60,7 +60,7 @@ public class ManagerPracovnikovB extends OSPABA.Manager
 	//meta! sender="AgentPracovnikov", id="240", type="Notice"
 	public void processNoticeUvolniB(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
-		WorkerB worker = (WorkerB) msg.getWorkerForAssembly();
+		WorkerB worker = (WorkerB) msg.getWorkerForRelease();
 
 		if (worker != null) {
 			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());

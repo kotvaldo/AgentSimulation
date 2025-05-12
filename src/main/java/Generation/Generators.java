@@ -38,6 +38,7 @@ public class Generators {
 
         countOfFurnitureDist = new UniformDiscrete(1,6, rand.nextInt());
         orderArrivalDist = new Exponential(1800.0, rand.nextInt());
+        //orderArrivalDist = new Exponential(4500.0, rand.nextInt());
         ArrayList<EmpiricData<Integer>> typeList = new ArrayList<>();
 
 

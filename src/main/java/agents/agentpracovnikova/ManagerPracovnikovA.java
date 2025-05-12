@@ -85,10 +85,10 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		MyMessage msg = (MyMessage) message.createCopy();
 		WorkerA worker = null;
 
-		if (msg.getWorkerForCutting() instanceof WorkerA) {
-			worker = (WorkerA) msg.getWorkerForCutting();
+		if (msg.getWorkerForRelease() instanceof WorkerA) {
+			worker = (WorkerA) msg.getWorkerForRelease();
 		} else if (msg.getWorkerForMontage() instanceof WorkerA) {
-			worker = (WorkerA) msg.getWorkerForMontage();
+			worker = (WorkerA) msg.getWorkerForRelease();
 		}
 
 		if (worker != null) {

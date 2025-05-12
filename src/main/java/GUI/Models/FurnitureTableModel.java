@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class FurnitureTableModel extends AbstractTableModel {
 
     private final String[] columns = {
-            "Furniture ID", "Worker ID", "Type", "WorkplaceId", "State", "Total Time",
+            "Furniture ID", "Worker ID", "Type", "WorkplaceId", "State", "Order ID"
     };
 
     private ArrayList<Furniture> furnitures;
@@ -59,7 +59,8 @@ public class FurnitureTableModel extends AbstractTableModel {
             case 2 -> typeName;
             case 3 -> f.getWorkPlace() != null ? f.getWorkPlace().getId() : "None";
             case 4 -> FurnitureStateValues.getNameByValue(f.getState());
-            case 10 -> f.getTotalTime() == -1 ? "None" : f.getTotalTime();
+            case 5 -> f.getOrder().getId();
+            //case 10 -> f.getTotalTime() == -1 ? "None" : f.getTotalTime();
 
             default -> null;
         };

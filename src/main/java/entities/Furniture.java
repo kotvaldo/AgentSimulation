@@ -145,7 +145,13 @@ public class Furniture {
     }
 
     public void setWorkPlace(WorkPlace workPlace) {
-        this.workPlace = workPlace;
+        if(workPlace != null) {
+            this.workPlace = workPlace;
+            this.workPlace.setFurniture(this);
+        } else {
+            this.workPlace = null;
+        }
+
     }
 
     public boolean isDone() {

@@ -105,16 +105,8 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 
 	//meta! sender="AgentPracovnikov", id="241", type="Notice"
 	public void processNoticeUvolniC(MessageForm message) {
-		MyMessage msg = (MyMessage) message;
-		WorkerC worker = null;
-
-		if (msg.getWorkerForStaining() instanceof WorkerC) {
-			worker = (WorkerC) msg.getWorkerForStaining();
-		} else if (msg.getWorkerForPainting() instanceof WorkerC) {
-			worker = (WorkerC) msg.getWorkerForPainting();
-		} else if (msg.getWorkerForMontage() instanceof WorkerC) {
-			worker = (WorkerC) msg.getWorkerForMontage();
-		}
+		MyMessage msg = (MyMessage) message.createCopy();
+		WorkerC worker = (WorkerC) msg.getWorkerForRelease();
 
 		if (worker != null) {
 			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
