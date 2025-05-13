@@ -262,7 +262,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         });
 
         slowDownCheckBox = new JCheckBox("Slow Down", true);
-        animationCheckBox = new JCheckBox("Animation", false);
+        animationCheckBox = new JCheckBox("Only Animation", false);
 
         //stats
         this.statsPanel.add(slowDownCheckBox);
