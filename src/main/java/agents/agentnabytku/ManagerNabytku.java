@@ -95,6 +95,7 @@ public class ManagerNabytku extends OSPABA.Manager
 			if(wp == null) {
 				MyMessage returnWorkerA = new MyMessage(mySim());
 				returnWorkerA.setWorkerForRelease(worker);
+				myMessage.setWorkerForCutting(null);
 				returnWorkerA.setAddressee(Id.agentPracovnikov);
 				returnWorkerA.setCode(Mc.noticeUvolniRezanie);
 				notice(returnWorkerA);
@@ -156,12 +157,14 @@ public class ManagerNabytku extends OSPABA.Manager
 			}
 			myMessage.setWorkPlace(wp);
 			sendToCutting(myMessage);
+			if(!queueNonProcessed.isEmpty()) {
+				tryToReassignCutting(queueNonProcessed.getFirst());
+			}
 			return;
 		}
 
 		myMessage.setCode(Mc.rVyberPracovnikaRezanie);
 		myMessage.setAddressee(Id.agentPracovnikov);
-
 		request(myMessage);
 	}
 
