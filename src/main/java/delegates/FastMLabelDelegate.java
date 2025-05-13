@@ -103,20 +103,26 @@ public class FastMLabelDelegate implements ISimDelegate {
                 ArrayList<Average> workersAUtilisationAverage = new ArrayList<>(mySim.getWorkersAUtilisationAverage());
                 ArrayList<Average> workersBUtilisationAverage = new ArrayList<>(mySim.getWorkersBUtilisationAverage());
                 ArrayList<Average> workersCUtilisationAverage = new ArrayList<>(mySim.getWorkersCUtilisationAverage());
-                /*System.out.print("[UTILISATION MEANS] A: ");
-                workersAUtilisationAverage.forEach(avg -> System.out.print(String.format("%.4f ", avg.mean())));
 
-                System.out.print(" | B: ");
-                workersBUtilisationAverage.forEach(avg -> System.out.print(String.format("%.4f ", avg.mean())));
-
-                System.out.print(" | C: ");
-                workersCUtilisationAverage.forEach(avg -> System.out.print(String.format("%.4f ", avg.mean())));
-
-                System.out.println(); // nový riadok*/
                 if(((MySimulation) simulation).getActualRepCount() > 30) {
                     workerAverageUtilisationTableModel.setNewData(workersAUtilisationAverage, workersBUtilisationAverage, workersCUtilisationAverage);
+                }
+
+                double seconds = mySim.getTimeOfWorkAverage().mean();
+                double hours = seconds / 3600.0;
+                mySim.getTimeOfWorkAverage().confidenceInterval();
+                if(mySim.getActualRepCount() > 30) {
+                    double lowerS = mySim.getTimeOfWorkAverage().getLowerBound();
+                    double upperS = mySim.getTimeOfWorkAverage().getUpperBound();
+                    double lowerH = lowerS / 3600.0;
+                    double upperH = upperS / 3600.0;
+                    orderIntervalLabel.setText("CI: " +
+                            String.format("[ %.4f ", lowerS) + "; " + String.format("%.4f ]", upperS) + "        " +
+                            String.format("[ %.4f ", lowerH) + "; " + String.format("%.4f ]", upperH) + " h");
 
                 }
+
+                orderTimeLabel.setText("Average time of Work: " + String.format("%.4f s", seconds) + "        " +  String.format("%.4f", hours) + " h");
 
             });
         }
