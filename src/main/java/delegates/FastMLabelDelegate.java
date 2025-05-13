@@ -28,6 +28,8 @@ public class FastMLabelDelegate implements ISimDelegate {
     private final JLabel stainingQLLabel;
     private final JLabel assemblyQLLabel;
     private final JLabel montageQLLabel;
+    private final JLabel orderTimeLabel;
+    private final JLabel orderIntervalLabel;
 
     private final WorkerAverageUtilisationTableModel workerAverageUtilisationTableModel;
     public FastMLabelDelegate(JLabel utilisationALabel,
@@ -44,7 +46,9 @@ public class FastMLabelDelegate implements ISimDelegate {
                               JLabel stainingQLLabel,
                               JLabel assemblyQLLabel,
                               JLabel montageQLLabel,
-                              WorkerAverageUtilisationTableModel workerAverageUtilisationTableModel
+                              WorkerAverageUtilisationTableModel workerAverageUtilisationTableModel,
+                              JLabel orderTimeLabel,
+                              JLabel orderIntervalLabel
                               ) {
         this.utilisationALabel = utilisationALabel;
         this.utilisationBLabel = utilisationBLabel;
@@ -61,6 +65,8 @@ public class FastMLabelDelegate implements ISimDelegate {
         this.assemblyQLLabel = assemblyQLLabel;
         this.montageQLLabel = montageQLLabel;
         this.workerAverageUtilisationTableModel = workerAverageUtilisationTableModel;
+        this.orderTimeLabel = orderTimeLabel;
+        this.orderIntervalLabel = orderIntervalLabel;
 
     }
 
@@ -94,12 +100,24 @@ public class FastMLabelDelegate implements ISimDelegate {
                 assemblyQLLabel.setText("Assembly QL : " + String.format("%.4f", mySim.getAssemblyQueueLengthAverage().mean()));
                 montageQLLabel.setText("Montage QL : " + String.format("%.4f", mySim.getMontageQueueLengthAverage().mean()));
 
-               /* ArrayList<Average> workersAUtilisationAverage = new ArrayList<>(mySim.getWorkersAUtilisationAverage());
+                ArrayList<Average> workersAUtilisationAverage = new ArrayList<>(mySim.getWorkersAUtilisationAverage());
                 ArrayList<Average> workersBUtilisationAverage = new ArrayList<>(mySim.getWorkersBUtilisationAverage());
                 ArrayList<Average> workersCUtilisationAverage = new ArrayList<>(mySim.getWorkersCUtilisationAverage());
+                /*System.out.print("[UTILISATION MEANS] A: ");
+                workersAUtilisationAverage.forEach(avg -> System.out.print(String.format("%.4f ", avg.mean())));
 
-                workerAverageUtilisationTableModel.setNewData(workersAUtilisationAverage, workersBUtilisationAverage, workersCUtilisationAverage);*/
-                workerAverageUtilisationTableModel.fireTableDataChanged();
+                System.out.print(" | B: ");
+                workersBUtilisationAverage.forEach(avg -> System.out.print(String.format("%.4f ", avg.mean())));
+
+                System.out.print(" | C: ");
+                workersCUtilisationAverage.forEach(avg -> System.out.print(String.format("%.4f ", avg.mean())));
+
+                System.out.println(); // nový riadok*/
+                if(((MySimulation) simulation).getActualRepCount() > 30) {
+                    workerAverageUtilisationTableModel.setNewData(workersAUtilisationAverage, workersBUtilisationAverage, workersCUtilisationAverage);
+
+                }
+
             });
         }
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class WorkerAverageUtilisationTableModel extends AbstractTableModel {
 
-    private final String[] columns = {"Worker ID", "Group", "Utilisation"};
+    private final String[] columns = {"Worker ID", "Group", "Utilisation", "CI"};
     private ArrayList<Average> workersAUtilisationAverage;
     private ArrayList<Average> workersBUtilisationAverage;
     private ArrayList<Average> workersCUtilisationAverage;
@@ -36,6 +36,7 @@ public class WorkerAverageUtilisationTableModel extends AbstractTableModel {
         SwingUtilities.invokeLater(this::fireTableDataChanged);
 
     }
+
     @Override
     public int getColumnCount() {
         return columns.length;
@@ -73,7 +74,9 @@ public class WorkerAverageUtilisationTableModel extends AbstractTableModel {
             case 0 -> rowIndex + 1;
             case 1 -> group;
             case 2 -> avg != null ? String.format("%.4f", avg.mean()) : "-";
+            case 3 -> avg != null ? avg.confidenceInterval() : "-";
             default -> null;
         };
     }
+
 }

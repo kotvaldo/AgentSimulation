@@ -195,6 +195,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		);
 
 		MyMessage newMessage = new MyMessage(myMessage);
+		newMessage.getWorkerForCutting().setState(WorkerBussyState.BUSY.getValue(), _mySim.currentTime());
 		newMessage.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());
 		if(myMessage.getWorkerForCutting().getCurrentWorkPlace() == null) {
 			newMessage.setCode(Mc.rPripravVSklade);
@@ -219,7 +220,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		WorkPlace current = myMessage.getWorkerForStaining().getCurrentWorkPlace();
 		WorkPlace target = myMessage.getFurniture().getWorkPlace();
 		newMessage.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());
-
+		newMessage.getWorkerForStaining().setState(WorkerBussyState.BUSY.getValue(), _mySim.currentTime());
 		if (current == null) {
 			newMessage.setCode(Mc.rPresunZoSkladu);
 			newMessage.setAddressee(Id.agentPohybu);
@@ -247,7 +248,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		WorkPlace current = myMessage.getWorkerForAssembly().getCurrentWorkPlace();
 		WorkPlace target = myMessage.getFurniture().getWorkPlace();
 		newMessage.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());
-
+		newMessage.getWorkerForAssembly().setState(WorkerBussyState.BUSY.getValue(), mySim().currentTime());
 		if (current == null) {
 			newMessage.setCode(Mc.rPresunZoSkladu);
 			newMessage.setAddressee(Id.agentPohybu);
@@ -277,6 +278,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		WorkPlace current = myMessage.getWorkerForMontage().getCurrentWorkPlace();
 		WorkPlace target = myMessage.getFurniture().getWorkPlace();
 		newMessage.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());
+		newMessage.getWorkerForMontage().setState(WorkerBussyState.BUSY.getValue(), _mySim.currentTime());
 		if (current == null) {
 			newMessage.setCode(Mc.rPresunZoSkladu);
 			newMessage.setAddressee(Id.agentPohybu);
@@ -353,6 +355,12 @@ public class ManagerNabytku extends OSPABA.Manager
 
 		WorkPlace wp = tryAssignFreeWorkplace();
 		if (wp == null) {
+			MyMessage returnWorkerA = new MyMessage(mySim());
+			returnWorkerA.setWorkerForRelease(msg.getWorkerForCutting());
+			msg.setWorkerForCutting(null);
+			returnWorkerA.setAddressee(Id.agentPracovnikov);
+			returnWorkerA.setCode(Mc.noticeUvolniRezanie);
+			notice(returnWorkerA);
 			return;
 		}
 		msg.setWorkPlace(wp);

@@ -156,9 +156,6 @@ public class MySimulation extends Simulation {
         partialTimeOfWork.clear();
         finishedOrders.clear();
         IDGenerator.getInstance().clearGenerators();
-        for (Average avg : workersAUtilisationAverage) avg.clear();
-        for (Average avg : workersBUtilisationAverage) avg.clear();
-        for (Average avg : workersCUtilisationAverage) avg.clear();
         for (int i = 0; i < countWorkerA; i++) {
             workersAArrayList.get(i).clear();
         }

@@ -38,7 +38,6 @@ public class GraphDelegate implements ISimDelegate {
         timeAverage.confidenceInterval();
         if(mySim.getActualRepCount() > mySim.getBurnInCount()) {
             if (!mySim.isSlowMode()) {
-
                 SwingUtilities.invokeLater(() -> {
                     int rep = mySim.getActualRepCount();
                     double mean = timeAverage.mean();

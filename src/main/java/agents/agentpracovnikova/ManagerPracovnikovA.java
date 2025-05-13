@@ -46,7 +46,6 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		}
 		//System.out.println("Free workersA in Cutting: " + freeWorkers.size());
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue(), mySim().currentTime());
 			msg.setWorkerForCutting(worker);
 		} else {
 			msg.setWorkerForCutting(null);
@@ -68,7 +67,6 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		}
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue(), mySim().currentTime());
 			msg.setWorkerForMontage(worker);
 		} else {
 			msg.setWorkerForMontage(null);

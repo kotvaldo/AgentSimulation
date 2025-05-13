@@ -91,7 +91,6 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 		}
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue(), mySim().currentTime());
 			msg.setWorkerForPainting(worker);
 		} else {
 			msg.setWorkerForPainting(null);

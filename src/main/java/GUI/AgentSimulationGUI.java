@@ -53,7 +53,6 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
     private JLabel utilisationAllIntervalLabel;
     private UtilisationTableModel utilisationTableModel;
     private JTable utilisationTable;
-    private Subject subject;
     private JFreeChart chart;
     private ChartPanel chartPanel;
     XYSeriesCollection dataset;
@@ -107,7 +106,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         timeOfWorkPanel.setVisible(false);
         Subject subject = new Subject();
 
-        replicationLabel.setVisible(false);
+        replicationLabel.setVisible(true);
         core = new MySimulation();
         dayCountLabel = new JLabel("Day : 0");
         //callback UI refresh
@@ -249,7 +248,6 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         this.statsPanel.add(newOrdersPanel);
         this.statsPanel.add(timeOfWorkPanel);
 
-
         //input
         this.inputPanel.add(simulationSpeedLabel);
         this.inputPanel.add(speedSlider);
@@ -284,7 +282,9 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                 queueLengthLabel2,
                 queueLengthLabel4,
                 queueLengthLabel5,
-                workerAverageUtilisationTableModel
+                workerAverageUtilisationTableModel,
+                timeOfWorkLabel,
+                timeOfWorkIntervalLabel
 
         );
 
@@ -399,7 +399,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
 
-        // ==== KONFIGURÁCIA Z PRESET SIMULATION VALUES ====
+       /* // ==== KONFIGURÁCIA Z PRESET SIMULATION VALUES ====
         workerACountValue = new JLabel("Workers A: ");
         workerBCountValue = new JLabel("Workers B: ");
         workerCCountValue = new JLabel("Workers C: ");
@@ -413,6 +413,27 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         customPanel.add(workplaceCountValue, gbc);
         customPanel.add(replicationsCountValue, gbc);
         customPanel.add(burnInValue, gbc);
+*/
+        // Oddeľovač
+        customPanel.add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
+
+        // ==== SPINNERY PRE NASTAVENIE ====
+        workerASpinner = new JSpinner(new SpinnerNumberModel(6, 0, 100, 1));
+        workerBSpinner = new JSpinner(new SpinnerNumberModel(5, 0, 100, 1));
+        workerCSpinner = new JSpinner(new SpinnerNumberModel(38, 0, 100, 1));
+        workPlaceSpinner = new JSpinner(new SpinnerNumberModel(58, 0, 100, 1));
+
+        JPanel spinnerPanel = new JPanel(new GridLayout(4, 2, 5, 5));
+        spinnerPanel.add(new JLabel("Set Workers A:"));
+        spinnerPanel.add(workerASpinner);
+        spinnerPanel.add(new JLabel("Set Workers B:"));
+        spinnerPanel.add(workerBSpinner);
+        spinnerPanel.add(new JLabel("Set Workers C:"));
+        spinnerPanel.add(workerCSpinner);
+        spinnerPanel.add(new JLabel("Set Workplaces:"));
+        spinnerPanel.add(workPlaceSpinner);
+
+        customPanel.add(spinnerPanel, gbc);
 
         // Oddeľovač
         customPanel.add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
@@ -479,6 +500,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
 
 
 
+
     @Override
     protected void startSimulation() {
         if (worker == null || worker.isDone()) {
@@ -495,29 +517,24 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                     furnitureTableModel.setFurniture(new ArrayList<>());
                 });
 
-                int workersA = PresetSimulationValues.WORKERS_A_COUNT.asInteger();
-                int workersB = PresetSimulationValues.WORKERS_B_COUNT.asInteger();
-                int workersC = PresetSimulationValues.WORKERS_C_COUNT.asInteger();
-                int workplaces = PresetSimulationValues.WORKPLACES_COUNT.asInteger();
-                int replications = PresetSimulationValues.REPLICATIONS_COUNT.asInteger();
-                int burnIn = PresetSimulationValues.BURN_IN_COUNT.asInteger();
+                // === ZÍSKANIE HODNÔT Z GUI ===
+                int workersA = (int) workerASpinner.getValue();
+                int workersB = (int) workerBSpinner.getValue();
+                int workersC = (int) workerCSpinner.getValue();
+                int workplaces = (int) workPlaceSpinner.getValue();
+                int replications = Integer.parseInt(replicationsInput.getText());
+                int burnIn = Integer.parseInt(burnInInput.getText());
 
-                workerACountValue.setText("Workers A: " + workersA);
-                workerBCountValue.setText("Workers B: " + workersB);
-                workerCCountValue.setText("Workers C: " + workersC);
-                workplaceCountValue.setText("Workplaces: " + workplaces);
-                replicationsCountValue.setText("Replications: " + replications);
-                burnInValue.setText("Burn-in count: " + burnIn);
+                // === NASTAVENIE DO SIMULÁCIE ===
+                core.setCountWorkerA(workersA);
+                core.setCountWorkerB(workersB);
+                core.setCountWorkerC(workersC);
+                core.setWorkPlacesCount(workplaces);
+                core.setReplicationsCount(replications);
+                core.setBurnInCount(burnIn);
 
-
-                int replicationCount = PresetSimulationValues.REPLICATIONS_COUNT.asInteger();
-                // System.out.println("replication count: " + replicationCount);
-
-                int burnInCount = PresetSimulationValues.BURN_IN_COUNT.asInteger();
-                core.setReplicationsCount(replicationCount);
-                core.setBurnInCount(burnInCount);
-
-                if(slowDownCheckBox.isSelected()) {
+                // === SLOWMODE / FASTMODE ===
+                if (slowDownCheckBox.isSelected()) {
                     core.setSlowMode(true);
                     SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
                     core.setSimSpeed(
@@ -529,12 +546,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                     core.setMaxSimSpeed();
                 }
 
-
-                core.setCountWorkerA(PresetSimulationValues.WORKERS_A_COUNT.asInteger());
-                core.setCountWorkerB(PresetSimulationValues.WORKERS_B_COUNT.asInteger());
-                core.setCountWorkerC(PresetSimulationValues.WORKERS_C_COUNT.asInteger());
-                core.setWorkPlacesCount(PresetSimulationValues.WORKPLACES_COUNT.asInteger());
-
+                // === SPUSTENIE ===
                 worker = new AgentSimulationWorker();
                 worker.execute();
 
@@ -542,7 +554,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                 stopButton.setEnabled(true);
 
             } catch (Exception e) {
-
+                e.printStackTrace(); // pre debug, odporúčam logovať chyby
             }
         }
     }

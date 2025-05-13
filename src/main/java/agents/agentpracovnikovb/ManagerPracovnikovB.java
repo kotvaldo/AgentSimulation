@@ -45,7 +45,6 @@ public class ManagerPracovnikovB extends OSPABA.Manager
 		}
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue(), mySim().currentTime());
 			msg.setWorkerForAssembly(worker);
 		} else {
 			msg.setWorkerForAssembly(null);
