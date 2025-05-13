@@ -2,9 +2,13 @@ package entities;
 
 import Enums.WorkerBussyState;
 import IDGenerator.IDGenerator;
+import OSPAnimator.AnimShapeItem;
 import Statistics.Utilisation;
 
-public class Worker {
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+
+public class Worker extends Entity {
     private final int id;
     private int state;
     private final String type;
@@ -40,8 +44,6 @@ public class Worker {
             }
         }
     }
-
-
 
 
     public int getId() {
@@ -89,4 +91,34 @@ public class Worker {
         utilisation.clear();
 
     }
+
+
+    @Override
+    public void initAnimationObject() {
+        if (animShapeItem != null) {
+            return;
+        }
+
+        AnimShapeItem shapeItem = new AnimShapeItem();
+        assignRandomPosition();
+        // shapeItem.setPosition(currPosition); // odkomentuj, ak máš definovanú pozíciu
+
+        Shape shape = new Ellipse2D.Double(0, 0, 15, 15);
+        shapeItem.setShape(shape);
+
+
+        Color color = switch (type) {
+            case "A" -> Color.RED;
+            case "B" -> Color.GREEN;
+            case "C" -> Color.BLUE;
+            default -> Color.GRAY;
+        };
+        shapeItem.setColor(color);
+
+        this.animShapeItem = shapeItem;
+    }
+
+
+
+
 }

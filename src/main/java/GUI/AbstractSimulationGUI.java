@@ -21,7 +21,8 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JLabel burnLabel;
     protected JPanel controlPanel;
     protected JTabbedPane centerPanel;
-
+    protected JButton btnCreateAnimator = new JButton("Create Animator");
+    protected JButton btnRemoveAnimator = new JButton("Remove Animator");
 
     protected AbstractSimulationGUI(String title) {
         setTitle(title);

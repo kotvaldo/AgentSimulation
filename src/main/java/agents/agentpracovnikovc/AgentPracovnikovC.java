@@ -1,7 +1,12 @@
 package agents.agentpracovnikovc;
 
 import OSPABA.*;
+import OSPAnimator.Flags;
+import entities.Worker;
+import entities.WorkerC;
 import simulation.*;
+
+import java.util.LinkedList;
 
 //meta! id="230"
 public class AgentPracovnikovC extends OSPABA.Agent
@@ -27,6 +32,22 @@ public class AgentPracovnikovC extends OSPABA.Agent
 		addOwnMessage(Mc.rVyberPracovnikaCMorenie);
 		addOwnMessage(Mc.rVyberPracovnikaCLakovanie);
 		addOwnMessage(Mc.noticeUvolniC);
+	}
+
+	public void initAnimator() {
+		Flags.SHOW_WARNING = false;
+		ManagerPracovnikovC managerNabytku = (ManagerPracovnikovC) myManager();
+		if (_mySim.animatorExists()) {
+			LinkedList<WorkerC> freeWorkers = managerNabytku.getFreeWorkers();
+			if (freeWorkers != null) {
+				for (Worker wp : freeWorkers) {
+					mySim().animator().register(wp.getAnimShapeItem());
+					wp.setCurrPosition(wp.getCurrPosition());
+					wp.getAnimShapeItem().setVisible(true);
+				}
+			}
+		}
+
 	}
 	//meta! tag="end"
 }

@@ -2,8 +2,9 @@ package entities;
 
 import Enums.WorkPlaceStateValues;
 import IDGenerator.IDGenerator;
+import OSPAnimator.AnimImageItem;
 
-public class WorkPlace {
+public class WorkPlace extends Entity {
     private final int id;
     private Furniture furniture;
     private Worker actualWorkingWorker;
@@ -93,5 +94,22 @@ public class WorkPlace {
         this.activity = "Nothing";
         this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
     }
+
+    @Override
+    public void initAnimationObject() {
+        if (animImageItem != null) {
+            return;
+        }
+        AnimImageItem shapeItem = new AnimImageItem("src/main/resources/images/crafting_table.jpg", 512, 512);
+
+        shapeItem.setImageSize(30, 30);
+        this.animImageItem = shapeItem;
+
+    }
+
+
+
+
+
 
 }

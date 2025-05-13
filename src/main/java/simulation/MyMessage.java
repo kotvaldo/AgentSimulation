@@ -1,12 +1,14 @@
 package simulation;
 
 import OSPABA.*;
+import OSPAnimator.AnimItem;
 import entities.*;
 
 public class MyMessage extends MessageForm {
 	private Order order;
 	private Furniture furniture;
 	private Worker workerForRelease;
+	private AnimItem animItem;
 
 	public MyMessage(Simulation mySim) {
 		super(mySim);
@@ -28,6 +30,7 @@ public class MyMessage extends MessageForm {
 		this.order = original.getOrder();
 		this.furniture = original.getFurniture();
 		this.workerForRelease = original.getWorkerForRelease();
+		this.animItem = original.getAnimItem();
 	}
 
 	public Order getOrder() {
@@ -126,5 +129,13 @@ public class MyMessage extends MessageForm {
 
     public void setWorkerForRelease(Worker workerForRelease) {
         this.workerForRelease = workerForRelease;
+    }
+
+    public AnimItem getAnimItem() {
+        return animItem;
+    }
+
+    public void setAnimItem(AnimItem animItem) {
+        this.animItem = animItem;
     }
 }

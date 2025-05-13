@@ -2,8 +2,18 @@ package entities;
 
 import Enums.FurnitureStateValues;
 import IDGenerator.IDGenerator;
+import OSPAnimator.AnimImageItem;
+import OSPAnimator.AnimShape;
+import OSPAnimator.AnimShapeItem;
 
-public class Furniture {
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
+
+public class Furniture extends Entity {
     private final int id;
     private final Order order;
     private final int type;
@@ -67,10 +77,32 @@ public class Furniture {
 
     public void setState(int state) {
         this.state = state;
-        if(this.workPlace != null) {
+        if (this.workPlace != null) {
             this.workPlace.setActivity(FurnitureStateValues.getNameByValue(state));
         }
     }
+
+
+   /* public void initAnimObject(double x, double y) {
+        if(anim != null) {
+            return;
+        }
+
+        AnimShapeItem imageItem = new AnimImageItem();
+
+        String imagePath = switch (type) {
+            case 1 -> "../resources/images/table.png";
+            case 2 -> "../resources/images/chair.png";
+            case 3 -> "../resources/images/wardrobe.png";
+            default -> null;
+        };
+
+        imageItem.setImage(imagePath);
+
+
+        this.anim = imageItem;
+    }
+*/
 
     public double getStartTimeCuttingQueue() {
         return startTimeCuttingQueue;
@@ -79,11 +111,13 @@ public class Furniture {
     public void setStartTimeCuttingQueue(double startTimeCuttingQueue) {
         this.startTimeCuttingQueue = startTimeCuttingQueue;
     }
+
     public void setIsDone(double endTime) {
         this.isDone = true;
         this.state = FurnitureStateValues.FURNITURE_DONE.getValue();
         this.totalTime = endTime - this.startTime;
     }
+
     public double getEndTimeCuttingQueue() {
         return endTimeCuttingQueue;
     }
@@ -145,7 +179,7 @@ public class Furniture {
     }
 
     public void setWorkPlace(WorkPlace workPlace) {
-        if(workPlace != null) {
+        if (workPlace != null) {
             this.workPlace = workPlace;
             this.workPlace.setFurniture(this);
         } else {
@@ -302,4 +336,15 @@ public class Furniture {
     public void setWorkerForStaining(Worker workerForStaining) {
         this.workerForStaining = workerForStaining;
     }
+
+
+
+    @Override
+    public void initAnimationObject() {
+
+    }
+
+
+
+
 }

@@ -2,9 +2,11 @@ package agents.agentnabytku;
 
 import Enums.*;
 import OSPABA.*;
+import OSPAnimator.*;
 import entities.*;
 import simulation.*;
 
+import java.awt.*;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
@@ -15,6 +17,11 @@ public class ManagerNabytku extends OSPABA.Manager
 	private final QueueStaining queueStaining;
 	private final QueueAssembly queueAssembly;
 	private final QueueMontage queueMontage;
+
+	public PriorityQueue<WorkPlace> getFreeWorkplaces() {
+		return freeWorkplaces;
+	}
+
 	private final PriorityQueue<WorkPlace> freeWorkplaces;
 
 	public QueueNonProcessed getQueueNonProcessed() {
@@ -36,6 +43,7 @@ public class ManagerNabytku extends OSPABA.Manager
 	public QueuePainting getQueuePainting() {
 		return queuePainting;
 	}
+
 
 	private final QueuePainting queuePainting;
 	public ManagerNabytku(int id, Simulation mySim, Agent myAgent)
@@ -88,6 +96,7 @@ public class ManagerNabytku extends OSPABA.Manager
 			sendToMontage(myMessage);
 			return;
 		}
+
 		if(!queueNonProcessed.isEmpty()) {
 			MyMessage myMessage = queueNonProcessed.getFirst();
 			myMessage.setWorkerForCutting(worker);
@@ -167,6 +176,7 @@ public class ManagerNabytku extends OSPABA.Manager
 		myMessage.setAddressee(Id.agentPracovnikov);
 		request(myMessage);
 	}
+
 
 	public void tryToReassignStaining(MyMessage myMessage) {
 		MyMessage newMessage = new MyMessage(myMessage);
@@ -393,11 +403,6 @@ public class ManagerNabytku extends OSPABA.Manager
 			return;
 		}
 		sendToStaining(msg);
-
-		/*if(!queueStaining.isEmpty()) {
-			tryToReassignStaining(queueStaining.getFirst());
-		}*/
-
 	}
 
 

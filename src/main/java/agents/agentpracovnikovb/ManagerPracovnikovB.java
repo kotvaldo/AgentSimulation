@@ -10,6 +10,10 @@ import java.util.LinkedList;
 //meta! id="229"
 public class ManagerPracovnikovB extends OSPABA.Manager
 {
+	public LinkedList<WorkerB> getFreeWorkers() {
+		return freeWorkers;
+	}
+
 	private LinkedList<WorkerB> freeWorkers;
 	public ManagerPracovnikovB(int id, Simulation mySim, Agent myAgent)
 	{

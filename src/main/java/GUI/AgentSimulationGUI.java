@@ -79,6 +79,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
     private JLabel workerCCountValue;
     private JLabel workplaceCountValue;
     private JLabel replicationsCountValue;
+    private JPanel animationPanel;
     private JLabel burnInValue;
     private FastMLabelDelegate fastMLabelDelegate;
     private final WorkerAverageUtilisationTableModel workerAverageUtilisationTableModel;
@@ -228,9 +229,9 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         centerPanel.addTab("Slow Mode", slowModePanel);
         centerPanel.addTab("Fast Mode", fastModePanel);
         centerPanel.setSelectedIndex(0);
-        JPanel animationPanel = new JPanel(new BorderLayout());
-        animationPanel.add(new JLabel("Sem príde animácia..."), BorderLayout.CENTER); // dočasný obsah
-        centerPanel.addTab("Animácia", animationPanel);
+        animationPanel = new JPanel(new BorderLayout());
+        animationPanel.add(new JLabel("Animation"), BorderLayout.CENTER); // dočasný obsah
+        centerPanel.addTab("Animation", animationPanel);
 
 
 
@@ -374,6 +375,34 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
             }
         });
 
+        btnRemoveAnimator.addActionListener(e -> {
+            if (core.animatorExists()) {
+                if (core.animator().canvas().getParent() != null) {
+                    core.animator().canvas().getParent().remove(core.animator().canvas());
+                }
+                core.removeAnimator();
+                System.out.println("Animator odstránený");
+                centerPanel.revalidate();
+                centerPanel.repaint();
+            } else {
+                System.out.println("Animator neexistuje");
+            }
+        });
+        btnCreateAnimator.addActionListener(e -> {
+            if (!core.animatorExists()) {
+                core.createAnimator();
+                core.animator().setSynchronizedTime(false);
+                core.initAnimator();
+                animationPanel.removeAll();
+                animationPanel.add(core.animator().canvas(), BorderLayout.CENTER);
+                animationPanel.revalidate();
+                animationPanel.repaint();
+
+            } else {
+                System.out.println("Animator už existuje");
+            }
+        });
+
     }
 
 
@@ -511,6 +540,11 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         customPanel.add(utilisationCIntervalLabel, gbc);
         customPanel.add(utilisationAllLabel, gbc);
         customPanel.add(utilisationAllIntervalLabel, gbc);
+
+
+        customPanel.add(btnRemoveAnimator, gbc);
+        customPanel.add(btnCreateAnimator, gbc);
+
 
         customPanel.setVisible(true);
     }

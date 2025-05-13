@@ -130,18 +130,22 @@ public class MySimulation extends Simulation {
         for (int i = 0; i < countWorkerA; i++) {
             workersAArrayList.add(new WorkerA());
             workersAUtilisationAverage.add(new Average());
+            workersAArrayList.get(i).initAnimationObject();
         }
         for (int i = 0; i < countWorkerB; i++) {
             workersBArrayList.add(new WorkerB());
             workersBUtilisationAverage.add(new Average());
+            workersBArrayList.get(i).initAnimationObject();
         }
         for (int i = 0; i < countWorkerC; i++) {
             workersCArrayList.add(new WorkerC());
             workersCUtilisationAverage.add(new Average());
+            workersCArrayList.get(i).initAnimationObject();
         }
 
         for (int i = 0; i < workPlacesCount; i++) {
             workPlacesArrayList.add(new WorkPlace());
+            workPlacesArrayList.get(i).initAnimationObject();
         }
 
 
@@ -170,6 +174,10 @@ public class MySimulation extends Simulation {
         }
 
         super.prepareReplication();
+
+        if(this.animatorExists()) {
+            initAnimator();
+        }
         // Reset entities, queues, local statistics, etc...
     }
 
@@ -292,6 +300,17 @@ public class MySimulation extends Simulation {
         super.simulationFinished();
     }
 
+    @Override
+    public void createAnimator(){
+        super.createAnimator();
+    }
+
+    public void initAnimator() {
+        this._agentNabytku.initAnimator();
+        this._agentPracovnikovA.initAnimator();
+        this._agentPracovnikovB.initAnimator();
+        this._agentPracovnikovC.initAnimator();
+    }
     //meta! userInfo="Generated code: do not modify", tag="begin"
     private void init() {
         setAgentModelu(new AgentModelu(Id.agentModelu, this, null));
