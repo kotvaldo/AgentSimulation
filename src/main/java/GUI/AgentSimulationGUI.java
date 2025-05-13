@@ -346,7 +346,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
             if (chartPanel != null) {
                 chartPanel.setVisible(!slowDownCheckBox.isSelected());
             }
-            newOrdersPanel.setVisible(!slowDownCheckBox.isSelected());
+            //newOrdersPanel.setVisible(!slowDownCheckBox.isSelected());
             timeOfWorkPanel.setVisible(!slowDownCheckBox.isSelected());
 
         });
