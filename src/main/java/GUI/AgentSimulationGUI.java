@@ -3,6 +3,7 @@ package GUI;
 import Enums.PresetSimulationValues;
 import Enums.SimulationSpeedLimitValues;
 import GUI.Models.*;
+import OSPABA.ISimDelegate;
 import Observer.Subject;
 import delegates.*;
 import org.jfree.chart.ChartFactory;
@@ -172,8 +173,6 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         workerUtilisationTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
         JScrollPane workerUtilisationScroll = new JScrollPane(workerUtilisationTable);
         workerUtilisationScroll.setPreferredSize(new Dimension(600, 300));
-        centerPanel.add(workerUtilisationScroll);
-        workerUtilisationScroll.setVisible(false);
 
 
         JPanel tablePanel = new JPanel();
@@ -207,7 +206,33 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
         scrollPane.setPreferredSize(new Dimension(1000, 600));
 
 
-        this.centerPanel.add(scrollPane, BorderLayout.CENTER);
+        // === SLOW MODE PANEL ===
+        // === SLOW MODE PANEL ===
+        JPanel slowModePanel = new JPanel(new BorderLayout());
+        JPanel slowContent = new JPanel(new BorderLayout());
+        slowContent.add(scrollPane, BorderLayout.CENTER);
+        slowModePanel.add(slowContent, BorderLayout.CENTER);
+
+// === FAST MODE PANEL ===
+        JPanel fastModePanel = new JPanel(new BorderLayout());
+        JPanel fastContent = new JPanel(new BorderLayout());
+        fastContent.add(workerUtilisationScroll, BorderLayout.CENTER);
+
+// Graf do FAST MODE
+        ChartPanel fastChartPanel = new ChartPanel(chart);
+        fastChartPanel.setPreferredSize(new Dimension(800, 400));
+        fastContent.add(fastChartPanel, BorderLayout.SOUTH);
+
+        fastModePanel.add(fastContent, BorderLayout.CENTER);
+
+        centerPanel.addTab("Slow Mode", slowModePanel);
+        centerPanel.addTab("Fast Mode", fastModePanel);
+        centerPanel.setSelectedIndex(0);
+        JPanel animationPanel = new JPanel(new BorderLayout());
+        animationPanel.add(new JLabel("Sem príde animácia..."), BorderLayout.CENTER); // dočasný obsah
+        centerPanel.addTab("Animácia", animationPanel);
+
+
 
         speedSlider = new JSlider(1, 9, 1);
         speedSlider.setPaintTicks(true);
@@ -288,73 +313,72 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
 
         );
 
-        core.registerDelegate(graphDelegate);
-        //delegates and observers
-        core.registerDelegate(simulationTimeDelegate);
-        core.registerDelegate(slowSpeedLabelDelegate);
-        core.registerDelegate(tableDelegate);
-        core.registerDelegate(fastMLabelDelegate);
+
+        ArrayList<ISimDelegate> delegates = new ArrayList<>();
+        delegates.add(graphDelegate);
+        delegates.add(simulationTimeDelegate);
+        delegates.add(slowSpeedLabelDelegate);
+        delegates.add(tableDelegate);
+        delegates.add(fastMLabelDelegate);
+
+        core.registerDelegates(delegates);
+
         slowDownCheckBox.addActionListener(e -> {
             if (slowDownCheckBox.isSelected()) {
                 core.setSlowMode(true);
-                speedSlider.setValue(1);
-                System.out.println("SlowMode");
                 SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(5);
                 core.setSimSpeed(
                         speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.asDouble(),
                         1.0 / PresetSimulationValues.UPDATES_PER_SECOND.asDouble()
                 );
-                core.onReplicationWillStart(_ -> {
-                    core.setSimSpeed(
-                            speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.asDouble(),
-                            1.0 / PresetSimulationValues.UPDATES_PER_SECOND.asDouble()
-                    );
-                });
-                ordersTableModel.setOrders(new ArrayList<>());
-                workersTableModel.setWorkers(new ArrayList<>());
-                workPlacesTableModel.setWorkPlaces(new ArrayList<>());
-                furnitureTableModel.setFurniture(new ArrayList<>());
+                core.onReplicationWillStart(_ -> core.setSimSpeed(
+                        speed.getValue() / PresetSimulationValues.UPDATES_PER_SECOND.asDouble(),
+                        1.0 / PresetSimulationValues.UPDATES_PER_SECOND.asDouble()
+                ));
             } else {
-                core.setMaxSimSpeed();
-                System.out.println("SlowMode turned off");
                 core.setSlowMode(false);
-                ordersTableModel.setOrders(new ArrayList<>());
-                workersTableModel.setWorkers(new ArrayList<>());
-                workPlacesTableModel.setWorkPlaces(new ArrayList<>());
-                furnitureTableModel.setFurniture(new ArrayList<>());
-                core.onReplicationWillStart(_ -> {
-                    core.setMaxSimSpeed();
-                });
+                core.setMaxSimSpeed();
+                core.onReplicationWillStart(_ -> core.setMaxSimSpeed());
             }
 
-            workerUtilisationScroll.setVisible(!slowDownCheckBox.isSelected());
-            speedSlider.setVisible(slowDownCheckBox.isSelected());
-            simulationSpeedLabel.setVisible(slowDownCheckBox.isSelected());
+            // Reset tabuliek
+            ordersTableModel.setOrders(new ArrayList<>());
+            workersTableModel.setWorkers(new ArrayList<>());
+            workPlacesTableModel.setWorkPlaces(new ArrayList<>());
+            furnitureTableModel.setFurniture(new ArrayList<>());
             label.setVisible(slowDownCheckBox.isSelected());
             dayCountLabel.setVisible(slowDownCheckBox.isSelected());
             utilisationALabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationBLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationCLabel.setVisible(!slowDownCheckBox.isSelected());
-            scrollPane.setVisible(slowDownCheckBox.isSelected());
             utilisationAllLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationAIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationBIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationCIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationAllIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
             //statisticsForSimPanel.setVisible(slowDownCheckBox.isSelected());
-            utilisationScroll.setVisible(!slowDownCheckBox.isSelected());
-            if (chartPanel != null) {
-                chartPanel.setVisible(!slowDownCheckBox.isSelected());
-            }
             //newOrdersPanel.setVisible(!slowDownCheckBox.isSelected());
             timeOfWorkPanel.setVisible(!slowDownCheckBox.isSelected());
-
         });
+
+        animationCheckBox.addActionListener(e -> {
+            if (animationCheckBox.isSelected()) {
+                System.out.println("Animation button pressed");
+                for (ISimDelegate delegate : delegates) {
+                    core.removeDelegate(delegate);
+                }
+
+            } else {
+                System.out.println("Animation button unpressed");
+                core.registerDelegates(delegates);
+            }
+        });
+
     }
+
 
     @Override
     protected void initializeChart() {
-        // === GRAF ===
         orderTimeSeries = new XYSeries("Average compute time");
         intervalLower = new XYSeries("CI: Lower value");
         intervalUpper = new XYSeries("CI: Upper value");
@@ -370,14 +394,8 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
                 "Time [sek]",
                 dataset
         );
-
-
-        chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(800, 400));
-        centerPanel.add(chartPanel);
-        chartPanel.setVisible(false);
-
     }
+
 
 
     @Override

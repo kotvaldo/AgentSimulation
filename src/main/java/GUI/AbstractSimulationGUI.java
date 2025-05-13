@@ -20,8 +20,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JLabel replicationLabel;
     protected JLabel burnLabel;
     protected JPanel controlPanel;
-    protected JPanel centerPanel;
-
+    protected JTabbedPane centerPanel;
 
 
     protected AbstractSimulationGUI(String title) {
@@ -30,7 +29,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.centerPanel = new JPanel();
+        this.centerPanel = new JTabbedPane();
         initializeChart();
         initializeInputFields();
         initializeButtons();
