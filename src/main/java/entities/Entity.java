@@ -25,7 +25,7 @@ public abstract class Entity {
 
     public void assignRandomPosition() {
         Random rand = new Random();
-        this.currPosition = new Point2D.Double(rand.nextDouble() * 1500, rand.nextDouble() * 1500);
+        this.currPosition = new Point2D.Double(rand.nextDouble() * 1500 + 1500, rand.nextDouble() * 1500);
     }
 
     public abstract void initAnimationObject();

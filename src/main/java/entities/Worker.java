@@ -2,6 +2,7 @@ package entities;
 
 import Enums.WorkerBussyState;
 import IDGenerator.IDGenerator;
+import OSPAnimator.AnimImageItem;
 import OSPAnimator.AnimShapeItem;
 import Statistics.Utilisation;
 
@@ -95,27 +96,21 @@ public class Worker extends Entity {
 
     @Override
     public void initAnimationObject() {
-        if (animShapeItem != null) {
+        if (animImageItem != null) {
             return;
         }
-
-        AnimShapeItem shapeItem = new AnimShapeItem();
-        assignRandomPosition();
-        // shapeItem.setPosition(currPosition); // odkomentuj, ak máš definovanú pozíciu
-
-        Shape shape = new Ellipse2D.Double(0, 0, 15, 15);
-        shapeItem.setShape(shape);
-
-
-        Color color = switch (type) {
-            case "A" -> Color.RED;
-            case "B" -> Color.GREEN;
-            case "C" -> Color.BLUE;
-            default -> Color.GRAY;
+        String path = switch (type) {
+            case "A" -> "src/main/resources/images/worker_a.png";
+            case "B" -> "src/main/resources/images/worker_b.png";
+            case "C" -> "src/main/resources/images/worker_c.png";
+            default -> throw new IllegalStateException("Unexpected value: " + type);
         };
-        shapeItem.setColor(color);
 
-        this.animShapeItem = shapeItem;
+        AnimImageItem shapeItem = new AnimImageItem();
+        shapeItem.setImage(path);
+        shapeItem.setImageSize(30, 30);
+        
+        this.animImageItem = shapeItem;
     }
 
 

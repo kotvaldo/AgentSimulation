@@ -36,9 +36,9 @@ public class AgentPracovnikovA extends OSPABA.Agent {
             LinkedList<WorkerA> freeWorkers = managerNabytku.getFreeWorkers();
             if (freeWorkers != null) {
                 for (Worker wp : freeWorkers) {
-                    mySim().animator().register(wp.getAnimShapeItem());
+                    mySim().animator().register(wp.getAnimImageItem());
                     wp.setCurrPosition(wp.getCurrPosition());
-                    wp.getAnimShapeItem().setVisible(true);
+                    wp.getAnimImageItem().setVisible(true);
                 }
             }
         }
