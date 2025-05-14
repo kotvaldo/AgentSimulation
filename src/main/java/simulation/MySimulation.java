@@ -19,6 +19,7 @@ import agents.agentpracovnikovc.*;
 import entities.*;
 
 import javax.swing.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class MySimulation extends Simulation {
@@ -143,10 +144,25 @@ public class MySimulation extends Simulation {
             workersCArrayList.get(i).initAnimationObject();
         }
 
+        int size = 30;
+        int gap = size * 3;
+        int itemsPerRow = 10;
+
         for (int i = 0; i < workPlacesCount; i++) {
-            workPlacesArrayList.add(new WorkPlace());
-            workPlacesArrayList.get(i).initAnimationObject();
+            WorkPlace wp = new WorkPlace();
+
+            int row = i / itemsPerRow;
+            int col = i % itemsPerRow;
+
+            int x = col * (size + gap);
+            int y = row * (size + gap);
+            Point2D position = new Point2D.Double(x, y);
+
+            wp.setCurrPosition(position);
+            workPlacesArrayList.add(wp);
+            wp.initAnimationObject();
         }
+
 
 
         super.prepareSimulation();

@@ -362,18 +362,7 @@ public class AgentSimulationGUI extends AbstractSimulationGUI {
             timeOfWorkPanel.setVisible(!slowDownCheckBox.isSelected());
         });
 
-        animationCheckBox.addActionListener(e -> {
-            if (animationCheckBox.isSelected()) {
-                System.out.println("Animation button pressed");
-                for (ISimDelegate delegate : delegates) {
-                    core.removeDelegate(delegate);
-                }
 
-            } else {
-                System.out.println("Animation button unpressed");
-                core.registerDelegates(delegates);
-            }
-        });
 
         btnRemoveAnimator.addActionListener(e -> {
             if (core.animatorExists()) {

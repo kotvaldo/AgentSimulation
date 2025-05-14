@@ -29,26 +29,9 @@ public class AgentNabytku extends OSPABA.Agent
 
 		if (_mySim.animatorExists()) {
 			MySimulation mySimulation = (MySimulation) _mySim;
-			int count = 0;
-			int size = 30;
-			int gap = size * 3;
-			int itemsPerRow = 10;
 
 			for (WorkPlace wp : mySimulation.getWorkPlacesArrayList()) {
-				if (wp.getCurrPosition() != null) {
-					wp.getAnimImageItem().setPosition(wp.getCurrPosition());
-				} else {
-					int row = count / itemsPerRow;
-					int col = count % itemsPerRow;
-
-					int x = col * (size + gap);
-					int y = row * (size + gap);
-					Point2D position = new Point2D.Double(x, y);
-					wp.getAnimImageItem().setPosition(position);
-					wp.setCurrPosition(position);
-					count++;
-				}
-
+				wp.getAnimImageItem().setPosition(wp.getCurrPosition());
 				wp.getAnimImageItem().setVisible(true);
 				mySim().animator().register(wp.getAnimImageItem());
 			}

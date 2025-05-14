@@ -57,7 +57,7 @@ public class Furniture extends Entity {
         this.order = order;
         this.workPlace = null;
         this.startTime = order.getArrivalTime();
-        initAnimationObject();
+        //initAnimationObject();
     }
 
     public int getType() {
