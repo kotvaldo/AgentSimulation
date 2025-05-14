@@ -2,9 +2,13 @@ package agents.agentpohybu.continualassistants;
 
 import Enums.PresetSimulationValues;
 import OSPABA.*;
+import entities.WorkPlace;
+import entities.Worker;
 import simulation.*;
 import agents.agentpohybu.*;
 import OSPABA.Process;
+
+import java.awt.geom.Point2D;
 
 //meta! id="114"
 public class ProcesPresunNaPracovisko extends Process
@@ -27,9 +31,22 @@ public class ProcesPresunNaPracovisko extends Process
 		MyMessage myMessage = (MyMessage) message.createCopy();
 		MySimulation simulation = (MySimulation) _mySim;
 		myMessage.setCode(Mc.finish);
+
 		double newTime = simulation.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
 
-		if(newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
+		Worker worker = myMessage.getAssignedWorker();
+		if (worker != null) {
+			WorkPlace workPlace = myMessage.getFurniture().getWorkPlace();
+			Point2D destination = workPlace.getCurrPosition();
+
+			worker.setCurrPosition(destination);
+
+			if (mySim().animatorExists()) {
+				worker.getAnimImageItem().moveTo(mySim().currentTime(), newTime, destination);
+			}
+		}
+
+		if (newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
 			hold(newTime, myMessage);
 		}
 

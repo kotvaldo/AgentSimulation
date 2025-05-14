@@ -57,6 +57,7 @@ public class Furniture extends Entity {
         this.order = order;
         this.workPlace = null;
         this.startTime = order.getArrivalTime();
+        initAnimationObject();
     }
 
     public int getType() {
@@ -81,14 +82,13 @@ public class Furniture extends Entity {
             this.workPlace.setActivity(FurnitureStateValues.getNameByValue(state));
         }
     }
-
-
-   /* public void initAnimObject(double x, double y) {
-        if(anim != null) {
+    @Override
+    public void initAnimationObject() {
+        if(animImageItem != null) {
             return;
         }
 
-        AnimShapeItem imageItem = new AnimImageItem();
+        AnimImageItem imageItem = new AnimImageItem();
 
         String imagePath = switch (type) {
             case 1 -> "../resources/images/table.png";
@@ -100,9 +100,9 @@ public class Furniture extends Entity {
         imageItem.setImage(imagePath);
 
 
-        this.anim = imageItem;
+        this.animImageItem = imageItem;
     }
-*/
+
 
     public double getStartTimeCuttingQueue() {
         return startTimeCuttingQueue;
@@ -339,10 +339,6 @@ public class Furniture extends Entity {
 
 
 
-    @Override
-    public void initAnimationObject() {
-
-    }
 
 
 

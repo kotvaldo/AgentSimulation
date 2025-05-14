@@ -5,6 +5,7 @@ import OSPABA.*;
 import entities.WorkerC;
 import simulation.*;
 
+import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
 //meta! id="230"
@@ -112,10 +113,25 @@ public class ManagerPracovnikovC extends OSPABA.Manager
 		WorkerC worker = (WorkerC) msg.getWorkerForRelease();
 
 		if (worker != null) {
+			freeWorkers.addLast(worker); // pridaj najprv do zoznamu
+
+			int index = freeWorkers.size() - 1;
+			int spacing = 40;
+			int x = Data.FREE_WORKERS_C_QUEUE_X + index * spacing;
+			int y = Data.FREE_WORKERS_C_QUEUE_Y;
+
+			Point2D destination = new Point2D.Double(x, y);
+			worker.setCurrPosition(destination);
+
+			if (mySim().animatorExists()) {
+				worker.getAnimImageItem().moveTo(mySim().currentTime(), 1.0, destination);
+			}
+
 			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
-			freeWorkers.addLast(worker);
 		}
 	}
+
+
 
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)

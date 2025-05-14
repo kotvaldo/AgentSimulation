@@ -6,6 +6,7 @@ import entities.WorkPlace;
 import simulation.*;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 //meta! id="9"
 public class AgentNabytku extends OSPABA.Agent
@@ -42,8 +43,9 @@ public class AgentNabytku extends OSPABA.Agent
 
 					int x = col * (size + gap);
 					int y = row * (size + gap);
-
-					wp.getAnimImageItem().setPosition(new Point(x, y));
+					Point2D position = new Point2D.Double(x, y);
+					wp.getAnimImageItem().setPosition(position);
+					wp.setCurrPosition(position);
 					count++;
 				}
 

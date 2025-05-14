@@ -44,6 +44,12 @@ public class Worker extends Entity {
                 furniture = null;
             }
         }
+
+        if (animImageItem != null) {
+            animImageItem.setToolTip("ID: " + getId()
+                    + "; Type: " + type
+                    + "; State: " + WorkerBussyState.getNameByValue(state));
+        }
     }
 
 
@@ -109,7 +115,7 @@ public class Worker extends Entity {
         AnimImageItem shapeItem = new AnimImageItem();
         shapeItem.setImage(path);
         shapeItem.setImageSize(30, 30);
-        
+        shapeItem.setToolTip("ID: " + getId() + ";Type: " + type+"; State: " + WorkerBussyState.getNameByValue(state));
         this.animImageItem = shapeItem;
     }
 

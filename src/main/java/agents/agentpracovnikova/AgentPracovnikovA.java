@@ -6,6 +6,9 @@ import entities.Worker;
 import entities.WorkerA;
 import simulation.*;
 
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 //meta! id="228"
@@ -32,16 +35,30 @@ public class AgentPracovnikovA extends OSPABA.Agent {
     public void initAnimator() {
         Flags.SHOW_WARNING = false;
         ManagerPracovnikovA managerNabytku = (ManagerPracovnikovA) myManager();
+        MySimulation mySim = (MySimulation) mySim();
         if (_mySim.animatorExists()) {
-            LinkedList<WorkerA> freeWorkers = managerNabytku.getFreeWorkers();
+            ArrayList<WorkerA> freeWorkers = mySim.getWorkersAArrayList();
             if (freeWorkers != null) {
+                int i = 0;
+                int spacing = 40;
+
                 for (Worker wp : freeWorkers) {
+                    Point2D position = wp.getCurrPosition();
+                    if (position == null) {
+                        int x = Data.SKLAD_X;
+                        int y = Data.SKLAD_Y + i * spacing;
+                        position = new Point2D.Double(x, y);
+                        wp.setCurrPosition(position);
+                        i++;
+                    }
                     mySim().animator().register(wp.getAnimImageItem());
-                    wp.setCurrPosition(wp.getCurrPosition());
+                    wp.getAnimImageItem().setPosition(position);
                     wp.getAnimImageItem().setVisible(true);
                 }
+
             }
         }
     }
+
     //meta! tag="end"
 }

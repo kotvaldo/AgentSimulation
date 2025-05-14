@@ -5,6 +5,7 @@ import OSPABA.*;
 import entities.*;
 import simulation.*;
 
+import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
 //meta! id="228"
@@ -90,17 +91,27 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		if (msg.getWorkerForRelease() instanceof WorkerA) {
 			worker = (WorkerA) msg.getWorkerForRelease();
 		} else if (msg.getWorkerForMontage() instanceof WorkerA) {
-			worker = (WorkerA) msg.getWorkerForRelease();
+			worker = (WorkerA) msg.getWorkerForMontage();
 		}
 
 		if (worker != null) {
 			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 			freeWorkers.addLast(worker);
-            /*System.out.println("Uvoľnený WorkerA ID: " + worker.getId());
-            System.out.println("Je volnych> " + freeWorkers.size() + " pracovnikovA");*/
-			//System.out.println("Free workersA in release: " + freeWorkers.size());
+			int index = freeWorkers.size() - 1;
+			int spacing = 40;
+
+			int x = Data.FREE_WORKERS_A_QUEUE_X + index * spacing;
+			int y = Data.FREE_WORKERS_A_QUEUE_Y;
+
+			Point2D destination = new Point2D.Double(x, y);
+			worker.setCurrPosition(destination);
+			if (mySim().animatorExists()) {
+				worker.getAnimImageItem().moveTo(mySim().currentTime(), 1.0, destination);
+			}
+
 		}
 	}
+
 
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)

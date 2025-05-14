@@ -97,6 +97,14 @@ public class MyMessage extends MessageForm {
 	public void setWorkPlace(WorkPlace workPlace) {
 		if (furniture != null) furniture.setWorkPlace(workPlace);
 	}
+	public Worker getAssignedWorker() {
+		if (getWorkerForCutting() != null) return getWorkerForCutting();
+		if (getWorkerForAssembly() != null) return getWorkerForAssembly();
+		if (getWorkerForMontage() != null) return getWorkerForMontage();
+		if (getWorkerForPainting() != null) return getWorkerForPainting();
+		if (getWorkerForStaining() != null) return getWorkerForStaining();
+		return null;
+	}
 
 	@Override
 	public boolean equals(Object obj) {

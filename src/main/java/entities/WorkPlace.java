@@ -30,6 +30,7 @@ public class WorkPlace extends Entity {
             this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
             this.activity = "Nothing";
         }
+        updateToolTip();
     }
 
     public boolean isBusy() {
@@ -63,6 +64,7 @@ public class WorkPlace extends Entity {
         } else if (furniture == null) {
             this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
         }
+        updateToolTip();
     }
 
     public String getActivity() {
@@ -78,7 +80,9 @@ public class WorkPlace extends Entity {
     }
 
     public void setState(int state) {
+
         this.state = state;
+        updateToolTip();
     }
 
     @Override
@@ -103,9 +107,28 @@ public class WorkPlace extends Entity {
         AnimImageItem shapeItem = new AnimImageItem("src/main/resources/images/crafting_table.jpg", 512, 512);
 
         shapeItem.setImageSize(30, 30);
+        String tooltip = "WorkPlace ID: " + id + "\n" +
+                "State: " + state + "\n" +
+                "Activity: " + activity + "\n" +
+                "Furniture ID: " + (furniture != null ? furniture.getId() : "None") + "\n" +
+                "Worker ID: " + (actualWorkingWorker != null ? actualWorkingWorker.getId() : "None");
+
+        shapeItem.setToolTip(tooltip);
         this.animImageItem = shapeItem;
 
     }
+    public void updateToolTip() {
+        if (animImageItem == null) return;
+
+        String tooltip = "WorkPlace ID: " + id + "\n" +
+                "State: " + state + "\n" +
+                "Activity: " + activity + "\n" +
+                "Furniture ID: " + (furniture != null ? furniture.getId() : "None") + "\n" +
+                "Worker ID: " + (actualWorkingWorker != null ? actualWorkingWorker.getId() : "None");
+
+        animImageItem.setToolTip(tooltip);
+    }
+
 
 
 
