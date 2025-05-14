@@ -1,8 +1,8 @@
 {
-  "workersA": 6,
-  "workersB": 5,
-  "workersC": 38,
-  "workplaces": 58,
+  "workersA": 8,
+  "workersB": 6,
+  "workersC": 40,
+  "workplaces": 65,
   "replications": 1000,
   "burnIn": 50
 }

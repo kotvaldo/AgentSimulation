@@ -15,53 +15,68 @@ public class ConfigMain {
 
     public static void main(String[] args) {
         try {
-
             ObjectMapper mapper = new ObjectMapper();
-            InputStream input = ConfigMain.class.getClassLoader().getResourceAsStream("config.json");
-            if (input == null) {
-                throw new IllegalArgumentException("Súbor config.json nebol nájdený v resources/org/example/");
-            }
 
-            int repCount = 0;
+            String[] configFiles = {
+                    "config2.json"
+            };
 
-            ConfigData config = mapper.readValue(input, ConfigData.class);
-
-            MySimulation sim = new MySimulation();
-            sim.setCountWorkerA(config.workersA);
-            sim.setCountWorkerB(config.workersB);
-            sim.setCountWorkerC(config.workersC);
-            sim.setWorkPlacesCount(config.workplaces);
-            sim.setReplicationsCount(config.replications);
-            sim.setBurnInCount(config.burnIn);
-            sim.onReplicationDidFinish(s -> {
-                Average avg = sim.getTimeOfWorkAverage();
-                avg.confidenceInterval();
-
-                double mean = avg.mean();
-                double lower = avg.getLowerBound();
-                double upper = avg.getUpperBound();
-
-                double margin = (upper - lower) / 2.0;
-                if (margin < 0.02 * mean && sim.getActualRepCount() >= config.burnIn) {
-                    System.out.println("Dosiahnutá presnosť: ukončujem simuláciu po " + sim.getActualRepCount() + " replikáciách.");
-                    sim.stopSimulation();
+            for (String configFile : configFiles) {
+                InputStream input = ConfigMain.class.getClassLoader().getResourceAsStream(configFile);
+                if (input == null) {
+                    System.err.println("Súbor " + configFile + " nebol nájdený v resources/org/example/");
+                    continue;
                 }
-                System.out.println("Replikácia : " + sim.getActualRepCount());
 
-            });
+                ConfigData config = mapper.readValue(input, ConfigData.class);
 
-            sim.simulate(config.replications, PresetSimulationValues.END_OF_SIMULATION.asDouble());
+                MySimulation sim = new MySimulation();
+                sim.setCountWorkerA(config.workersA);
+                sim.setCountWorkerB(config.workersB);
+                sim.setCountWorkerC(config.workersC);
+                sim.setWorkPlacesCount(config.workplaces);
+                sim.setReplicationsCount(config.replications);
+                sim.setBurnInCount(config.burnIn);
 
-            String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
-            saveResults(sim, "vystup_" + timestamp + ".txt");
+                sim.onReplicationDidFinish(s -> {
+                    Average avg = sim.getTimeOfWorkAverage();
+                    avg.confidenceInterval();
+                    double mean = avg.mean();
+                    double lower = avg.getLowerBound();
+                    double upper = avg.getUpperBound();
+                    double margin = (upper - lower) / 2.0;
+                    if (margin < 0.01 * mean && sim.getActualRepCount() >= config.burnIn) {
+                        System.out.println("[" + configFile + "] Dosiahnutá presnosť: ukončujem simuláciu po " + sim.getActualRepCount() + " replikáciách.");
+                        sim.stopSimulation();
+                    }
+                    System.out.println("[" + configFile + "] Replikácia: " + sim.getActualRepCount());
+                });
+
+                sim.simulate(config.replications, PresetSimulationValues.END_OF_SIMULATION.asDouble());
+
+                String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+                saveResults(sim, configFile.replace(".json", "") + "_vystup_" + timestamp + ".txt", config);
+            }
 
         } catch (IOException e) {
             System.err.println("Chyba pri načítaní alebo spracovaní: " + e.getMessage());
         }
     }
 
-    private static void saveResults(MySimulation sim, String filename) {
+
+    private static void saveResults(MySimulation sim, String filename, ConfigData config) {
         try (FileWriter writer = new FileWriter(filename)) {
+
+            // Zápis konfigurácie
+            writer.write("Použitá konfigurácia:\n");
+            writer.write("workersA: " + config.workersA + "\n");
+            writer.write("workersB: " + config.workersB + "\n");
+            writer.write("workersC: " + config.workersC + "\n");
+            writer.write("workplaces: " + config.workplaces + "\n");
+            writer.write("replications: " + config.replications + "\n");
+            writer.write("burnIn: " + config.burnIn + "\n\n");
+
+            // Hlavička metrík
             writer.write("Metric;Mean;CI_Lower;CI_Upper\n");
 
             writeAverage(writer, "Utilisation A", sim.getUtilisationA());
@@ -75,12 +90,14 @@ public class ConfigMain {
             writeAverage(writer, "Assembly QL", sim.getAssemblyQueueLengthAverage());
             writeAverage(writer, "Montage QL", sim.getMontageQueueLengthAverage());
             writeAverage(writer, "Average Time of Work(s)", sim.getTimeOfWorkAverage());
-            writeAverageHours(writer, "Average Time of Work(s)", sim.getTimeOfWorkAverage());
+            writeAverageHours(writer, "Average Time of Work(h)", sim.getTimeOfWorkAverage());
+
             System.out.println("Výsledky boli uložené do " + filename);
         } catch (IOException e) {
             System.err.println("Chyba pri zápise výsledkov: " + e.getMessage());
         }
     }
+
 
     private static void writeAverage(FileWriter writer, String label, Average avg) throws IOException {
         avg.confidenceInterval();
