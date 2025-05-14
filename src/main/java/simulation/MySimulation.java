@@ -255,6 +255,7 @@ public class MySimulation extends Simulation {
                 delegate.refresh(this);
             }
         }
+
        /* System.out.println("=== Štatistiky replikácie " + actualRepCount + " ===");
         System.out.printf("Priemerný čas výroby: %.2f%n", timeOfWorkAverage.mean());
         System.out.printf("Priemerný počet dokončených objednávok: %.2f%n", finishedOrdersAverage.mean());

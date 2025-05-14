@@ -37,8 +37,8 @@ public class ProcesPresunNaPracovisko extends Process
 		Worker worker = myMessage.getAssignedWorker();
 		if (worker != null) {
 			WorkPlace workPlace = myMessage.getFurniture().getWorkPlace();
-			Point2D destination = workPlace.getCurrPosition();
-
+			Point2D original = workPlace.getCurrPosition();
+			Point2D destination = new Point2D.Double(original.getX() + 15, original.getY());
 			worker.setCurrPosition(destination);
 
 			if (mySim().animatorExists()) {

@@ -38,7 +38,8 @@ public class ProcesPresunZoSkladu extends Process
 			Worker worker = myMessage.getAssignedWorker();
 			if (worker != null) {
 				WorkPlace wp = myMessage.getFurniture().getWorkPlace();
-				Point2D destination = wp.getCurrPosition();
+				Point2D original = wp.getCurrPosition();
+				Point2D destination = new Point2D.Double(original.getX() + 15, original.getY());
 
 				worker.setCurrPosition(destination);
 

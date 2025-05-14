@@ -84,24 +84,32 @@ public class Furniture extends Entity {
     }
     @Override
     public void initAnimationObject() {
-        if(animImageItem != null) {
+        if (animImageItem != null) {
             return;
         }
 
         AnimImageItem imageItem = new AnimImageItem();
 
         String imagePath = switch (type) {
-            case 1 -> "../resources/images/table.png";
-            case 2 -> "../resources/images/chair.png";
-            case 3 -> "../resources/images/wardrobe.png";
+            case 1 -> "src/main/resources/images/table.png";
+            case 2 -> "src/main/resources/images/chair.png";
+            case 3 -> "src/main/resources/images/wardrobe.png";
             default -> null;
         };
 
         imageItem.setImage(imagePath);
+        imageItem.setImageSize(30, 30);
 
+        String tooltip = "Furniture ID: " + id + "\n" +
+                "Type: " + type + "\n" +
+                "State: " + FurnitureStateValues.getNameByValue(state) + "\n" +
+                "Order ID: " + (order != null ? order.getId() : "None") + "\n" +
+                "WorkPlace ID: " + (workPlace != null ? workPlace.getId() : "None");
 
+        imageItem.setToolTip(tooltip);
         this.animImageItem = imageItem;
     }
+
 
 
     public double getStartTimeCuttingQueue() {
