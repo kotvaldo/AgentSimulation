@@ -246,6 +246,9 @@ public class MySimulation extends Simulation {
             utilisationC.add(sumC / workersCArrayList.size());
         }
 
+        if (animatorExists()) {
+            animator().clearAll();
+        }
 
         if (!slowMode) {
             for (ISimDelegate delegate : this.delegates()) {
