@@ -80,52 +80,65 @@ public class FastMLabelDelegate implements ISimDelegate {
 
         if(!mySim.isSlowMode()) {
             SwingUtilities.invokeLater(() -> {
-                utilisationALabel.setText("Utilisation A: " + String.format("%.4f", mySim.getUtilisationA().mean()));
-                utilisationAIntervalLabel.setText("CI: " + mySim.getUtilisationA().confidenceInterval());
+                int repCount = mySim.getActualRepCount();
 
-                utilisationBLabel.setText("Utilisation B: " + String.format("%.4f", mySim.getUtilisationB().mean()));
-                utilisationBIntervalLabel.setText("CI: " + mySim.getUtilisationB().confidenceInterval());
+                setUtilisation(utilisationALabel, utilisationAIntervalLabel, mySim.getUtilisationA(), repCount, "Utilisation A");
+                setUtilisation(utilisationBLabel, utilisationBIntervalLabel, mySim.getUtilisationB(), repCount, "Utilisation B");
+                setUtilisation(utilisationCLabel, utilisationCIntervalLabel, mySim.getUtilisationC(), repCount, "Utilisation C");
+                setUtilisation(utilisationAllLabel, utilisationAllIntervalLabel, mySim.getUtilisationAll(), repCount, "Utilisation All");
 
-                utilisationCLabel.setText("Utilisation C: " + String.format("%.4f", mySim.getUtilisationC().mean()));
-                utilisationCIntervalLabel.setText("CI: " + mySim.getUtilisationC().confidenceInterval());
+                updateStatWithCI(finishedOrdersLabel, mySim.getFinishedOrdersAverage(), repCount, "Finished Orders");
+                updateStatWithCI(allOrdersLabel, mySim.getAllOrdersAverage(), repCount, "All Orders");
+                updateStatWithCI(cuttingQLLabel, mySim.getCuttingQueueLengthAverage(), repCount, "Cutting QL");
+                updateStatWithCI(stainingQLLabel, mySim.getStainingQueueLengthAverage(), repCount, "Staining QL");
+                updateStatWithCI(assemblyQLLabel, mySim.getAssemblyQueueLengthAverage(), repCount, "Assembly QL");
+                updateStatWithCI(montageQLLabel, mySim.getMontageQueueLengthAverage(), repCount, "Montage QL");
 
-                utilisationAllLabel.setText("Utilisation All: " + String.format("%.4f", mySim.getUtilisationAll().mean()));
-                utilisationAllIntervalLabel.setText("CI: " + mySim.getUtilisationAll().confidenceInterval());
-
-                finishedOrdersLabel.setText("Finished Orders: " + String.format("%.4f", mySim.getFinishedOrdersAverage().mean()));
-                allOrdersLabel.setText("All Orders: " + String.format("%.4f", mySim.getAllOrdersAverage().mean()));
-
-                cuttingQLLabel.setText("Cutting QL : " + String.format("%.4f", mySim.getCuttingQueueLengthAverage().mean()));
-                stainingQLLabel.setText("Staining QL : " + String.format("%.4f", mySim.getStainingQueueLengthAverage().mean()));
-                assemblyQLLabel.setText("Assembly QL : " + String.format("%.4f", mySim.getAssemblyQueueLengthAverage().mean()));
-                montageQLLabel.setText("Montage QL : " + String.format("%.4f", mySim.getMontageQueueLengthAverage().mean()));
-
-                ArrayList<Average> workersAUtilisationAverage = new ArrayList<>(mySim.getWorkersAUtilisationAverage());
-                ArrayList<Average> workersBUtilisationAverage = new ArrayList<>(mySim.getWorkersBUtilisationAverage());
-                ArrayList<Average> workersCUtilisationAverage = new ArrayList<>(mySim.getWorkersCUtilisationAverage());
-
-                if(((MySimulation) simulation).getActualRepCount() > 30) {
-                    workerAverageUtilisationTableModel.setNewData(workersAUtilisationAverage, workersBUtilisationAverage, workersCUtilisationAverage);
+                if (repCount > 30) {
+                    workerAverageUtilisationTableModel.setNewData(
+                            new ArrayList<>(mySim.getWorkersAUtilisationAverage()),
+                            new ArrayList<>(mySim.getWorkersBUtilisationAverage()),
+                            new ArrayList<>(mySim.getWorkersCUtilisationAverage())
+                    );
                 }
 
                 double seconds = mySim.getTimeOfWorkAverage().mean();
                 double hours = seconds / 3600.0;
-                mySim.getTimeOfWorkAverage().confidenceInterval();
-                if(mySim.getActualRepCount() > 30) {
-                    double lowerS = mySim.getTimeOfWorkAverage().getLowerBound();
-                    double upperS = mySim.getTimeOfWorkAverage().getUpperBound();
-                    double lowerH = lowerS / 3600.0;
-                    double upperH = upperS / 3600.0;
-                    orderIntervalLabel.setText("CI: " +
-                            String.format("[ %.4f ", lowerS) + "; " + String.format("%.4f ]", upperS) + "        " +
-                            String.format("[ %.4f ", lowerH) + "; " + String.format("%.4f ]", upperH) + " h");
+                orderTimeLabel.setText("Average time of Work: " + String.format("%.4f s", seconds) + "        " + String.format("%.4f", hours) + " h");
 
+                if (repCount > 30) {
+                    Average avg = mySim.getTimeOfWorkAverage();
+                    avg.confidenceInterval();
+                    orderIntervalLabel.setText(String.format(
+                            "CI: [ %.4f ; %.4f ]        [ %.4f ; %.4f ] h",
+                            avg.getLowerBound(), avg.getUpperBound(),
+                            avg.getLowerBound() / 3600.0, avg.getUpperBound() / 3600.0
+                    ));
+                } else {
+                    orderIntervalLabel.setText("CI: (nedostupné pred 30. replikáciou)");
                 }
-
-                orderTimeLabel.setText("Average time of Work: " + String.format("%.4f s", seconds) + "        " +  String.format("%.4f", hours) + " h");
-
             });
+
         }
 
     }
+    private void setUtilisation(JLabel meanLabel, JLabel ciLabel, Average avg, int repCount, String label) {
+        meanLabel.setText(label + ": " + String.format("%.4f", avg.mean()));
+        if (repCount > 30) {
+            avg.confidenceInterval();
+            ciLabel.setText("CI: " + String.format("[%.4f ; %.4f]", avg.getLowerBound(), avg.getUpperBound()));
+        } else {
+            ciLabel.setText("CI: (n/a)");
+        }
+    }
+
+    private void updateStatWithCI(JLabel label, Average avg, int repCount, String title) {
+        if (repCount > 30) {
+            avg.confidenceInterval();
+            label.setText(String.format("%s: %.4f [%.4f ; %.4f]", title, avg.mean(), avg.getLowerBound(), avg.getUpperBound()));
+        } else {
+            label.setText(String.format("%s: %.4f [CI: (n/a)]", title, avg.mean()));
+        }
+    }
+
 }
