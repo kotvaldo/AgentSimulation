@@ -26,8 +26,13 @@ public class Generators {
     private final Triangular timeSpentInStorageDist;
     private final Triangular timeMovingIntoStorageDist;
     private final Triangular timeMovingToAnotherWorkshopDist;
-   // private final Triangular accessingOrderDist;
 
+    public UniformContinuous getProcessAfterAssemblyDist() {
+        return processAfterAssemblyDist;
+    }
+
+    // private final Triangular accessingOrderDist;
+    private final UniformContinuous processAfterAssemblyDist;
     private final UniformDiscrete countOfFurnitureDist;
     private final Random realisePaintingDist;
 
@@ -74,6 +79,7 @@ public class Generators {
         stainingWardrobeDist = new UniformContinuous(300.0 * 60, 600.0 * 60, rand.nextInt());
         paintingWardrobeDist = new UniformContinuous(250.0 * 60, 560.0 * 60, rand.nextInt());
         assemblyWardrobeDist = new UniformContinuous(35.0 * 60, 75.0 * 60, rand.nextInt());
+        processAfterAssemblyDist = new UniformContinuous(50.0 * 60, 80.0 * 60, rand.nextInt());
         montageWardrobeDist = new UniformContinuous(15.0 * 60, 25.0 * 60, rand.nextInt());
 
         //moving Dist

@@ -31,7 +31,6 @@ public class ManagerCinnosti extends Manager
 	{
 	}
 
-	//meta! sender="AgentNabytku", id="284", type="Request"
 	public void processRUrobRezanie(MessageForm message)
 	{
 		MyMessage msg = (MyMessage) message.createCopy();
@@ -118,12 +117,13 @@ public class ManagerCinnosti extends Manager
 	public void processFinishProcesSkladania(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
 		MySimulation mySimulation = (MySimulation) mySim();
-		msg.getFurniture().setEndTimeAssembly(mySimulation.currentTime());
-		msg.getWorkPlace().setActualWorkingWorker(null);
-		msg.getWorkerForAssembly().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
-		msg.setCode(Mc.rUrobSkladanie);
-		msg.setAddressee(mySim().findAgent(Id.agentNabytku));
-		response(msg);
+		msg.getFurniture().setStartTimeAssembly(mySimulation.currentTime());
+		msg.getWorkerForAssembly().setState(WorkerBussyState.BUSY.getValue(), mySim().currentTime());
+		msg.getFurniture().setState(FurnitureStateValues.PROCESS_AFTER_ASSEMBLY.getValue());
+		msg.getWorkPlace().setActualWorkingWorker(msg.getWorkerForAssembly());
+		msg.setCode(Mc.start);
+		msg.setAddressee(myAgent().findAssistant(Id.procesPoSkladani));
+		startContinualAssistant(msg);
 	}
 
 	//meta! sender="ProcesMorenia", id="279", type="Finish"
@@ -162,7 +162,19 @@ public class ManagerCinnosti extends Manager
 		response(msg);
 	}
 
-	//meta! sender="AgentNabytku", id="286", type="Request"
+	//meta! sender="ProcesPoSkladani", id="433", type="Finish"
+	public void processFinishProcesPoSkladani(MessageForm message)
+	{
+		MyMessage msg = (MyMessage) message.createCopy();
+		MySimulation mySimulation = (MySimulation) mySim();
+		msg.getFurniture().setEndTimeAssembly(mySimulation.currentTime());
+		msg.getWorkPlace().setActualWorkingWorker(null);
+		msg.getWorkerForAssembly().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
+		msg.setCode(Mc.rUrobSkladanie);
+		msg.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(msg);
+	}
+
 
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -190,6 +202,10 @@ public class ManagerCinnosti extends Manager
 		case Mc.finish:
 			switch (message.sender().id())
 			{
+			case Id.procesRezania:
+				processFinishProcesRezania(message);
+			break;
+
 			case Id.procesLakovania:
 				processFinishProcesLakovania(message);
 			break;
@@ -198,38 +214,38 @@ public class ManagerCinnosti extends Manager
 				processFinishProcesMontaze(message);
 			break;
 
-			case Id.procesMorenia:
-				processFinishProcesMorenia(message);
-			break;
-
 			case Id.procesSkladania:
 				processFinishProcesSkladania(message);
 			break;
 
-			case Id.procesRezania:
-				processFinishProcesRezania(message);
+			case Id.procesPoSkladani:
+				processFinishProcesPoSkladani(message);
+			break;
+
+			case Id.procesMorenia:
+				processFinishProcesMorenia(message);
 			break;
 			}
-		break;
-
-		case Mc.rUrobRezanie:
-			processRUrobRezanie(message);
-		break;
-
-		case Mc.rUrobSkladanie:
-			processRUrobSkladanie(message);
 		break;
 
 		case Mc.init:
 			processInit(message);
 		break;
 
-		case Mc.rUrobMontaz:
-			processRUrobMontaz(message);
+		case Mc.rUrobSkladanie:
+			processRUrobSkladanie(message);
 		break;
 
 		case Mc.rUrobLakovanie:
 			processRUrobLakovanie(message);
+		break;
+
+		case Mc.rUrobMontaz:
+			processRUrobMontaz(message);
+		break;
+
+		case Mc.rUrobRezanie:
+			processRUrobRezanie(message);
 		break;
 
 		default:

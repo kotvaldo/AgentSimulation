@@ -24,11 +24,12 @@ public class AgentCinnosti extends Agent
 	private void init()
 	{
 		new ManagerCinnosti(Id.managerCinnosti, mySim(), this);
-		new ProcesRezania(Id.procesRezania, mySim(), this);
 		new ProcesSkladania(Id.procesSkladania, mySim(), this);
-		new ProcesMorenia(Id.procesMorenia, mySim(), this);
 		new ProcesLakovania(Id.procesLakovania, mySim(), this);
+		new ProcesRezania(Id.procesRezania, mySim(), this);
 		new ProcesMontaze(Id.procesMontaze, mySim(), this);
+		new ProcesPoSkladani(Id.procesPoSkladani, mySim(), this);
+		new ProcesMorenia(Id.procesMorenia, mySim(), this);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.rUrobRezanie);
 		addOwnMessage(Mc.rUrobSkladanie);
