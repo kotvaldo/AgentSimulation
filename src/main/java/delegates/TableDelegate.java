@@ -34,22 +34,25 @@ public class TableDelegate implements ISimDelegate {
     @Override
     public void refresh(Simulation simulation) {
         MySimulation sim = (MySimulation) simulation;
-        SwingUtilities.invokeLater(() -> {
-            this.ordersTableModel.setOrders(new ArrayList<>(sim.getOrderArrayList()));
-            this.furnitureTableModel.setFurniture(new ArrayList<>(sim.getFurnitureArrayList()));
-            this.workPlacesTableModel.setWorkPlaces(new ArrayList<>(sim.getWorkPlacesArrayList()));
-            ArrayList<Worker> workersArrayList = new ArrayList<>();
-            workersArrayList.addAll(sim.getWorkersAArrayList());
-            workersArrayList.addAll(sim.getWorkersBArrayList());
-            workersArrayList.addAll(sim.getWorkersCArrayList());
+        if(sim.isSlowMode()) {
+            SwingUtilities.invokeLater(() -> {
+                this.ordersTableModel.setOrders(new ArrayList<>(sim.getOrderArrayList()));
+                this.furnitureTableModel.setFurniture(new ArrayList<>(sim.getFurnitureArrayList()));
+                this.workPlacesTableModel.setWorkPlaces(new ArrayList<>(sim.getWorkPlacesArrayList()));
+                ArrayList<Worker> workersArrayList = new ArrayList<>();
+                workersArrayList.addAll(sim.getWorkersAArrayList());
+                workersArrayList.addAll(sim.getWorkersBArrayList());
+                workersArrayList.addAll(sim.getWorkersCArrayList());
 
-            this.workersTableModel.setWorkers(workersArrayList);
+                this.workersTableModel.setWorkers(workersArrayList);
 
-            ordersTableModel.fireTableDataChanged();
-            furnitureTableModel.fireTableDataChanged();
-            workPlacesTableModel.fireTableDataChanged();
-            workersTableModel.fireTableDataChanged();
-        });
+                ordersTableModel.fireTableDataChanged();
+                furnitureTableModel.fireTableDataChanged();
+                workPlacesTableModel.fireTableDataChanged();
+                workersTableModel.fireTableDataChanged();
+            });
+
+        }
 
 
     }

@@ -28,7 +28,7 @@ public class PlanovacPrichodObjednavky extends Scheduler
 		MyMessage msg = (MyMessage)message.createCopy();
 		msg.setCode(Mc.noticeNovaObjednavka);
 		var newTime = simulationCore.getGenerators().getOrderArrivalDist().sample();
-		if (newTime + _mySim.currentTime() < PresetSimulationValues.END_OF_SIMULATION.getValue())
+		if (newTime + _mySim.currentTime() < PresetSimulationValues.END_OF_SIMULATION.asDouble())
 		{
 			hold(newTime, msg);
 		}

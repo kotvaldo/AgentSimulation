@@ -5,45 +5,54 @@ import OSPABA.*;
 import entities.WorkerB;
 import simulation.*;
 
+import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
 //meta! id="229"
 public class ManagerPracovnikovB extends OSPABA.Manager
 {
-	private LinkedList<WorkerB> freeWorkers;
+	public LinkedList<WorkerB> getFreeWorkers() {
+		return freeWorkers;
+	}
 
-	public ManagerPracovnikovB(int id, Simulation mySim, Agent myAgent) {
+	private LinkedList<WorkerB> freeWorkers;
+	public ManagerPracovnikovB(int id, Simulation mySim, Agent myAgent)
+	{
 		super(id, mySim, myAgent);
 		init();
 	}
 
 	@Override
-	public void prepareReplication() {
+	public void prepareReplication()
+	{
 		super.prepareReplication();
+		// Setup component for the next replication
 
-		if (petriNet() != null) {
+		if (petriNet() != null)
+		{
 			petriNet().clear();
 		}
-
 		MySimulation sim = (MySimulation) _mySim;
 		freeWorkers = new LinkedList<>();
 
 		for (WorkerB worker : sim.getWorkersBArrayList()) {
-			worker.setState(WorkerBussyState.NON_BUSY.getValue());
+			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 			freeWorkers.add(worker);
 		}
 	}
 
-	//meta! sender="AgentPracovnikov", id="246", type="Request"
 	public void processRVyberPracovnikaBRSkladanie(MessageForm message) {
-		MyMessage msg = (MyMessage) message;
+		MyMessage msg = (MyMessage) message.createCopy();
 
-		WorkerB worker = freeWorkers.poll();
+		WorkerB worker = null;
+		if (!freeWorkers.isEmpty()) {
+			worker = freeWorkers.removeFirst();
+		}
+
 		if (worker != null) {
-			worker.setState(WorkerBussyState.ASSIGNED.getValue());
-			msg.setWorkerB(worker);
+			msg.setWorkerForAssembly(worker);
 		} else {
-			msg.setWorkerB(null);
+			msg.setWorkerForAssembly(null);
 		}
 
 		msg.setCode(Mc.rVyberPracovnikaBRSkladanie);
@@ -51,15 +60,30 @@ public class ManagerPracovnikovB extends OSPABA.Manager
 		response(msg);
 	}
 
+
 	//meta! sender="AgentPracovnikov", id="240", type="Notice"
 	public void processNoticeUvolniB(MessageForm message) {
-		MyMessage msg = (MyMessage) message;
-		WorkerB worker = msg.getWorkerB();
+		MyMessage msg = (MyMessage) message.createCopy();
+		WorkerB worker = (WorkerB) msg.getWorkerForRelease();
 
 		if (worker != null) {
-			worker.setState(WorkerBussyState.NON_BUSY.getValue());
-			freeWorkers.add(worker);
+			freeWorkers.addLast(worker);
+
+			int index = freeWorkers.size() - 1;
+			int spacing = 40;
+			int x = Data.FREE_WORKERS_B_QUEUE_X + index * spacing;
+			int y = Data.FREE_WORKERS_B_QUEUE_Y;
+
+			Point2D destination = new Point2D.Double(x, y);
+			worker.setCurrPosition(destination);
+
+			if (mySim().animatorExists()) {
+				worker.getAnimImageItem().moveTo(mySim().currentTime(), 1.0, destination);
+			}
+
+			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		}
+
 	}
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)
@@ -79,12 +103,12 @@ public class ManagerPracovnikovB extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.noticeUvolniB:
-			processNoticeUvolniB(message);
-		break;
-
 		case Mc.rVyberPracovnikaBRSkladanie:
 			processRVyberPracovnikaBRSkladanie(message);
+		break;
+
+		case Mc.noticeUvolniB:
+			processNoticeUvolniB(message);
 		break;
 
 		default:

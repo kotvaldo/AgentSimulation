@@ -5,7 +5,6 @@ import Enums.WorkerBussyState;
 import OSPABA.*;
 import agents.agentskladu.*;
 import simulation.*;
-import OSPABA.Process;
 
 //meta! id="128"
 public class ProcesPripravaVSklade extends OSPABA.Process
@@ -25,23 +24,33 @@ public class ProcesPripravaVSklade extends OSPABA.Process
 	//meta! sender="AgentSkladu", id="129", type="Start"
 	public void processStart(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
+		MyMessage msg = (MyMessage) message.createCopy();
 
-		if (msg.getWorkerA() != null) {
-			msg.getWorkerA().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+		if (msg.getWorkerForCutting() != null) {
+			msg.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue(), _mySim.currentTime());
 		}
-
+		msg.setCode(Mc.finish);
 		double newTime = ((MySimulation) mySim()).getGenerators().getTimeSpentInStorageDist().sample();
-		if (newTime + mySim().currentTime() < PresetSimulationValues.END_OF_SIMULATION.getValue()) {
+		/*System.out.println("New time " + newTime);
+		System.out.println(Utility.Utility.fromSecondsToTime(newTime + mySim().currentTime()));
+		System.out.println(msg);*/
+
+		if (newTime + mySim().currentTime() < PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
 			hold(newTime, msg);
+		} else {
+			assistantFinished(msg);
 		}
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)
 	{
-		switch (message.code())
-		{
+		switch (message.code()) {
+			case Mc.finish:
+				MyMessage msg = (MyMessage) message.createCopy();
+				message.setAddressee(myAgent());
+				assistantFinished(msg);
+				break;
 		}
 	}
 

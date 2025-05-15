@@ -1,9 +1,10 @@
 package entities;
 
 import Statistics.TimeWeightedStatistic;
+import simulation.MySimulation;
 
 public class QueueAssembly extends Queue{
-    public QueueAssembly(TimeWeightedStatistic queueLength) {
-        super(queueLength);
+    public QueueAssembly(MySimulation mySimulation) {
+        super(mySimulation);
     }
 }

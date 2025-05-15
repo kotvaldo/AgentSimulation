@@ -2,7 +2,7 @@ package Generators;
 
 import java.util.ArrayList;
 
-public class EmpiricDiscrete extends Empiric<Integer>{
+public class    EmpiricDiscrete extends Empiric<Integer>{
 
     public EmpiricDiscrete(ArrayList<EmpiricData<Integer>> listOfData, int seed) {
         super(listOfData, seed);

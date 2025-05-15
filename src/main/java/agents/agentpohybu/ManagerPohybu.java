@@ -1,5 +1,6 @@
 package agents.agentpohybu;
 
+import Enums.WorkerBussyState;
 import OSPABA.*;
 import simulation.*;
 
@@ -25,21 +26,58 @@ public class ManagerPohybu extends Manager
 	}
 
 	//meta! sender="AgentNabytku", id="138", type="Request"
-	public void processRPresunDoSkladu(MessageForm message) {
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.finish);
-
-		msg.setAddressee(myAgent().findAssistant(Id.procesPresunDoSkladu));
-		startContinualAssistant(msg);
+	public void processRPresunDoSkladu(MessageForm message)
+	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setAddressee(myAgent().findAssistant(Id.procesPresunDoSkladu));
+		if(myMessage.getWorkerForCutting() != null) {
+			myMessage.getWorkerForCutting().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue(), mySim().currentTime());
+		}
+		myMessage.setCode(Mc.start);
+		startContinualAssistant(myMessage);
 	}
 
 	//meta! sender="AgentNabytku", id="385", type="Request"
 	public void processRPresunZoSkladu(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.finish);
-		msg.setAddressee(myAgent().findAssistant(Id.procesPresunZoSkladu));
-		startContinualAssistant(msg);
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setAddressee(myAgent().findAssistant(Id.procesPresunZoSkladu));
+		if(myMessage.getWorkerForCutting() != null) {
+			myMessage.getWorkerForCutting().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue(), mySim().currentTime());
+		} else if(myMessage.getWorkerForStaining() != null) {
+			myMessage.getWorkerForStaining().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue(), mySim().currentTime());
+		} else if(myMessage.getWorkerForAssembly() != null) {
+			myMessage.getWorkerForAssembly().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue(), mySim().currentTime());
+		} else if(myMessage.getWorkerForPainting() != null) {
+			myMessage.getWorkerForPainting().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue(), mySim().currentTime());
+		} else if(myMessage.getWorkerForMontage() != null) {
+			myMessage.getWorkerForMontage().setState(WorkerBussyState.MOVING_FROM_STORAGE.getValue(), mySim().currentTime());
+		}
+
+		myMessage.setCode(Mc.start);
+		startContinualAssistant(myMessage);
+	}
+
+	//meta! sender="AgentNabytku", id="157", type="Request"
+	public void processRPresunNaPracovisko(MessageForm message)
+	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setAddressee(myAgent().findAssistant(Id.procesPresunNaPracovisko));
+
+		if (myMessage.getWorkerForCutting() != null) {
+			myMessage.getWorkerForCutting().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue(), mySim().currentTime());
+		} else if (myMessage.getWorkerForStaining() != null) {
+			myMessage.getWorkerForStaining().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue(), mySim().currentTime());
+		} else if (myMessage.getWorkerForAssembly() != null) {
+			myMessage.getWorkerForAssembly().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue(), mySim().currentTime());
+		} else if (myMessage.getWorkerForPainting() != null) {
+			myMessage.getWorkerForPainting().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue(), mySim().currentTime());
+		} else if (myMessage.getWorkerForMontage() != null) {
+			myMessage.getWorkerForMontage().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue(), mySim().currentTime());
+		}
+
+		myMessage.setCode(Mc.start);
+		startContinualAssistant(myMessage);
 	}
 
 	//meta! sender="AgentNabytku", id="71", type="Notice"
@@ -50,69 +88,66 @@ public class ManagerPohybu extends Manager
 	//meta! sender="ProcesPresunDoSkladu", id="117", type="Finish"
 	public void processFinishProcesPresunDoSkladu(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.rPresunDoSkladu);
-		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
-		response(msg);
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rPresunDoSkladu);
+		if(myMessage.getWorkerForCutting() != null) {
+			myMessage.getWorkerForCutting().setCurrentWorkPlace(null);
+		}
+		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(myMessage);
 	}
 
 	//meta! sender="ProcesPresunZoSkladu", id="395", type="Finish"
 	public void processFinishProcesPresunZoSkladu(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.rPresunZoSkladu);
-
-		if (msg.getWorkerA() != null) {
-			msg.getWorkerA().setCurrentWorkPlace(msg.getWorkPlace());
-		} else if (msg.getWorkerB() != null) {
-			msg.getWorkerB().setCurrentWorkPlace(msg.getWorkPlace());
-		} else if (msg.getWorkerC() != null) {
-			msg.getWorkerC().setCurrentWorkPlace(msg.getWorkPlace());
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rPresunZoSkladu);
+		if(myMessage.getWorkerForCutting() != null) {
+			myMessage.getWorkerForCutting().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForCutting());
+		} else if(myMessage.getWorkerForAssembly() != null) {
+			myMessage.getWorkerForAssembly().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForAssembly());
+		} else if(myMessage.getWorkerForMontage() != null) {
+			myMessage.getWorkerForMontage().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForMontage());
+		} else if(myMessage.getWorkerForStaining() != null) {
+			myMessage.getWorkerForStaining().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForStaining());
+		} else if(myMessage.getWorkerForPainting() != null) {
+			myMessage.getWorkerForPainting().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForPainting());
 		}
-		if (msg.getWorkPlace() != null) {
-			msg.getWorkPlace().setWorker(msg.getWorkerA() != null ? msg.getWorkerA() :
-					msg.getWorkerB() != null ? msg.getWorkerB() :
-							msg.getWorkerC());
-		}
 
-
-		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
-		response(msg);
+		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(myMessage);
 	}
 
 	//meta! sender="ProcesPresunNaPracovisko", id="115", type="Finish"
 	public void processFinishProcesPresunNaPracovisko(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.rPresunNaPracovisko);
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		myMessage.setCode(Mc.rPresunNaPracovisko);
 
-		if (msg.getWorkerA() != null) {
-			msg.getWorkerA().setCurrentWorkPlace(msg.getWorkPlace());
-		} else if (msg.getWorkerB() != null) {
-			msg.getWorkerB().setCurrentWorkPlace(msg.getWorkPlace());
-		} else if (msg.getWorkerC() != null) {
-			msg.getWorkerC().setCurrentWorkPlace(msg.getWorkPlace());
+		if (myMessage.getWorkerForStaining() != null) {
+			myMessage.getWorkerForStaining().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForStaining());
+		} else if (myMessage.getWorkerForPainting() != null) {
+			myMessage.getWorkerForPainting().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForPainting());
+		} else if (myMessage.getWorkerForAssembly() != null) {
+			myMessage.getWorkerForAssembly().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForAssembly());
+		} else if (myMessage.getWorkerForMontage() != null) {
+			myMessage.getWorkerForMontage().setCurrentWorkPlace(myMessage.getWorkPlace());
+			myMessage.getWorkPlace().setActualWorkingWorker(myMessage.getWorkerForMontage());
 		}
 
-		if (msg.getWorkPlace() != null) {
-			msg.getWorkPlace().setWorker(msg.getWorkerA() != null ? msg.getWorkerA() :
-					msg.getWorkerB() != null ? msg.getWorkerB() :
-							msg.getWorkerC());
-		}
-
-		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
-		response(msg);
+		myMessage.setAddressee(mySim().findAgent(Id.agentNabytku));
+		response(myMessage);
 	}
 
-	//meta! sender="AgentNabytku", id="157", type="Request"
-	public void processRPresunNaPracovisko(MessageForm message)
-	{
-		MyMessage msg = (MyMessage) message;
-		msg.setCode(Mc.finish);
 
-		msg.setAddressee(myAgent().findAssistant(Id.procesPresunNaPracovisko));
-		startContinualAssistant(msg);
-	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)
@@ -132,6 +167,14 @@ public class ManagerPohybu extends Manager
 	{
 		switch (message.code())
 		{
+		case Mc.rPresunNaPracovisko:
+			processRPresunNaPracovisko(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
+		break;
+
 		case Mc.finish:
 			switch (message.sender().id())
 			{
@@ -155,14 +198,6 @@ public class ManagerPohybu extends Manager
 
 		case Mc.rPresunZoSkladu:
 			processRPresunZoSkladu(message);
-		break;
-
-		case Mc.init:
-			processInit(message);
-		break;
-
-		case Mc.rPresunNaPracovisko:
-			processRPresunNaPracovisko(message);
 		break;
 
 		default:

@@ -1,9 +1,15 @@
 package entities;
 
+import Enums.WorkerBussyState;
 import IDGenerator.IDGenerator;
+import OSPAnimator.AnimImageItem;
+import OSPAnimator.AnimShapeItem;
 import Statistics.Utilisation;
 
-public class Worker {
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+
+public class Worker extends Entity {
     private final int id;
     private int state;
     private final String type;
@@ -23,12 +29,29 @@ public class Worker {
         return state;
     }
 
-    public void setState(int state) {
-        this.state = state;
-        if (state == 0) {
-            furniture = null;
+    public void setState(int newState, double currentTime) {
+        int oldMappedValue = this.state == WorkerBussyState.NON_BUSY.getValue() ? 0 : 1;
+        int newMappedValue = newState == WorkerBussyState.NON_BUSY.getValue() ? 0 : 1;
+
+        if (this.state != newState) {
+            if (oldMappedValue != newMappedValue) {
+                utilisation.recordChange(currentTime, newMappedValue);
+            }
+
+            this.state = newState;
+
+            if (newState == WorkerBussyState.NON_BUSY.getValue()) {
+                furniture = null;
+            }
+        }
+
+        if (animImageItem != null) {
+            animImageItem.setToolTip("ID: " + getId()
+                    + "; Type: " + type
+                    + "; State: " + WorkerBussyState.getNameByValue(state));
         }
     }
+
 
     public int getId() {
         return id;
@@ -71,7 +94,32 @@ public class Worker {
     public void clear() {
         furniture = null;
         currentWorkPlace = null;
-        state = 0;
+        state = WorkerBussyState.NON_BUSY.getValue();
+        utilisation.clear();
 
     }
+
+
+    @Override
+    public void initAnimationObject() {
+        if (animImageItem != null) {
+            return;
+        }
+        String path = switch (type) {
+            case "A" -> "src/main/resources/images/worker_a.png";
+            case "B" -> "src/main/resources/images/worker_b.png";
+            case "C" -> "src/main/resources/images/worker_c.png";
+            default -> throw new IllegalStateException("Unexpected value: " + type);
+        };
+
+        AnimImageItem shapeItem = new AnimImageItem();
+        shapeItem.setImage(path);
+        shapeItem.setImageSize(30, 30);
+        shapeItem.setToolTip("ID: " + getId() + ";Type: " + type+"; State: " + WorkerBussyState.getNameByValue(state));
+        this.animImageItem = shapeItem;
+    }
+
+
+
+
 }

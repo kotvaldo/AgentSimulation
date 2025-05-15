@@ -26,18 +26,19 @@ public class Generators {
     private final Triangular timeSpentInStorageDist;
     private final Triangular timeMovingIntoStorageDist;
     private final Triangular timeMovingToAnotherWorkshopDist;
-    private final Triangular accessingOrderDist;
+   // private final Triangular accessingOrderDist;
 
     private final UniformDiscrete countOfFurnitureDist;
     private final Random realisePaintingDist;
 
     public Generators() {
-        this.accessingOrderDist = new Triangular(2.0 * 60, 8.0 * 60, 4.0 *60);
+        //this.accessingOrderDist = new Triangular(2.0 * 60, 8.0 * 60, 4.0 *60);
         this.realisePaintingDist = new Random();
         Random rand = new Random();
 
         countOfFurnitureDist = new UniformDiscrete(1,6, rand.nextInt());
         orderArrivalDist = new Exponential(1800.0, rand.nextInt());
+        //orderArrivalDist = new Exponential(4500.0, rand.nextInt());
         ArrayList<EmpiricData<Integer>> typeList = new ArrayList<>();
 
 
@@ -59,7 +60,7 @@ public class Generators {
         //first
         cuttingTableDist = new EmpiricContinuous(typeOneCuttingList, rand.nextInt());
         paintingTableDist = new EmpiricContinuous(typeOnePaintingList, rand.nextInt());
-        stainingTableDist = new UniformContinuous(200.0 * 60, 610.0 * 60, rand.nextInt());
+        stainingTableDist = new UniformContinuous(100.0 * 60, 480.0 * 60, rand.nextInt());
         assemblyTableDist = new UniformContinuous(30.0 * 60, 60.0 * 60, rand.nextInt());
 
         // second
@@ -142,9 +143,9 @@ public class Generators {
         return timeMovingToAnotherWorkshopDist;
     }
 
-    public Triangular getAccessingOrderDist() {
-        return accessingOrderDist;
-    }
+   //public Triangular getAccessingOrderDist() {
+   //     return accessingOrderDist;
+    // }
 
     public EmpiricContinuous getPaintingTableDist() {
         return paintingTableDist;

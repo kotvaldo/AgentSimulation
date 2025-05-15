@@ -2,120 +2,158 @@ package agents.agentpracovnikova;
 
 import Enums.WorkerBussyState;
 import OSPABA.*;
-import entities.WorkerA;
+import entities.*;
 import simulation.*;
 
+import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
 //meta! id="228"
-public class ManagerPracovnikovA extends OSPABA.Manager {
-    private LinkedList<WorkerA> freeWorkers;
+public class ManagerPracovnikovA extends OSPABA.Manager
+{
+	public LinkedList<WorkerA> getFreeWorkers() {
+		return freeWorkers;
+	}
+
+	private LinkedList<WorkerA> freeWorkers;
+	public ManagerPracovnikovA(int id, Simulation mySim, Agent myAgent)
+	{
+		super(id, mySim, myAgent);
+		init();
+	}
+
+	@Override
+	public void prepareReplication()
+	{
+		super.prepareReplication();
+		// Setup component for the next replication
+
+		if (petriNet() != null)
+		{
+			petriNet().clear();
+		}
+		MySimulation sim = (MySimulation) _mySim;
+		freeWorkers = new LinkedList<>();
+
+		for (WorkerA worker : sim.getWorkersAArrayList()) {
+			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
+			freeWorkers.add(worker);
+		}
+	}
+
+	//meta! sender="AgentPracovnikov", id="242", type="Request"
+	public void processRVyberPracovnikaARezanie(MessageForm message) {
+		MyMessage msg = (MyMessage) message.createCopy();
+
+		WorkerA worker = null;
+		if (!freeWorkers.isEmpty()) {
+			worker = freeWorkers.removeFirst();
+		}
+		//System.out.println("Free workersA in Cutting: " + freeWorkers.size());
+		if (worker != null) {
+			msg.setWorkerForCutting(worker);
+		} else {
+			msg.setWorkerForCutting(null);
+		}
+
+		msg.setCode(Mc.rVyberPracovnikaARezanie);
+		msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+		response(msg);
+	}
 
 
-    public ManagerPracovnikovA(int id, Simulation mySim, Agent myAgent) {
-        super(id, mySim, myAgent);
-        init();
-    }
+	//meta! sender="AgentPracovnikov", id="365", type="Request"
+	public void processRVyberPracovnikaAMontaz(MessageForm message) {
+		MyMessage msg = (MyMessage) message.createCopy();
 
-    @Override
-    public void prepareReplication() {
-        super.prepareReplication();
-        // Setup component for the next replication
+		WorkerA worker = null;
+		if (!freeWorkers.isEmpty()) {
+			worker = freeWorkers.removeFirst();
+		}
 
-        if (petriNet() != null) {
-            petriNet().clear();
-        }
+		if (worker != null) {
+			msg.setWorkerForMontage(worker);
+		} else {
+			msg.setWorkerForMontage(null);
+		}
+		//System.out.println("Free workersA in Montage: " + freeWorkers.size());
+		msg.setCode(Mc.rVyberPracovnikaAMontaz);
+		msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+		response(msg);
+	}
 
-        MySimulation sim = (MySimulation) _mySim;
-        freeWorkers = new LinkedList<>();
 
-        for (WorkerA worker : sim.getWorkersAArrayList()) {
-            worker.setState(WorkerBussyState.NON_BUSY.getValue());
-            freeWorkers.add(worker);
-        }
+	//meta! sender="AgentPracovnikov", id="239", type="Notice"
+	public void processNoticeUvolniA(MessageForm message) {
+		MyMessage msg = (MyMessage) message.createCopy();
+		WorkerA worker = null;
 
-    }
+		if (msg.getWorkerForRelease() instanceof WorkerA) {
+			worker = (WorkerA) msg.getWorkerForRelease();
+		} else if (msg.getWorkerForMontage() instanceof WorkerA) {
+			worker = (WorkerA) msg.getWorkerForMontage();
+		}
 
-    //meta! sender="AgentPracovnikov", id="242", type="Request"
-    public void processRVyberPracovnikaARezanie(MessageForm message) {
-        MyMessage msg = (MyMessage) message;
+		if (worker != null) {
+			worker.setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
+			freeWorkers.addLast(worker);
+			int index = freeWorkers.size() - 1;
+			int spacing = 40;
 
-        WorkerA worker = freeWorkers.poll();
-        if (worker != null) {
-            worker.setState(WorkerBussyState.ASSIGNED.getValue());
-            msg.setWorkerA(worker);
-        } else {
-            msg.setWorkerA(null);
-        }
+			int x = Data.FREE_WORKERS_A_QUEUE_X + index * spacing;
+			int y = Data.FREE_WORKERS_A_QUEUE_Y;
 
-        msg.setCode(Mc.rVyberPracovnikaARezanie);
-        msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
-        response(msg);
-    }
+			Point2D destination = new Point2D.Double(x, y);
+			worker.setCurrPosition(destination);
+			if (mySim().animatorExists()) {
+				worker.getAnimImageItem().moveTo(mySim().currentTime(), 1.0, destination);
+			}
 
-    //meta! sender="AgentPracovnikov", id="365", type="Request"
-    public void processRVyberPracovnikaAMontaz(MessageForm message) {
-        MyMessage msg = (MyMessage) message;
+		}
+	}
 
-        WorkerA worker = freeWorkers.poll();
-        if (worker != null) {
-            worker.setState(WorkerBussyState.ASSIGNED.getValue());
-            msg.setWorkerA(worker);
-        } else {
-            msg.setWorkerA(null);
-        }
 
-        msg.setCode(Mc.rVyberPracovnikaAMontaz);
-        msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
-        response(msg);
-    }
+	//meta! userInfo="Process messages defined in code", id="0"
+	public void processDefault(MessageForm message)
+	{
+		switch (message.code())
+		{
+		}
+	}
 
-    //meta! sender="AgentPracovnikov", id="239", type="Notice"
-    public void processNoticeUvolniA(MessageForm message) {
-        MyMessage msg = (MyMessage) message;
-        WorkerA worker = msg.getWorkerA();
+	//meta! userInfo="Generated code: do not modify", tag="begin"
+	public void init()
+	{
+	}
 
-        if (worker != null) {
-            worker.setState(WorkerBussyState.NON_BUSY.getValue());
-            freeWorkers.add(worker);
-        }
-    }
+	@Override
+	public void processMessage(MessageForm message)
+	{
+		switch (message.code())
+		{
+		case Mc.rVyberPracovnikaARezanie:
+			processRVyberPracovnikaARezanie(message);
+		break;
 
-    //meta! userInfo="Process messages defined in code", id="0"
-    public void processDefault(MessageForm message) {
-        switch (message.code()) {
-        }
-    }
+		case Mc.noticeUvolniA:
+			processNoticeUvolniA(message);
+		break;
 
-    //meta! userInfo="Generated code: do not modify", tag="begin"
-    public void init() {
-    }
+		case Mc.rVyberPracovnikaAMontaz:
+			processRVyberPracovnikaAMontaz(message);
+		break;
 
-    @Override
-    public void processMessage(MessageForm message) {
-        switch (message.code()) {
-            case Mc.noticeUvolniA:
-                processNoticeUvolniA(message);
-                break;
+		default:
+			processDefault(message);
+		break;
+		}
+	}
+	//meta! tag="end"
 
-            case Mc.rVyberPracovnikaAMontaz:
-                processRVyberPracovnikaAMontaz(message);
-                break;
-
-            case Mc.rVyberPracovnikaARezanie:
-                processRVyberPracovnikaARezanie(message);
-                break;
-
-            default:
-                processDefault(message);
-                break;
-        }
-    }
-    //meta! tag="end"
-
-    @Override
-    public AgentPracovnikovA myAgent() {
-        return (AgentPracovnikovA) super.myAgent();
-    }
+	@Override
+	public AgentPracovnikovA myAgent()
+	{
+		return (AgentPracovnikovA)super.myAgent();
+	}
 
 }

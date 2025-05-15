@@ -1,12 +1,13 @@
 package agents.agentcinnosti.continualassistants;
 
+import Enums.PresetSimulationValues;
 import OSPABA.*;
 import simulation.*;
 import agents.agentcinnosti.*;
 import OSPABA.Process;
 
 //meta! id="280"
-public class ProcesMontaze extends OSPABA.Process
+public class ProcesMontaze extends Process
 {
 	public ProcesMontaze(int id, Simulation mySim, CommonAgent myAgent)
 	{
@@ -23,6 +24,15 @@ public class ProcesMontaze extends OSPABA.Process
 	//meta! sender="AgentCinnosti", id="281", type="Start"
 	public void processStart(MessageForm message)
 	{
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		MySimulation simulation = (MySimulation) _mySim;
+		myMessage.setCode(Mc.finish);
+
+		double newTime = simulation.getGenerators().getMontageWardrobeDist().sample();
+
+		if (newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
+			hold(newTime, myMessage);
+		}
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -30,6 +40,11 @@ public class ProcesMontaze extends OSPABA.Process
 	{
 		switch (message.code())
 		{
+			case Mc.finish -> {
+				MyMessage msg = (MyMessage) message.createCopy();
+				msg.setAddressee(myAgent());
+				assistantFinished(msg);
+			}
 		}
 	}
 

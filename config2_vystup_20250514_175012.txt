@@ -1,0 +1,21 @@
+Použitá konfigurácia:
+workersA: 7
+workersB: 5
+workersC: 39
+workplaces: 58
+replications: 1000
+burnIn: 50
+
+Metric;Mean;CI_Lower;CI_Upper
+Utilisation A=>  0,7860;   [ 0,7853 ; 0,7867 ]
+Utilisation B=>  0,9653;   [ 0,9646 ; 0,9661 ]
+Utilisation C=>  0,9590;   [ 0,9583 ; 0,9598 ]
+Utilisation All=>  0,9359;   [ 0,9352 ; 0,9366 ]
+Finished Orders=>  3927,7670;   [ 3924,9288 ; 3930,6052 ]
+All Orders=>  3988,6650;   [ 3984,8849 ; 3992,4451 ]
+Cutting QL=>  77,4687;   [ 74,3125 ; 80,6249 ]
+Staining QL=>  2,3852;   [ 2,3724 ; 2,3980 ]
+Assembly QL=>  5,0717;   [ 5,0441 ; 5,0993 ]
+Montage QL=>  0,0158;   [ 0,0157 ; 0,0159 ]
+Average Time of Work(s)=>  87955,4343;   [ 86111,8898 ; 89798,9788 ]
+Average Time of Work(h)=>  24,4321;   [ 23,9200 ; 24,9442 ]

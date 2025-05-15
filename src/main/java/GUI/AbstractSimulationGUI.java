@@ -20,9 +20,9 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JLabel replicationLabel;
     protected JLabel burnLabel;
     protected JPanel controlPanel;
-    protected JPanel centerPanel;
-
-
+    protected JTabbedPane centerPanel;
+    protected JButton btnCreateAnimator = new JButton("Create Animator");
+    protected JButton btnRemoveAnimator = new JButton("Remove Animator");
 
     protected AbstractSimulationGUI(String title) {
         setTitle(title);
@@ -30,15 +30,16 @@ public abstract class AbstractSimulationGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.centerPanel = new JPanel();
+        this.centerPanel = new JTabbedPane();
         initializeChart();
         initializeInputFields();
         initializeButtons();
         this.inputPanel = new JPanel();
         replicationLabel = new JLabel("Replication: ");
         burnLabel = new JLabel("Burn rep: ");
-        burnLabel.setVisible(false);
-        burnInInput.setVisible(false);
+
+        burnLabel.setVisible(true);
+        burnInInput.setVisible(true);
         inputPanel.add(replicationLabel);
         inputPanel.add(replicationsInput);
         inputPanel.add(burnLabel);
@@ -46,22 +47,17 @@ public abstract class AbstractSimulationGUI extends JFrame {
 
         //inputPanel.add(updateFrequencyInput);
         this.setupCustomInput();
-
+        replicationsInput.setVisible(true);
         controlPanel = new JPanel();
         controlPanel.add(startButton);
         controlPanel.add(stopButton);
-
         statsPanel = new JPanel();
         statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-
-
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.NORTH);
         topPanel.add(statsPanel, BorderLayout.SOUTH);
-
-
         setupCustomPanel();
 
         //getContentPane().add(new ChartPanel(chart), BorderLayout.CENTER);
@@ -92,8 +88,5 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected abstract void setupCustomPanel();
     protected abstract void startSimulation();
     protected abstract void stopSimulation();
-
-
-
 
 }

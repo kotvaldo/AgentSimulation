@@ -4,8 +4,8 @@ public class TimeWeightedStatistic {
     private double lastChangeTime;
     private int lastValue;
 
-    private double weightedSum;           // Σ q(t) * delta_t
-    private double weightedSumSquares;    // Σ (q(t)^2) * delta_t
+    private double weightedSum;
+    private double weightedSumSquares;
     private double timeSum;               // Σ delta_t
 
     private double lower;                 // CI lower

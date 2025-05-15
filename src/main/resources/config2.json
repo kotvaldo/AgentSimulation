@@ -1,0 +1,8 @@
+{
+  "workersA": 8,
+  "workersB": 6,
+  "workersC": 40,
+  "workplaces": 65,
+  "replications": 1000,
+  "burnIn": 50
+}

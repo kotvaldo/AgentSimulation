@@ -1,11 +1,13 @@
 package agents.agentpohybu.continualassistants;
 
 import Enums.PresetSimulationValues;
-import Enums.WorkerBussyState;
 import OSPABA.*;
+import entities.Worker;
 import simulation.*;
 import agents.agentpohybu.*;
 import OSPABA.Process;
+
+import java.awt.geom.Point2D;
 
 //meta! id="116"
 public class ProcesPresunDoSkladu extends Process
@@ -25,15 +27,24 @@ public class ProcesPresunDoSkladu extends Process
 	//meta! sender="AgentPohybu", id="117", type="Start"
 	public void processStart(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		MySimulation simulation = (MySimulation) _mySim;
+		myMessage.setCode(Mc.finish);
 
-		if (msg.getWorkerA() != null) {
-			msg.getWorkerA().setState(WorkerBussyState.MOVING_TO_STORAGE.getValue());
+		double newTime = simulation.getGenerators().getTimeMovingIntoStorageDist().sample();
+
+		Worker worker = myMessage.getAssignedWorker();
+		if (worker != null) {
+			Point2D transitionPoint = new Point2D.Double(Data.SKLAD_X, Data.SKLAD_Y);
+			worker.setCurrPosition(transitionPoint);
+
+			if (mySim().animatorExists()) {
+				worker.getAnimImageItem().moveTo(mySim().currentTime(), newTime, transitionPoint);
+			}
 		}
 
-		double newTime = ((MySimulation) mySim()).getGenerators().getTimeMovingIntoStorageDist().sample();
-		if(newTime + mySim().currentTime() < PresetSimulationValues.END_OF_SIMULATION.getValue()) {
-			hold(newTime, msg);
+		if (newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
+			hold(newTime, myMessage);
 		}
 	}
 
@@ -42,6 +53,11 @@ public class ProcesPresunDoSkladu extends Process
 	{
 		switch (message.code())
 		{
+			case Mc.finish -> {
+				MyMessage msg = (MyMessage) message.createCopy();
+				msg.setAddressee(myAgent());
+				assistantFinished(msg);
+			}
 		}
 	}
 

@@ -2,11 +2,12 @@ package entities;
 
 import Enums.WorkPlaceStateValues;
 import IDGenerator.IDGenerator;
+import OSPAnimator.AnimImageItem;
 
-public class WorkPlace {
+public class WorkPlace extends Entity {
     private final int id;
     private Furniture furniture;
-    private Worker worker;
+    private Worker actualWorkingWorker;
     private String activity = "Nothing";
     private int state;
 
@@ -14,7 +15,7 @@ public class WorkPlace {
         this.id = IDGenerator.getInstance().getNextWorkplaceId();
         this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
         this.furniture = null;
-        this.worker = null;
+        this.actualWorkingWorker = null;
     }
 
     public Furniture getFurniture() {
@@ -25,9 +26,11 @@ public class WorkPlace {
         this.furniture = furniture;
         if (furniture != null) {
             this.state = WorkPlaceStateValues.ASSIGNED.getValue();
-        } else if (worker == null) {
+        } else if (actualWorkingWorker == null) {
             this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
+            this.activity = "Nothing";
         }
+        updateToolTip();
     }
 
     public boolean isBusy() {
@@ -48,19 +51,20 @@ public class WorkPlace {
         return id;
     }
 
-    public Worker getWorker() {
-        return worker;
+    public Worker getActualWorkingWorker() {
+        return actualWorkingWorker;
     }
 
-    public void setWorker(Worker worker) {
-        this.worker = worker;
-        if (worker != null && furniture != null) {
+    public void setActualWorkingWorker(Worker actualWorkingWorker) {
+        this.actualWorkingWorker = actualWorkingWorker;
+        if (actualWorkingWorker != null && furniture != null) {
             this.state = WorkPlaceStateValues.WORKING.getValue();
-        } else if (worker != null) {
+        } else if (actualWorkingWorker != null) {
             this.state = WorkPlaceStateValues.ASSIGNED.getValue();
         } else if (furniture == null) {
             this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
         }
+        updateToolTip();
     }
 
     public String getActivity() {
@@ -76,7 +80,9 @@ public class WorkPlace {
     }
 
     public void setState(int state) {
+
         this.state = state;
+        updateToolTip();
     }
 
     @Override
@@ -86,4 +92,47 @@ public class WorkPlace {
         WorkPlace workplace = (WorkPlace) obj;
         return id == workplace.id;
     }
+    public void clear() {
+        this.furniture = null;
+        this.actualWorkingWorker = null;
+        this.activity = "Nothing";
+        this.state = WorkPlaceStateValues.NOT_WORKING.getValue();
+    }
+
+    @Override
+    public void initAnimationObject() {
+        if (animImageItem != null) {
+            return;
+        }
+        AnimImageItem shapeItem = new AnimImageItem("src/main/resources/images/crafting_table.jpg", 512, 512);
+
+        shapeItem.setImageSize(30, 30);
+        String tooltip = "WorkPlace ID: " + id + "\n" +
+                "State: " + state + "\n" +
+                "Activity: " + activity + "\n" +
+                "Furniture ID: " + (furniture != null ? furniture.getId() : "None") + "\n" +
+                "Worker ID: " + (actualWorkingWorker != null ? actualWorkingWorker.getId() : "None");
+
+        shapeItem.setToolTip(tooltip);
+        this.animImageItem = shapeItem;
+
+    }
+    public void updateToolTip() {
+        if (animImageItem == null) return;
+
+        String tooltip = "WorkPlace ID: " + id + "\n" +
+                "State: " + state + "\n" +
+                "Activity: " + activity + "\n" +
+                "Furniture ID: " + (furniture != null ? furniture.getId() : "None") + "\n" +
+                "Worker ID: " + (actualWorkingWorker != null ? actualWorkingWorker.getId() : "None");
+
+        animImageItem.setToolTip(tooltip);
+    }
+
+
+
+
+
+
+
 }

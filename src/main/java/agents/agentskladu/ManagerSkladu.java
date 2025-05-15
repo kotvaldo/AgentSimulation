@@ -5,7 +5,7 @@ import OSPABA.*;
 import simulation.*;
 
 //meta! id="118"
-public class ManagerSkladu extends OSPABA.Manager
+public class ManagerSkladu extends Manager
 {
 	public ManagerSkladu(int id, Simulation mySim, Agent myAgent)
 	{
@@ -35,7 +35,7 @@ public class ManagerSkladu extends OSPABA.Manager
 	{
 		MyMessage msg = (MyMessage) message.createCopy();
 		msg.setCode(Mc.rPripravVSklade);
-		msg.setAddressee(Id.agentNabytku);
+		msg.setAddressee(_mySim.findAgent(Id.agentNabytku));
 		response(msg);
 	}
 
@@ -43,9 +43,9 @@ public class ManagerSkladu extends OSPABA.Manager
 	public void processRPripravVSklade(MessageForm message)
 	{
 		MyMessage msg = (MyMessage) message.createCopy();
-		msg.getWorkerA().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue());
+		msg.getWorkerForCutting().setState(WorkerBussyState.PREPARING_IN_STORAGE.getValue(), mySim().currentTime());
+		msg.setCode(Mc.start);
 		msg.setAddressee(myAgent().findAssistant(Id.procesPripravaVSklade));
-		msg.setCode(Mc.finish);
 		startContinualAssistant(msg);
 	}
 

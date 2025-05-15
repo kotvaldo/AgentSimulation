@@ -1,11 +1,14 @@
 package agents.agentpohybu.continualassistants;
 
 import Enums.PresetSimulationValues;
-import Enums.WorkerBussyState;
 import OSPABA.*;
+import entities.WorkPlace;
+import entities.Worker;
 import simulation.*;
 import agents.agentpohybu.*;
 import OSPABA.Process;
+
+import java.awt.geom.Point2D;
 
 //meta! id="114"
 public class ProcesPresunNaPracovisko extends Process
@@ -25,20 +28,28 @@ public class ProcesPresunNaPracovisko extends Process
 	//meta! sender="AgentPohybu", id="115", type="Start"
 	public void processStart(MessageForm message)
 	{
-		MyMessage msg = (MyMessage) message;
+		MyMessage myMessage = (MyMessage) message.createCopy();
+		MySimulation simulation = (MySimulation) _mySim;
+		myMessage.setCode(Mc.finish);
 
-		if (msg.getWorkerA() != null) {
-			msg.getWorkerA().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
-		} else if (msg.getWorkerB() != null) {
-			msg.getWorkerB().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
-		} else if (msg.getWorkerC() != null) {
-			msg.getWorkerC().setState(WorkerBussyState.MOVE_TO_WORKPLACE.getValue());
+		double newTime = simulation.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
+
+		Worker worker = myMessage.getAssignedWorker();
+		if (worker != null) {
+			WorkPlace workPlace = myMessage.getFurniture().getWorkPlace();
+			Point2D original = workPlace.getCurrPosition();
+			Point2D destination = new Point2D.Double(original.getX() + 15, original.getY());
+			worker.setCurrPosition(destination);
+
+			if (mySim().animatorExists()) {
+				worker.getAnimImageItem().moveTo(mySim().currentTime(), newTime, destination);
+			}
 		}
 
-		double newTime = ((MySimulation) mySim()).getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
-		if(newTime + mySim().currentTime() < PresetSimulationValues.END_OF_SIMULATION.getValue()) {
-			hold(newTime, msg);
+		if (newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
+			hold(newTime, myMessage);
 		}
+
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -46,6 +57,11 @@ public class ProcesPresunNaPracovisko extends Process
 	{
 		switch (message.code())
 		{
+			case Mc.finish -> {
+				MyMessage msg = (MyMessage) message.createCopy();
+				msg.setAddressee(myAgent());
+				assistantFinished(msg);
+			}
 		}
 	}
 
