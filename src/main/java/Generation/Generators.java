@@ -17,7 +17,7 @@ public class Generators {
     private final UniformContinuous stainingTableDist;
     private final UniformContinuous stainingChairDist;
     private final UniformContinuous stainingWardrobeDist;
-
+    private final  Triangular dryingDist;
 
     private final UniformContinuous assemblyTableDist;
     private final UniformContinuous assemblyChairDist;
@@ -82,7 +82,7 @@ public class Generators {
         timeMovingToAnotherWorkshopDist = new Triangular(120.0, 500.0, 150.0, rand.nextInt());
 
 
-
+        dryingDist = new Triangular(15.0 * 60, 60.0*60, 40.0*60);
     }
 
 
@@ -169,5 +169,9 @@ public class Generators {
 
     public Random getRealisePaintingDist() {
         return realisePaintingDist;
+    }
+
+    public Triangular getDryingDist() {
+        return dryingDist;
     }
 }

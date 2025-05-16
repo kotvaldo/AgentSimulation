@@ -185,7 +185,6 @@ public class ManagerCinnosti extends Manager
 	public void processFinishProcesSusenia(MessageForm message)
 	{
 		MyMessage msg = (MyMessage) message.createCopy();
-		MySimulation mySimulation = (MySimulation) mySim();
 		msg.getWorkPlace().setActualWorkingWorker(null);
 		msg.getWorkerForDrying().setState(WorkerBussyState.NON_BUSY.getValue(), mySim().currentTime());
 		msg.setCode(Mc.urobSusenie);

@@ -13,7 +13,8 @@ public enum FurnitureStateValues {
     WAITING_IN_QUEUE_MONTAGE(9),
     FURNITURE_DONE(10),
     PREPARING_FOR_WORK(11),
-    DRYING(12);
+    DRYING(12),
+    WAITING_IN_QUEUE_DRYING(13);
 
 
     private final Integer value;

@@ -15,7 +15,7 @@ public class ManagerNabytku extends Manager
 	private final QueueStaining queueStaining;
 	private final QueueAssembly queueAssembly;
 	private final QueueMontage queueMontage;
-
+	private final QueueDrying queueDrying;
 	public PriorityQueue<WorkPlace> getFreeWorkplaces() {
 		return freeWorkplaces;
 	}
@@ -54,6 +54,7 @@ public class ManagerNabytku extends Manager
 		queueAssembly = new QueueAssembly(mySimulation);
 		queueMontage = new QueueMontage(mySimulation);
 		queuePainting = new QueuePainting(mySimulation);
+		queueDrying = new QueueDrying(mySimulation);
 		freeWorkplaces = new PriorityQueue<>(Comparator.comparingInt(WorkPlace::getId));
 	}
 
@@ -88,6 +89,13 @@ public class ManagerNabytku extends Manager
 
 	public void tryToReassignWorkerA(WorkerA worker) {
 		//System.out.println("Reassigning worker " + worker);
+		if(!queueDrying.isEmpty()) {
+			MyMessage myMessage = queueDrying.getFirst();
+			myMessage.setWorkerForDrying(worker);
+			sendToDrying(myMessage);
+			return;
+
+		}
 		if(!queueMontage.isEmpty()) {
 			MyMessage myMessage = queueMontage.getFirst();
 			myMessage.setWorkerForMontage(worker);
@@ -190,6 +198,14 @@ public class ManagerNabytku extends Manager
 		request(newMessage);
 
 	}
+
+	public void tryToReassingDrying(MyMessage myMessage) {
+		MyMessage newMessage = new MyMessage(myMessage);
+		newMessage.setCode(Mc.rVyberPracovnikaSusenie);
+		newMessage.setAddressee(Id.agentPracovnikov);
+		request(newMessage);
+	}
+
 	public void tryToReassignMontage(MyMessage myMessage) {
 		MyMessage newMessage = new MyMessage(myMessage);
 		newMessage.setCode(Mc.rVyberPracovnikaMontaz);
@@ -217,6 +233,35 @@ public class ManagerNabytku extends Manager
 		}
 		request(newMessage);
 
+	}
+
+	public void sendToDrying(MyMessage myMessage) {
+		if (myMessage.getWorkerForDrying() == null || myMessage.getWorkPlace() == null) {
+			System.out.print("Chýba worker alebo workplace pri skladaní");
+			throw new IllegalStateException("Chýba worker alebo workplace pri skladaní");
+		}
+
+		queueDrying.removeIf(msg ->
+				msg.getFurniture() != null && msg.getFurniture().getId() == myMessage.getFurniture().getId()
+		);
+
+		MyMessage newMessage = new MyMessage(myMessage);
+		WorkPlace current = myMessage.getWorkerForDrying().getCurrentWorkPlace();
+		WorkPlace target = myMessage.getFurniture().getWorkPlace();
+		newMessage.getFurniture().setState(FurnitureStateValues.PREPARING_FOR_WORK.getValue());
+		newMessage.getWorkerForDrying().setState(WorkerBussyState.BUSY.getValue(), mySim().currentTime());
+		if (current == null) {
+			newMessage.setCode(Mc.rPresunZoSkladu);
+			newMessage.setAddressee(Id.agentPohybu);
+		} else if (!current.equals(target)) {
+			newMessage.setCode(Mc.rPresunNaPracovisko);
+			newMessage.setAddressee(Id.agentPohybu);
+		} else {
+			newMessage.setCode(Mc.urobSusenie);
+			newMessage.setAddressee(Id.agentCinnosti);
+		}
+
+		request(newMessage);
 	}
 
 	public void sendToStaining(MyMessage myMessage) {
@@ -450,6 +495,7 @@ public class ManagerNabytku extends Manager
 	}
 
 	//meta! sender="AgentPohybu", id="157", type="Response"
+	//meta! sender="AgentPohybu", id="157", type="Response"
 	public void processRPresunNaPracovisko(MessageForm message) {
 		MyMessage msg = (MyMessage) message.createCopy();
 
@@ -461,6 +507,8 @@ public class ManagerNabytku extends Manager
 			msg.setCode(Mc.rUrobSkladanie);
 		} else if (msg.getWorkerForMontage() != null) {
 			msg.setCode(Mc.rUrobMontaz);
+		} else if (msg.getWorkerForDrying() != null) {
+			msg.setCode(Mc.urobSusenie); // použiješ správny enum
 		} else {
 			throw new IllegalStateException("Presun na pracovisko: žiadny worker nie je nastavený.");
 		}
@@ -468,6 +516,7 @@ public class ManagerNabytku extends Manager
 		msg.setAddressee(mySim().findAgent(Id.agentCinnosti));
 		request(msg);
 	}
+
 
 
 	//meta! sender="AgentPohybu", id="385", type="Response"
@@ -484,6 +533,8 @@ public class ManagerNabytku extends Manager
 			msg.setCode(Mc.rUrobSkladanie);
 		} else if (msg.getWorkerForMontage() != null) {
 			msg.setCode(Mc.rUrobMontaz);
+		} else if (msg.getWorkerForDrying() != null) {
+			msg.setCode(Mc.urobSusenie);  // pridaj správny message code
 		} else {
 			throw new IllegalStateException("Presun zo skladu: žiadny worker nie je nastavený.");
 		}
@@ -491,6 +542,7 @@ public class ManagerNabytku extends Manager
 		msg.setAddressee(mySim().findAgent(Id.agentCinnosti));
 		request(msg);
 	}
+
 
 
 
@@ -526,11 +578,11 @@ public class ManagerNabytku extends Manager
 		} else {
 			Worker previousWorkerFromStaining = msg.getWorkerForStaining();
 			msg.setWorkerForStaining(null);
-			queueAssembly.addLast(msg);
-			msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
+			queueDrying.addLast(msg);
+			msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_DRYING.getValue());
 
 			tryToReassignWorkerC((WorkerC) previousWorkerFromStaining);
-			tryToReassignAssembly(queueAssembly.getFirst());
+			tryToReassingDrying(queueDrying.getFirst());
 		}
 
 	}
@@ -541,12 +593,12 @@ public class ManagerNabytku extends Manager
 		MyMessage msg = (MyMessage) message.createCopy();
 		Worker previousWorkerFromPainting = msg.getWorkerForPainting();
 		msg.setWorkerForPainting(null);
-		queueAssembly.addLast(msg);
-		msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
+		queueDrying.addLast(msg);
+		msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_DRYING.getValue());
 
 		tryToReassignWorkerC((WorkerC) previousWorkerFromPainting);
-		if(!queueAssembly.isEmpty()) {
-			tryToReassignAssembly(queueAssembly.getFirst());
+		if(!queueDrying.isEmpty()) {
+			tryToReassingDrying(queueDrying.getFirst());
 
 		}
 
@@ -613,11 +665,27 @@ public class ManagerNabytku extends Manager
 	//meta! sender="AgentCinnosti", id="430", type="Response"
 	public void processUrobSusenie(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message.createCopy();
+		Worker previousWorkerFromDrying = msg.getWorkerForDrying();
+		msg.setWorkerForDrying(null);
+		queueAssembly.addLast(msg);
+		msg.getFurniture().setState(FurnitureStateValues.WAITING_IN_QUEUE_ASSEMBLY.getValue());
+
+		tryToReassignWorkerA((WorkerA) previousWorkerFromDrying);
+		if(!queueAssembly.isEmpty()) {
+			tryToReassignAssembly(queueAssembly.getFirst());
+
+		}
 	}
 
 	//meta! sender="AgentPracovnikov", id="435", type="Response"
 	public void processRVyberPracovnikaSusenie(MessageForm message)
 	{
+		MyMessage msg = (MyMessage) message.createCopy();
+		if(msg.getWorkerForDrying() == null) {
+			return;
+		}
+		sendToDrying(msg);
 	}
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)

@@ -28,7 +28,7 @@ public class ProcesSusenia extends Process
 		MySimulation simulation = (MySimulation) _mySim;
 		myMessage.setCode(Mc.finish);
 
-		double newTime = simulation.getGenerators().
+		double newTime = simulation.getGenerators().getDryingDist().sample();
 
 		if (newTime + simulation.currentTime() <= PresetSimulationValues.END_OF_SIMULATION.asDouble()) {
 			hold(newTime, myMessage);
@@ -40,6 +40,11 @@ public class ProcesSusenia extends Process
 	{
 		switch (message.code())
 		{
+			case Mc.finish -> {
+				MyMessage msg = (MyMessage) message.createCopy();
+				msg.setAddressee(myAgent());
+				assistantFinished(msg);
+			}
 		}
 	}
 
