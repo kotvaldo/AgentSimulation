@@ -2,7 +2,7 @@ package simulation;
 
 import OSPABA.*;
 
-public class Mc extends OSPABA.IdList
+public class Mc extends IdList
 {
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public static final int rPresunZoSkladu = 1105;
@@ -22,6 +22,9 @@ public class Mc extends OSPABA.IdList
 	public static final int rVyberPracovnikaMontaz = 1049;
 	public static final int rVyberPracovnikaRezanie = 1050;
 	public static final int urobSusenie = 1112;
+	public static final int rVyberPracovnikaSusenie = 1113;
+	public static final int rVyberPracovnikaASusenie = 1114;
+	public static final int rVyberPracovnikaARezanie = 1115;
 	public static final int rPripravVSklade = 1097;
 	public static final int noticePrichodObjednavky = 1099;
 	public static final int noticeUvolniSkladanie = 1070;

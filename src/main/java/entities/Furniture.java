@@ -49,6 +49,7 @@ public class Furniture extends Entity {
     private Worker workerForMontage;
     private Worker workerForPainting;
     private Worker workerForStaining;
+    private Worker workerForDrying;
 
 
     public Furniture(int type, Order order) {
@@ -346,9 +347,11 @@ public class Furniture extends Entity {
     }
 
 
+    public Worker getWorkerForDrying() {
+        return workerForDrying;
+    }
 
-
-
-
-
+    public void setWorkerForDrying(Worker workerForDrying) {
+        this.workerForDrying = workerForDrying;
+    }
 }

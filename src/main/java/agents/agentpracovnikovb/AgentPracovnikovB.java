@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 //meta! id="229"
-public class AgentPracovnikovB extends OSPABA.Agent
+public class AgentPracovnikovB extends Agent
 {
 	public AgentPracovnikovB(int id, Simulation mySim, Agent parent)
 	{

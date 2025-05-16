@@ -1,6 +1,6 @@
 package agents.agentpracovnikova;
 
-import Enums.WorkerBussyState;
+import Enums.*;
 import OSPABA.*;
 import entities.*;
 import simulation.*;
@@ -9,7 +9,7 @@ import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
 //meta! id="228"
-public class ManagerPracovnikovA extends OSPABA.Manager
+public class ManagerPracovnikovA extends Manager
 {
 	public LinkedList<WorkerA> getFreeWorkers() {
 		return freeWorkers;
@@ -112,6 +112,26 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 		}
 	}
 
+	//meta! sender="AgentPracovnikov", id="436", type="Request"
+	public void processRVyberPracovnikaASusenie(MessageForm message)
+	{
+		MyMessage msg = (MyMessage) message.createCopy();
+
+		WorkerA worker = null;
+		if (!freeWorkers.isEmpty()) {
+			worker = freeWorkers.removeFirst();
+		}
+
+		if (worker != null) {
+			msg.setWorkerForDrying(worker);
+		} else {
+			msg.setWorkerForDrying(null);
+		}
+		//System.out.println("Free workersA in Montage: " + freeWorkers.size());
+		msg.setCode(Mc.rVyberPracovnikaASusenie);
+		msg.setAddressee(mySim().findAgent(Id.agentPracovnikov));
+		response(msg);
+	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)
@@ -131,16 +151,20 @@ public class ManagerPracovnikovA extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
+		case Mc.rVyberPracovnikaASusenie:
+			processRVyberPracovnikaASusenie(message);
+		break;
+
 		case Mc.rVyberPracovnikaARezanie:
 			processRVyberPracovnikaARezanie(message);
 		break;
 
-		case Mc.noticeUvolniA:
-			processNoticeUvolniA(message);
-		break;
-
 		case Mc.rVyberPracovnikaAMontaz:
 			processRVyberPracovnikaAMontaz(message);
+		break;
+
+		case Mc.noticeUvolniA:
+			processNoticeUvolniA(message);
 		break;
 
 		default:

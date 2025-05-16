@@ -2,16 +2,14 @@ package agents.agentnabytku;
 
 import Enums.*;
 import OSPABA.*;
-import OSPAnimator.*;
 import entities.*;
 import simulation.*;
 
-import java.awt.*;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
 //meta! id="9"
-public class ManagerNabytku extends OSPABA.Manager
+public class ManagerNabytku extends Manager
 {
 	private final QueueNonProcessed queueNonProcessed;
 	private final QueueStaining queueStaining;
@@ -612,8 +610,15 @@ public class ManagerNabytku extends OSPABA.Manager
 
 
 
+	//meta! sender="AgentCinnosti", id="430", type="Response"
+	public void processUrobSusenie(MessageForm message)
+	{
+	}
 
-
+	//meta! sender="AgentPracovnikov", id="435", type="Response"
+	public void processRVyberPracovnikaSusenie(MessageForm message)
+	{
+	}
 	//meta! userInfo="Process messages defined in code", id="0"
 	public void processDefault(MessageForm message)
 	{
@@ -632,68 +637,76 @@ public class ManagerNabytku extends OSPABA.Manager
 	{
 		switch (message.code())
 		{
-		case Mc.rPresunZoSkladu:
-			processRPresunZoSkladu(message);
-		break;
-
-		case Mc.rPripravVSklade:
-			processRPripravVSklade(message);
-		break;
-
-		case Mc.rUrobSkladanie:
-			processRUrobSkladanie(message);
-		break;
-
-		case Mc.rUrobLakovanie:
-			processRUrobLakovanie(message);
-		break;
-
-		case Mc.init:
-			processInit(message);
-		break;
-
-		case Mc.rVyberPracovnikaSkladanie:
-			processRVyberPracovnikaSkladanie(message);
-		break;
-
-		case Mc.rUrobRezanie:
-			processRUrobRezanie(message);
+		case Mc.rUrobMontaz:
+			processRUrobMontaz(message);
 		break;
 
 		case Mc.noticeSpracujObjednavku:
 			processNoticeSpracujObjednavku(message);
 		break;
 
-		case Mc.rVyberPracovnikaMorenie:
-			processRVyberPracovnikaMorenie(message);
+		case Mc.init:
+			processInit(message);
 		break;
 
-		case Mc.rVyberPracovnikaRezanie:
-			processRVyberPracovnikaRezanie(message);
+		case Mc.rPripravVSklade:
+			processRPripravVSklade(message);
 		break;
 
-		case Mc.rVyberPracovnikaLakovanie:
-			processRVyberPracovnikaLakovanie(message);
-		break;
-
-		case Mc.rPresunNaPracovisko:
-			processRPresunNaPracovisko(message);
+		case Mc.urobSusenie:
+			processUrobSusenie(message);
 		break;
 
 		case Mc.rPresunDoSkladu:
 			processRPresunDoSkladu(message);
 		break;
 
+		case Mc.rUrobRezanie:
+			processRUrobRezanie(message);
+		break;
+
+		case Mc.rVyberPracovnikaSkladanie:
+			processRVyberPracovnikaSkladanie(message);
+		break;
+
 		case Mc.rVyberPracovnikaMontaz:
 			processRVyberPracovnikaMontaz(message);
 		break;
 
-		case Mc.rUrobMontaz:
-			processRUrobMontaz(message);
+		case Mc.rUrobSkladanie:
+			processRUrobSkladanie(message);
+		break;
+
+		case Mc.rPresunNaPracovisko:
+			processRPresunNaPracovisko(message);
+		break;
+
+		case Mc.rVyberPracovnikaSusenie:
+			processRVyberPracovnikaSusenie(message);
 		break;
 
 		case Mc.rUrobMorenie:
 			processRUrobMorenie(message);
+		break;
+
+		case Mc.rVyberPracovnikaMorenie:
+			processRVyberPracovnikaMorenie(message);
+		break;
+
+		case Mc.rPresunZoSkladu:
+			processRPresunZoSkladu(message);
+		break;
+
+		case Mc.rVyberPracovnikaLakovanie:
+			processRVyberPracovnikaLakovanie(message);
+		break;
+
+		case Mc.rUrobLakovanie:
+			processRUrobLakovanie(message);
+		break;
+
+		case Mc.rVyberPracovnikaRezanie:
+			processRVyberPracovnikaRezanie(message);
 		break;
 
 		default:

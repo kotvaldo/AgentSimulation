@@ -9,7 +9,7 @@ import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
 //meta! id="229"
-public class ManagerPracovnikovB extends OSPABA.Manager
+public class ManagerPracovnikovB extends Manager
 {
 	public LinkedList<WorkerB> getFreeWorkers() {
 		return freeWorkers;

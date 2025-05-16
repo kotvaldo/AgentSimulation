@@ -1,6 +1,8 @@
 package simulation;
 
-public class Id extends OSPABA.IdList
+import OSPABA.*;
+
+public class Id extends IdList
 {
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public static final int agentModelu = 1;

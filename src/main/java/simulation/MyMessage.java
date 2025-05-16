@@ -9,7 +9,6 @@ public class MyMessage extends MessageForm {
 	private Furniture furniture;
 	private Worker workerForRelease;
 	private AnimItem animItem;
-
 	public MyMessage(Simulation mySim) {
 		super(mySim);
 	}
@@ -92,6 +91,14 @@ public class MyMessage extends MessageForm {
 
 	public WorkPlace getWorkPlace() {
 		return furniture != null ? furniture.getWorkPlace() : null;
+	}
+
+	public void setWorkerForDrying(Worker worker) {
+		if (furniture != null) furniture.setWorkerForDrying(worker);
+	}
+
+	public Worker getWorkerForDrying() {
+		return furniture != null ? furniture.getWorkerForDrying() : null;
 	}
 
 	public void setWorkPlace(WorkPlace workPlace) {

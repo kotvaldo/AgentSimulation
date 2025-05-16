@@ -5,25 +5,14 @@ import OSPAnimator.Flags;
 import entities.WorkPlace;
 import simulation.*;
 
-import java.awt.*;
-import java.awt.geom.Point2D;
-
 //meta! id="9"
-public class AgentNabytku extends OSPABA.Agent
+public class AgentNabytku extends Agent
 {
 	public AgentNabytku(int id, Simulation mySim, Agent parent)
 	{
 		super(id, mySim, parent);
 		init();
 	}
-
-	@Override
-	public void prepareReplication()
-	{
-		super.prepareReplication();
-		// Setup component for the next replication
-	}
-
 	public void initAnimator() {
 		Flags.SHOW_WARNING = false;
 
@@ -38,8 +27,12 @@ public class AgentNabytku extends OSPABA.Agent
 		}
 	}
 
-
-
+	@Override
+	public void prepareReplication()
+	{
+		super.prepareReplication();
+		// Setup component for the next replication
+	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	private void init()
@@ -53,10 +46,12 @@ public class AgentNabytku extends OSPABA.Agent
 		addOwnMessage(Mc.rVyberPracovnikaMontaz);
 		addOwnMessage(Mc.rUrobMorenie);
 		addOwnMessage(Mc.rUrobMontaz);
+		addOwnMessage(Mc.urobSusenie);
 		addOwnMessage(Mc.rPresunZoSkladu);
 		addOwnMessage(Mc.noticeSpracujObjednavku);
 		addOwnMessage(Mc.rUrobRezanie);
 		addOwnMessage(Mc.rUrobSkladanie);
+		addOwnMessage(Mc.rVyberPracovnikaSusenie);
 		addOwnMessage(Mc.rVyberPracovnikaMorenie);
 		addOwnMessage(Mc.rPripravVSklade);
 		addOwnMessage(Mc.rVyberPracovnikaRezanie);
